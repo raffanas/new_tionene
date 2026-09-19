@@ -1,0 +1,103 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -------------------------------------------------------------
+// Usuários Administrativos (Para o futuro Login e Dashboard)
+// -------------------------------------------------------------
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // ADMIN, EDITOR, VIEWER
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+// -------------------------------------------------------------
+// Catálogo de Passeios (Gestão no Dashboard)
+// -------------------------------------------------------------
+model Tour {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  subtitle    String?
+  description String
+  category    String   // arqueologia, cenotes, ilhas, aventura
+  duration    String?
+  price       Decimal? @db.Decimal(10, 2)
+  badge       String?
+  imageUrl    String
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tours")
+}
+
+// -------------------------------------------------------------
+// Pacotes de Viagem Completa
+// -------------------------------------------------------------
+model TravelPackage {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  badge         String?
+  subtitle      String?
+  description   String
+  includedItems String[]
+  price         String?
+  isPopular     Boolean  @default(false)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("travel_packages")
+}
+
+// -------------------------------------------------------------
+// Leads e Solicitações (Quiz e Montador de Roteiro)
+// -------------------------------------------------------------
+model Lead {
+  id            String   @id @default(cuid())
+  name          String?
+  phone         String
+  email         String?
+  source        String   // quiz, trip_builder, contato
+  arrivalDate   String?
+  adults        Int?
+  children      Int?
+  destination   String?
+  travelStyle   String?
+  selectedTours Json?
+  notes         String?
+  status        String   @default("NOVO") // NOVO, EM_ATENDIMENTO, CONVERTIDO, ARQUIVADO
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("leads")
+}
+
+// -------------------------------------------------------------
+// Configurações Gerais do Site
+// -------------------------------------------------------------
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("site_settings")
+}
