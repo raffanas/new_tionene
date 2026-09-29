@@ -30,3 +30,4 @@ prisma/*.db-journal
 Thumbs.db
 
 tsconfig.tsbuildinfo
+.playwright-mcp/

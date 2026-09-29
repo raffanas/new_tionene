@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 
 export default function SobreNosPage() {
@@ -39,7 +40,7 @@ export default function SobreNosPage() {
 <h1>Muito antes de existir uma agência de viagens, existia uma família <em className="accent">apaixonada</em> pelo México.</h1>
 </div>
 <div className="about-hero__aside">
-<img className="about-hero__symbol" alt="" src="/images/img-26-77aae682.png" />
+<img className="about-hero__symbol" alt="Símbolo Tio Nenê" src="/img/icon-sol-2.png" />
 <p>A Tio Nenê não nasceu de um plano de negócios. Nasceu de uma história de família, de encontros e de um país que, aos poucos, acabou mudando o rumo das nossas vidas.</p>
 </div>
 </section>
@@ -106,7 +107,7 @@ export default function SobreNosPage() {
 <p className="belief__text">Desde 2014, cuidamos de cada viajante com experiência, sensibilidade e atenção ao que torna cada história única.</p>
 </article>
 </div>
-<img className="beliefs__symbol" alt="" src="/images/img-26-77aae682.png" />
+<img className="beliefs__symbol" alt="Símbolo Tio Nenê" src="/img/icon-sol-2.png" />
 </section>
 <section className="services">
 <img className="services__image" alt="Hotéis e paisagem de Cancún" src="/images/img-28-81baf457.png" />
@@ -150,7 +151,7 @@ export default function SobreNosPage() {
 <p className="eyebrow">MAIS QUE TURISMO</p>
 <h2>A melhor forma de conhecer um destino é aquela que foi pensada para <em className="accent">você</em>.</h2>
 <a className="button" href="/passeios#catalogo">
-<img className="button__icon" alt="" src="/images/img-02-fa3a6973.png" />Planejar minha viagem</a>
+<CalendarIcon className="button__icon" />Planejar minha viagem</a>
 </section>
 
       </main>

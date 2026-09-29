@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 
 export default function CuradoriaBellaPage() {
@@ -29,7 +30,7 @@ export default function CuradoriaBellaPage() {
 <p className="eyebrow bella-hero__label">CURADORIA DE VIAGENS AUTORAIS POR BELLA</p>
 <p className="bella-hero__aside">Viagens personalizadas para quem procura experiências fora do óbvio.</p>
 <a className="button" href="#contato">
-<img className="button__icon" alt="" src="/images/img-02-fa3a6973.png" />Planejar minha viagem</a>
+<CalendarIcon className="button__icon" />Planejar minha viagem</a>
 </section>
 <section className="bella-intro">
 <p className="eyebrow bella-label">seu roteiro, do seu jeito.</p>
@@ -189,7 +190,7 @@ export default function CuradoriaBellaPage() {
 <h2>Sua próxima viagem não precisa parecer com a de ninguém.</h2>
 <p className="bella-contact__text">Se você acredita que sua próxima viagem merece mais do que um roteiro pronto, vamos começar uma conversa.</p>
 <a className="button" href="/passeios#catalogo">
-<img className="button__icon" alt="" src="/images/img-02-fa3a6973.png" />Planejar minha viagem</a>
+<CalendarIcon className="button__icon" />Planejar minha viagem</a>
 </section>
 
       </main>

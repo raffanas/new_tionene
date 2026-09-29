@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 
 export default function ViagemCompletaPage() {
@@ -13,7 +14,7 @@ export default function ViagemCompletaPage() {
     if (whatsapp) {
       window.open(`https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`, "_blank");
     } else {
-      const el = document.querySelector("#contato");
+      const el = document.querySelector("#pacotes");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -30,24 +31,13 @@ export default function ViagemCompletaPage() {
 
 <h1 className="trip-hero__heading">Não é só chegar.<br />É começar a viver<br />antes de pousar.</h1>
 <p className="eyebrow trip-hero__label">OPERAÇÃO LOCAL · ATENDIMENTO HUMANO · ROTEIRO VIVO</p>
-<div className="trip-hero__dots" aria-hidden={true}>
-<span>
-</span>
-<span>
-</span>
-<span>
-</span>
-<span>
-</span>
-</div>
 <p className="trip-hero__aside">Uma viagem desenhada por quem conhece o México por dentro — com ritmo, repertório e tudo organizado para você simplesmente viver.</p>
-<a className="button" href="#contato">
-<img className="button__icon" src="/images/img-02-fa3a6973.png" alt="" />Planejar minha viagem</a>
+<a className="button" href="#pacotes">
+<CalendarIcon className="button__icon" />Ver pacotes</a>
 </section>
 <section className="trip-stats" aria-label="Nossa operação">
 <div className="trip-stats__item">
-<p className="trip-stats__number">
-</p>
+<p className="trip-stats__number">12+</p>
 <p className="trip-stats__label">anos em cancún</p>
 </div>
 <div className="trip-stats__item">
@@ -70,7 +60,7 @@ export default function ViagemCompletaPage() {
 </div>
 <div className="trip-conversation__aside">
 <p>Aéreo, hospedagem, transfers, experiências e reservas especiais não precisam virar uma lista cansativa. A gente organiza cada escolha para que o roteiro tenha o seu ritmo — e o México apareça do jeito certo, na hora certa.</p>
-<a className="button" href="#contato">Planejar minha viagem</a>
+<a className="button" href="#pacotes">Conheça nossos pacotes</a>
 </div>
 </section>
 <section className="trip-packages" id="pacotes">
@@ -97,7 +87,6 @@ export default function ViagemCompletaPage() {
 <h3>Cancún<br />Oficial</h3>
 <p className="trip-package__tagline">Viagem completa, do<br />voo ao último passeio.</p>
 </div>
-<img className="trip-package__badge" src="/images/img-10-607f3f54.png" alt="" />
 <p className="trip-package__description">O pacote redondo: passagem, hospedagem com café da manhã e os passeios clássicos da região.</p>
 <p className="trip-package__price">A PARTIR DE<strong className="trip-package__amount">R$9.800</strong>
 <span className="trip-package__person">POR PESSOA</span>
@@ -135,11 +124,18 @@ export default function ViagemCompletaPage() {
 <section className="trip-includes">
 <div>
 <p className="eyebrow trip-label">experiências</p>
-<h2>O que a sua viagem pode <em className="accent">incluir</em>.</h2>
+<h2>Uma operação própria<br />em <em className="accent">Cancún</em>.</h2>
 </div>
 <div className="trip-includes__aside">
-<p>Hospedagem escolhida com critério · Transfers privativos · Passeios e experiências · Gastronomia e reservas especiais · Roteiro personalizado · Suporte antes, durante e depois da viagem</p>
-<a className="button" href="#contato">Planejar minha viagem</a>
+<p>A Tio Nenê opera no destino desde 2014, com equipe própria, hotéis e fornecedores homologados e atendimento em português antes, durante e depois da viagem.</p>
+<a 
+  className="button" 
+  href={SITE_CONFIG.whatsapp ? `https://wa.me/${SITE_CONFIG.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent("Olá! Gostaria de planejar minha viagem completa com a Tio Nenê.")}` : "#pacotes"}
+  target={SITE_CONFIG.whatsapp ? "_blank" : undefined}
+  rel="noopener noreferrer"
+>
+  Planejar minha viagem
+</a>
 </div>
 </section>
 <section className="trip-next">
@@ -179,26 +175,6 @@ export default function ViagemCompletaPage() {
 </div>
 </article>
 </div>
-</section>
-<section className="trip-banner" aria-label="Cancún, México">
-<img className="trip-banner__image" src="/images/img-19-71bc3bec.png" alt="Vista panorâmica de hotéis e vegetação de Cancún" />
-<p className="eyebrow trip-banner__label">CANCÚN, MÉXICO</p>
-<h2>cancún</h2>
-<div className="trip-banner__controls">
-<button className="trip-banner__arrow trip-banner__arrow--previous" type="button" disabled aria-label="Imagem anterior">
-<img className="" src="/images/img-04-f9b50443.png" alt="" />
-</button>
-<button className="trip-banner__arrow " type="button" disabled aria-label="Próxima imagem">
-<img className="" src="/images/img-04-f9b50443.png" alt="" />
-</button>
-</div>
-</section>
-<section className="trip-contact" id="contato">
-<p className="eyebrow trip-label">fale com a gente</p>
-<h2>Sua viagem do jeito<br />que você <em className="accent">sonha</em>.</h2>
-<p className="trip-contact__copy">A GENTE COMEÇA ENTENDENDO VOCÊ.<br />O RESTO, DESENHAMOS JUNTOS.</p>
-<a className="button" role="link" aria-disabled="true" data-whatsapp>
-<img className="button__icon" src="/images/img-02-fa3a6973.png" alt="" />Planejar minha viagem</a>
 </section>
 
       </main>

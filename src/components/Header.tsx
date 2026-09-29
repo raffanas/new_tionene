@@ -67,6 +67,14 @@ export default function Header({ currentPage, logoSrc }: HeaderProps) {
         <div className="header__nav-inner">
           <Link
             className="header__link"
+            href={SITE_CONFIG.routes.home}
+            aria-current={currentPage === "home" ? "page" : undefined}
+            onClick={closeMenu}
+          >
+            Home
+          </Link>
+          <Link
+            className="header__link"
             href={SITE_CONFIG.routes.passeios}
             aria-current={currentPage === "passeios" ? "page" : undefined}
             onClick={closeMenu}

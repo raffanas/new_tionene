@@ -5,6 +5,14 @@ import { SITE_CONFIG } from "@/config/site";
 export const metadata: Metadata = {
   title: SITE_CONFIG.title,
   description: SITE_CONFIG.description,
+  icons: {
+    icon: [
+      { url: "/img/favicon.jpg", type: "image/jpeg" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/img/favicon.jpg",
+    apple: "/img/favicon.jpg",
+  },
 };
 
 export const viewport: Viewport = {
@@ -22,6 +30,9 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head>
         <meta charSet="UTF-8" />
+        <link rel="icon" href="/img/favicon.jpg" type="image/jpeg" />
+        <link rel="shortcut icon" href="/img/favicon.jpg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/img/favicon.jpg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

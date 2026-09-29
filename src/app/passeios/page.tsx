@@ -5,6 +5,8 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TripQuiz from "@/components/TripQuiz";
+import QuizModal from "@/components/QuizModal";
+import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 
 interface TripRow {
@@ -13,24 +15,149 @@ interface TripRow {
   count: number;
 }
 
+interface CatalogTour {
+  id: string;
+  name: string;
+  label: string;
+  description: string;
+  image: string;
+  alt: string;
+  categories: string[];
+  tags: { icon: string; text: string }[];
+}
+
+const CATALOG_TOURS: CatalogTour[] = [
+  {
+    id: "chichen-itza",
+    name: "Chichén Itzá & Cenote Sagrado",
+    label: "CULTURA & HISTÓRIA · DIA TODO",
+    description: "Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.",
+    image: "/passeios/chichen-itza.jpg",
+    alt: "Pirâmide de Chichén Itzá no México",
+    categories: ["cenotes", "historico", "natureza"],
+    tags: [
+      { icon: "/images/icons/icon-4.svg", text: "Histórico" },
+      { icon: "/images/icons/icon-8.svg", text: "Cenotes" },
+    ],
+  },
+  {
+    id: "isla-mujeres",
+    name: "Isla Mujeres Exclusiva",
+    label: "ILHAS & NAVEGAÇÃO · DIA TODO",
+    description: "Navegue em catamarã pelas águas azul-turquesa do Caribe com parada para snorkeling e o encanto de Playa Norte.",
+    image: "/passeios/isla-mujeres.jpg",
+    alt: "Águas cristalinas de Isla Mujeres",
+    categories: ["ilhas", "natureza"],
+    tags: [
+      { icon: "/images/icons/icon-6.svg", text: "Ilhas" },
+      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
+    ],
+  },
+  {
+    id: "xcaret",
+    name: "Parque Eco-Arqueológico Xcaret",
+    label: "NATUREZA & CULTURA · DIA TODO",
+    description: "Rios subterrâneos, aquário de recife de coral e o emocionante espetáculo folclórico que homenageia o México.",
+    image: "/passeios/xcaret.jpg",
+    alt: "Parque eco-arqueológico Xcaret",
+    categories: ["natureza", "historico", "aventura"],
+    tags: [
+      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
+      { icon: "/images/icons/icon-4.svg", text: "Histórico" },
+    ],
+  },
+  {
+    id: "xelha",
+    name: "Xel-Há Parque All-Inclusive",
+    label: "AQUÁTICO & NATUREZA · DIA TODO",
+    description: "Uma verdadeira enseada natural com snorkeling livre, tirolesas aquáticas e gastronomia completa inclusa.",
+    image: "/passeios/xel-ha.jpg",
+    alt: "Enseada natural e águas de Xel-Há",
+    categories: ["natureza", "aventura", "cenotes"],
+    tags: [
+      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
+      { icon: "/images/icons/icon-11.svg", text: "Aventura" },
+    ],
+  },
+  {
+    id: "xplor",
+    name: "Xplor Aventura & Tirolesas",
+    label: "AVENTURA & ADRENALINA · DIA TODO",
+    description: "Tirolesas nas alturas sobre a selva maia, veículos anfíbios e jangadas em cavernas repletas de estalactites.",
+    image: "/passeios/Tirolesas.jpg",
+    alt: "Aventuras e tirolesas no parque Xplor",
+    categories: ["aventura", "natureza"],
+    tags: [
+      { icon: "/images/icons/icon-11.svg", text: "Aventura" },
+      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
+    ],
+  },
+  {
+    id: "cozumel-el-cielo",
+    name: "Cozumel & El Cielo",
+    label: "SNORKELING & MAR · DIA TODO",
+    description: "Mergulho nos recifes de corais protegidos e o espetacular banco de areia El Cielo, santuário de estrelas-do-mar.",
+    image: "/passeios/cozumel-e-al-cielo.jpg",
+    alt: "Águas azul-turquesa de Cozumel El Cielo",
+    categories: ["ilhas", "natureza", "aventura"],
+    tags: [
+      { icon: "/images/icons/icon-6.svg", text: "Ilhas" },
+      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
+    ],
+  },
+  {
+    id: "tulum",
+    name: "Ruínas de Tulum & Cenotes",
+    label: "HISTÓRIA & PRAIA · MEIO DIA",
+    description: "A clássica cidade murada maia sobre as falésias em frente ao mar caribenho aliada a mergulho em cenote aberto.",
+    image: "/passeios/ruinas-de-tulum-cenotes.jpg",
+    alt: "Ruínas maias de Tulum à beira do mar caribenho",
+    categories: ["historico", "cenotes", "natureza"],
+    tags: [
+      { icon: "/images/icons/icon-4.svg", text: "Histórico" },
+      { icon: "/images/icons/icon-8.svg", text: "Cenotes" },
+    ],
+  },
+  {
+    id: "coco-bongo",
+    name: "Coco Bongo Show & Disco",
+    label: "VIDA NOTURNA · SHOW & DISCO",
+    description: "O espetáculo mais icônico de Cancún: acrobatas, tributos musicais ao vivo e festa eletrizante na zona hoteleira.",
+    image: "/passeios/coco-bongo-show-disco.jpg",
+    alt: "Espetáculo musical e festa na Coco Bongo",
+    categories: ["noite", "aventura"],
+    tags: [
+      { icon: "/images/icons/icon-10.svg", text: "Vida Noturna" },
+      { icon: "/images/icons/icon-11.svg", text: "Aventura" },
+    ],
+  },
+];
+
 export default function PasseiosPage() {
   const [activeFilter, setActiveFilter] = useState("todos");
-  const [bannerAlt, setBannerAlt] = useState(false);
   const [arrivalDate, setArrivalDate] = useState("");
   const [adults, setAdults] = useState("02");
   const [childrenCount, setChildrenCount] = useState("00");
+  const [infants511, setInfants511] = useState("00");
+  const [infants04, setInfants04] = useState("00");
   const [notification, setNotification] = useState("");
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [tripRows, setTripRows] = useState<TripRow[]>([
     { id: "isla", name: "Isla Mujeres Exclusiva", count: 2 },
     { id: "cenotes", name: "Cenotes & Cavernas Secretas", count: 2 },
     { id: "chichen", name: "Chichén Itzá & Cenote Sagrado", count: 2 }
   ]);
 
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const filteredTours = CATALOG_TOURS.filter((tour) => {
+    if (activeFilter === "todos") return true;
+    return tour.categories.includes(activeFilter);
+  });
 
-  const toggleBanner = () => setBannerAlt((prev) => !prev);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const datePickerRef = useRef<HTMLInputElement>(null);
+
   const heroImageSrc = "/images/img-08-2cf9c873.png";
-  const bannerImageSrc = bannerAlt ? "/images/img-08-2cf9c873.png" : "/images/img-19-71bc3bec.png";
+  const bannerImageSrc = "/images/img-19-71bc3bec.png";
 
   const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "").slice(0, 8);
@@ -38,6 +165,33 @@ export default function PasseiosPage() {
       .replace(/^(\d{2})(\d)/, "$1/$2")
       .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2");
     setArrivalDate(masked);
+
+    if (raw.length === 8 && datePickerRef.current) {
+      const day = raw.slice(0, 2);
+      const month = raw.slice(2, 4);
+      const year = raw.slice(4, 8);
+      datePickerRef.current.value = `${year}-${month}-${day}`;
+    }
+  };
+
+  const handleNativeDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val) {
+      const [year, month, day] = val.split("-");
+      if (year && month && day) {
+        setArrivalDate(`${day}/${month}/${year}`);
+      }
+    }
+  };
+
+  const handleCalendarClick = () => {
+    if (datePickerRef.current) {
+      if (typeof datePickerRef.current.showPicker === "function") {
+        datePickerRef.current.showPicker();
+      } else {
+        datePickerRef.current.focus();
+      }
+    }
   };
 
   const updateCount = (id: string, delta: number) => {
@@ -69,10 +223,15 @@ export default function PasseiosPage() {
     const lines = [
       "Olá! Gostaria de uma cotação de passeios.",
       `Chegada: ${arrivalDate || "A definir"}`,
-      `Adultos: ${adults}`,
-      `Crianças: ${childrenCount}`,
+      `Adultos: ${adults || "0"}`,
+      `Crianças (12 - 17 anos): ${childrenCount || "0"}`,
+      `Infantes (5 - 11 anos): ${infants511 || "0"}`,
+      `Infantes (0 - 4 anos): ${infants04 || "0"}`,
+      "",
       "Roteiro de Passeios:",
-      ...tripRows.map((r) => `- ${r.name}: ${r.count} pessoa(s)`),
+      ...(tripRows.length > 0
+        ? tripRows.map((r) => `- ${r.name}: ${r.count} pessoa(s)`)
+        : ["(Nenhum passeio selecionado no roteiro)"]),
     ];
     if (whatsapp) {
       window.open(`https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
@@ -91,21 +250,11 @@ export default function PasseiosPage() {
 <Header currentPage="passeios" />
 
 <h1 id="page-title" className="excursion-hero__title">Escolha<br />seus dias.<br />A gente cuida<br />do resto.</h1>
-<p className="excursion-hero__label eyebrow">PASSEIOS EM CANCÚN E YUCATÁN</p>
+<p className="excursion-hero__label eyebrow">PASSEIOS EM CANCÚN &amp; REGIÃO</p>
 <p className="excursion-hero__description">Do mar turquesa às ruínas maias: monte um roteiro do seu jeito ou deixe a gente indicar o melhor caminho.</p>
 <div className="excursion-hero__button">
 <a className="button" href="#catalogo">
-<img className="button__icon" src="/images/img-02-fa3a6973.png" alt=""  />Planejar minha viagem</a>
-</div>
-<div className="excursion-hero__dots" aria-hidden={true}>
-<i>
-</i>
-<i>
-</i>
-<i>
-</i>
-<i>
-</i>
+<CalendarIcon className="button__icon" />Conheça os passeios</a>
 </div>
 </section>
 <section className="options">
@@ -117,37 +266,49 @@ export default function PasseiosPage() {
 <article className="option ">
 <h3 className="option__title">Escolha passeio por passeio</h3>
 <p className="option__description">Monte o seu roteiro com liberdade e tenha tudo organizado antes de chegar.</p>
-<a className="option__link" href="#catalogo">montar meu roteiro<img className="option__arrow" src="/images/img-12-59a80b78.png" alt=""  />
+<a className="option__link" href="#catalogo">
+<span>montar meu roteiro</span>
+<svg className="option__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+</svg>
 </a>
 </article>
 <article className="option option--wine">
 <h3 className="option__title">Receba um pacote pronto</h3>
 <p className="option__description">Explorador, Cultural ou Ponderado: descubra o ritmo que combina com a sua viagem.</p>
-<a className="option__link" href="#pacotes">conhecer pacotes<img className="option__arrow" src="/images/img-12-59a80b78.png" alt=""  />
+<a className="option__link" href="#pacotes">
+<span>conhecer pacotes</span>
+<svg className="option__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+</svg>
 </a>
 </article>
-<article className="option option--blue">
+<article className="option option--blue" style={{ cursor: "pointer" }} onClick={() => setIsQuizOpen(true)}>
 <h3 className="option__title">Deixe a gente indicar</h3>
 <p className="option__description">Responda poucas perguntas e encontre seu perfil de viajante em menos de um minuto.</p>
-<a className="option__link" href="#trip-quiz">fazer o quiz<img className="option__arrow" src="/images/img-12-59a80b78.png" alt=""  />
-</a>
+<button type="button" className="option__link" onClick={(e) => { e.stopPropagation(); setIsQuizOpen(true); }} aria-label="Abrir quiz de perfil de viagem">
+<span>fazer o quiz</span>
+<svg className="option__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+</svg>
+</button>
 </article>
 </div>
 </section>
 <section className="catalog" id="catalogo" aria-labelledby="catalog-title">
 <div className="catalog__filters" role="group" aria-label="Categorias de passeios">
-<button className="catalog__filter" type="button" data-filter="todos" aria-pressed="true">Todos</button>
-<button className="catalog__filter" type="button" data-filter="cenotes" aria-pressed="false">
+<button className="catalog__filter" type="button" data-filter="todos" aria-pressed={activeFilter === "todos"} onClick={() => setActiveFilter("todos")}>Todos</button>
+<button className="catalog__filter" type="button" data-filter="ilhas" aria-pressed={activeFilter === "ilhas"} onClick={() => setActiveFilter("ilhas")}>
+<img className="catalog__icon" src="/images/icons/icon-6.svg" alt="" width="16" height="16" />Ilhas</button>
+<button className="catalog__filter" type="button" data-filter="cenotes" aria-pressed={activeFilter === "cenotes"} onClick={() => setActiveFilter("cenotes")}>
 <img className="catalog__icon" src="/images/icons/icon-8.svg" alt="" width="16" height="16" />Cenotes</button>
-<button className="catalog__filter" type="button" data-filter="praias" aria-pressed="false">
-<img className="catalog__icon" src="/images/icons/icon-6.svg" alt="" width="16" height="16" />Praias</button>
-<button className="catalog__filter" type="button" data-filter="cultura" aria-pressed="false">
-<img className="catalog__icon" src="/images/icons/icon-4.svg" alt="" width="16" height="16" />Cultura</button>
-<button className="catalog__filter" type="button" data-filter="aventura" aria-pressed="false">
+<button className="catalog__filter" type="button" data-filter="historico" aria-pressed={activeFilter === "historico"} onClick={() => setActiveFilter("historico")}>
+<img className="catalog__icon" src="/images/icons/icon-4.svg" alt="" width="16" height="16" />Histórico</button>
+<button className="catalog__filter" type="button" data-filter="aventura" aria-pressed={activeFilter === "aventura"} onClick={() => setActiveFilter("aventura")}>
 <img className="catalog__icon" src="/images/icons/icon-11.svg" alt="" width="16" height="16" />Aventura</button>
-<button className="catalog__filter" type="button" data-filter="noite" aria-pressed="false">
+<button className="catalog__filter" type="button" data-filter="noite" aria-pressed={activeFilter === "noite"} onClick={() => setActiveFilter("noite")}>
 <img className="catalog__icon" src="/images/icons/icon-10.svg" alt="" width="16" height="16" />Vida Noturna</button>
-<button className="catalog__filter" type="button" data-filter="natureza" aria-pressed="false">
+<button className="catalog__filter" type="button" data-filter="natureza" aria-pressed={activeFilter === "natureza"} onClick={() => setActiveFilter("natureza")}>
 <img className="catalog__icon" src="/images/icons/icon-2.svg" alt="" width="16" height="16" />Natureza</button>
 </div>
 <div className="catalog__heading">
@@ -156,72 +317,56 @@ export default function PasseiosPage() {
 <p>Selecione os melhores passeios para os seus dias no Caribe Mexicano, monte seu roteiro e envie diretamente para nossa equipe no WhatsApp.</p>
 </div>
 <div className="catalog__cards">
-<article className="excursion" data-categories="cenotes cultura aventura natureza" style={{ display: activeFilter === "todos" || "cenotes cultura aventura natureza".split(" ").includes(activeFilter) ? undefined : "none" }}>
-<div className="excursion__photo">
-<img className="excursion__image" src="/images/img-13-d3d47d85.png" alt="Paisagem de Cancún" loading="lazy" />
+  {filteredTours.map((tour) => (
+    <article key={tour.id} className="excursion" data-categories={tour.categories.join(" ")}>
+      <div className="excursion__photo">
+        <img className="excursion__image" src={tour.image} alt={tour.alt} loading="lazy" />
+      </div>
+      <button
+        className="excursion__add"
+        type="button"
+        aria-label={`Adicionar ${tour.name} ao roteiro`}
+        onClick={() => addRow(tour.id, tour.name)}
+      >
+        +
+      </button>
+      <div className="excursion__body">
+        <h3 className="excursion__title">{tour.name}</h3>
+        <p className="excursion__description">{tour.description}</p>
+        <div className="excursion__bottom">
+          {tour.tags.map((tag, idx) => (
+            <span key={idx} className="excursion__tag">
+              <img className="catalog__icon" src={tag.icon} alt="" width={16} height={16} />
+              {tag.text}
+            </span>
+          ))}
+          <button
+            className="excursion__details"
+            type="button"
+            onClick={() => addRow(tour.id, tour.name)}
+          >
+            ADICIONAR
+          </button>
+        </div>
+      </div>
+    </article>
+  ))}
 </div>
-<button className="excursion__add" type="button" aria-label="Adicionar Chichén Itzá e Cenote Sagrado ao roteiro" data-add="chichen">+</button>
-<div className="excursion__body">
-<h3 className="excursion__title">Chichén Itzá &amp; Cenote Sagrado</h3>
-<p className="excursion__description">Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.</p>
-<div className="excursion__bottom">
-<span className="excursion__tag">
-<img className="catalog__icon" src="/images/icons/icon-3.svg" alt="" width="16" height="16" />Natureza</span>
-<span className="excursion__tag">
-<img className="catalog__icon" src="/images/icons/icon-5.svg" alt="" width="16" height="16" />Aventura</span>
-<button className="excursion__details" type="button" data-details aria-disabled="true">VER DETALHES</button>
-</div>
-</div>
-</article>
-<article className="excursion" data-categories="cenotes cultura aventura natureza" style={{ display: activeFilter === "todos" || "cenotes cultura aventura natureza".split(" ").includes(activeFilter) ? undefined : "none" }}>
-<div className="excursion__photo">
-<img className="excursion__image" src="/images/img-13-d3d47d85.png" alt="Paisagem de Cancún" loading="lazy" />
-</div>
-<button className="excursion__add" type="button" aria-label="Adicionar Chichén Itzá e Cenote Sagrado ao roteiro" data-add="chichen">+</button>
-<div className="excursion__body">
-<h3 className="excursion__title">Chichén Itzá &amp; Cenote Sagrado</h3>
-<p className="excursion__description">Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.</p>
-<div className="excursion__bottom">
-<span className="excursion__tag">
-<img className="catalog__icon" src="/images/icons/icon-3.svg" alt="" width="16" height="16" />Natureza</span>
-<span className="excursion__tag">
-<img className="catalog__icon" src="/images/icons/icon-5.svg" alt="" width="16" height="16" />Aventura</span>
-<button className="excursion__details" type="button" data-details aria-disabled="true">VER DETALHES</button>
-</div>
-</div>
-</article>
-<article className="excursion" data-categories="cenotes cultura aventura natureza" style={{ display: activeFilter === "todos" || "cenotes cultura aventura natureza".split(" ").includes(activeFilter) ? undefined : "none" }}>
-<div className="excursion__photo">
-<img className="excursion__image" src="/images/img-13-d3d47d85.png" alt="Paisagem de Cancún" loading="lazy" />
-</div>
-<button className="excursion__add" type="button" aria-label="Adicionar Chichén Itzá e Cenote Sagrado ao roteiro" data-add="chichen">+</button>
-<div className="excursion__body">
-<h3 className="excursion__title">Chichén Itzá &amp; Cenote Sagrado</h3>
-<p className="excursion__description">Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.</p>
-<div className="excursion__bottom">
-<span className="excursion__tag">
-<img className="catalog__icon" src="/images/icons/icon-3.svg" alt="" width="16" height="16" />Natureza</span>
-<span className="excursion__tag">
-<img className="catalog__icon" src="/images/icons/icon-5.svg" alt="" width="16" height="16" />Aventura</span>
-<button className="excursion__details" type="button" data-details aria-disabled="true">VER DETALHES</button>
-</div>
-</div>
-</article>
-</div>
-<p className="catalog__empty" role="status" hidden>Nenhum passeio nesta categoria.</p>
-<button type="button" className="catalog__control catalog__control--prev control--previous" data-direction="-1" aria-label="Passeios anteriores">
-<img className="control__image" src="/images/img-04-f9b50443.png" alt=""  />
-</button>
-<button type="button" className="catalog__control catalog__control--next" data-direction="1" aria-label="Próximos passeios">
-<img className="control__image" src="/images/img-04-f9b50443.png" alt=""  />
-</button>
+{filteredTours.length === 0 && (
+  <p className="catalog__empty" role="status" style={{ display: "block" }}>Nenhum passeio nesta categoria.</p>
+)}
 <div className="trip" id="roteiro">
 <div className="trip__travel">
 <h3 className="trip__heading">Minha viagem</h3>
 <div className="trip__date">
 <label className="trip__label" htmlFor="arrival">Data de chegada</label>
+<div className="trip__date-wrapper">
 <input id="arrival" className="trip__input" type="text" inputMode="numeric" placeholder="dd/mm/aaaa" maxLength={10} value={arrivalDate} onChange={handleDateInput} />
-<img className="trip__calendar" src="/images/img-02-fa3a6973.png" alt=""  />
+<input ref={datePickerRef} type="date" className="trip__hidden-date" tabIndex={-1} aria-hidden="true" onChange={handleNativeDateChange} />
+<button type="button" className="trip__calendar-btn" onClick={handleCalendarClick} aria-label="Abrir calendário para escolher data">
+<CalendarIcon className="trip__calendar" />
+</button>
+</div>
 </div>
 <div className="trip__people">
 <div>
@@ -229,8 +374,16 @@ export default function PasseiosPage() {
 <input id="adults" className="trip__input" type="number" min="1" max="99" placeholder="02" value={adults} onChange={(e) => setAdults(e.target.value)} />
 </div>
 <div>
-<label className="trip__label" htmlFor="children">Crianças</label>
-<input id="children" className="trip__input" type="number" min="0" max="99" placeholder="02" value={childrenCount} onChange={(e) => setChildrenCount(e.target.value)} />
+<label className="trip__label" htmlFor="children">Crianças (12 - 17 anos)</label>
+<input id="children" className="trip__input" type="number" min="0" max="99" placeholder="00" value={childrenCount} onChange={(e) => setChildrenCount(e.target.value)} />
+</div>
+<div>
+<label className="trip__label" htmlFor="infants511">Infantes (5 - 11 anos)</label>
+<input id="infants511" className="trip__input" type="number" min="0" max="99" placeholder="00" value={infants511} onChange={(e) => setInfants511(e.target.value)} />
+</div>
+<div>
+<label className="trip__label" htmlFor="infants04">Infantes (0 - 4 anos)</label>
+<input id="infants04" className="trip__input" type="number" min="0" max="99" placeholder="00" value={infants04} onChange={(e) => setInfants04(e.target.value)} />
 </div>
 </div>
 </div>
@@ -264,74 +417,72 @@ export default function PasseiosPage() {
 )}
 </div>
 </section>
-<section className="packages" id="pacotes">
-<div className="packages__heading">
-<p className="eyebrow">PACOTES PRONTOS, COM RITMO CERTO</p>
-<h2>Nem toda viagem pede o <em className="accent">mesmo</em> roteiro.</h2>
-</div>
-<div className="packages__grid">
-<article className="package ">
-<img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
-<div className="package__body">
-<p className="package__tag">PACOTE BÁSICO</p>
-<h3 className="package__title">Viajante Ponderado</h3>
-<p className="package__description">Uma viagem tranquila, com o essencial bem resolvido e tempo para curtir cada lugar. Inclui: Isla Mujeres, Chichén Itzá e Barco de vidro.</p>
-</div>
-<a className="package__link" href="/viagem-completa">
-<span>explorar viagem completa</span>
-<img className="package__arrow" src="/images/img-12-59a80b78.png" alt=""  />
-</a>
-</article>
-<article className="package package--wine">
-<img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
-<img className="package__badge" src="/images/img-10-607f3f54.png" alt="Destaque"  />
-<div className="package__body">
-<p className="package__tag">PACOTE INTERMEDIÁRIO</p>
-<h3 className="package__title">Perfil<br />cultural</h3>
-<p className="package__description">Uma viagem tranquila, com o essencial bem resolvido e tempo para curtir cada lugar. Inclui: Isla Mujeres, Chichén Itzá e Barco de vidro.</p>
-</div>
-<a className="package__link" href="/viagem-completa">
-<span>explorar viagem completa</span>
-<img className="package__arrow" src="/images/img-12-59a80b78.png" alt=""  />
-</a>
-</article>
-<article className="package package--blue">
-<img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
-<div className="package__body">
-<p className="package__tag">PACOTE COMPLETO</p>
-<h3 className="package__title">Viajante Explorador</h3>
-<p className="package__description">Para viver o máximo de Cancún e Yucatán, sem deixar experiências importantes de fora. Inclui: Isla Mujeres, Chichén Itzá, Tulum, Cozumel e Holbox.</p>
-</div>
-<a className="package__link" href="/viagem-completa">
-<span>explorar viagem completa</span>
-<img className="package__arrow" src="/images/img-12-59a80b78.png" alt=""  />
-</a>
-</article>
-</div>
-</section>
+      <section className="packages" id="pacotes">
+        <div className="packages__heading">
+          <p className="eyebrow">PACOTES PRONTOS, COM RITMO CERTO</p>
+          <h2>Nem toda viagem pede o <em className="accent">mesmo</em> roteiro.</h2>
+        </div>
+        <div className="packages__grid">
+          <article className="package package--basic" id="pacote-basico">
+            <img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
+            <div className="package__body">
+              <p className="package__tag">PACOTE BÁSICO</p>
+              <h3 className="package__title">Viajante Ponderado</h3>
+              <p className="package__description">Uma viagem tranquila, com o essencial bem resolvido e tempo para curtir cada lugar. Inclui: Isla Mujeres, Chichén Itzá e Barco de vidro.</p>
+            </div>
+            <a className="package__link" href="/viagem-completa">
+              <span>explorar viagem completa</span>
+              <svg className="package__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </article>
+          <article className="package package--wine" id="pacote-intermediario">
+            <img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
+            <div className="package__body">
+              <p className="package__tag">PACOTE INTERMEDIÁRIO</p>
+              <h3 className="package__title">Perfil<br />cultural</h3>
+              <p className="package__description">Uma viagem tranquila, com o essencial bem resolvido e tempo para curtir cada lugar. Inclui: Isla Mujeres, Chichén Itzá e Barco de vidro.</p>
+            </div>
+            <a className="package__link" href="/viagem-completa">
+              <span>explorar viagem completa</span>
+              <svg className="package__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </article>
+          <article className="package package--blue" id="pacote-completo">
+            <img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
+            <div className="package__body">
+              <p className="package__tag">PACOTE COMPLETO</p>
+              <h3 className="package__title">Viajante Explorador</h3>
+              <p className="package__description">Para viver o máximo de Cancún e Yucatán, sem deixar experiências importantes de fora. Inclui: Isla Mujeres, Chichén Itzá, Tulum, Cozumel e Holbox.</p>
+            </div>
+            <a className="package__link" href="/viagem-completa">
+              <span>explorar viagem completa</span>
+              <svg className="package__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </article>
+        </div>
+      </section>
 <TripQuiz />
 <section className="banner" aria-label="Cancún, México">
-<img className="banner__image" src={bannerImageSrc} alt="Cancún e México" />
+<img className="banner__image" src={bannerImageSrc} alt="Cancún e México" loading="lazy" />
 <p className="banner__title">cancún</p>
 <p className="banner__location eyebrow">Cancún, México</p>
-<div className="banner__controls">
-<button type="button" className="banner__control" onClick={toggleBanner} aria-label="Alternar foto">
-<img className="control__image" src="/images/img-04-f9b50443.png" alt=""  />
-</button>
-<button type="button" className="banner__control" onClick={toggleBanner} aria-label="Alternar foto">
-<img className="control__image" src="/images/img-04-f9b50443.png" alt=""  />
-</button>
-</div>
 </section>
 <section className="contact" id="contato">
 <p className="eyebrow">Fale com a gente</p>
 <h2>Sua viagem do jeito<br />que você <em className="accent">sonha</em>.</h2>
 <p className="contact__description">A GENTE COMEÇA ENTENDENDO VOCÊ.<br />O RESTO, DESENHAMOS JUNTOS.</p>
-<a className="button" role="link" aria-disabled="true" data-whatsapp>
-<img className="button__icon" src="/images/img-02-fa3a6973.png" alt=""  />Planejar minha viagem</a>
+<a className="button" href="#catalogo">
+<CalendarIcon className="button__icon" />Planejar minha viagem</a>
 </section>
 
       </main>
+      <QuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
       <Footer />
     </>
   );
