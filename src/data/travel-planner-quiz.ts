@@ -332,6 +332,12 @@ export function getFriendlySourceName(source?: string): string {
       return "Viagem Completa";
     case "curadoria-bella":
       return "Curadoria Bella";
+    case "instagram":
+    case "bio":
+      return "Instagram";
+    case "public-quiz":
+    case "descubra-sua-viagem":
+      return "Instagram";
     default:
       return source.charAt(0).toUpperCase() + source.slice(1);
   }
