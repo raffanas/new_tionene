@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE_CONFIG } from "@/config/site";
+import { TravelPlannerQuizProvider } from "@/context/TravelPlannerQuizContext";
 
 export const metadata: Metadata = {
   title: SITE_CONFIG.title,
@@ -41,7 +42,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <div className="page">{children}</div>
+        <TravelPlannerQuizProvider>
+          <div className="page">{children}</div>
+        </TravelPlannerQuizProvider>
       </body>
     </html>
   );

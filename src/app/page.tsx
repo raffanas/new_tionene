@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import TripQuiz from "@/components/TripQuiz";
+import HomeTravelPlannerCta from "@/components/HomeTravelPlannerCta";
 import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 
@@ -401,7 +401,7 @@ export default function HomePage() {
           </Link>
         </div>
 </section>
-<TripQuiz />
+<HomeTravelPlannerCta />
 <section className="stories">
 <div className="stories__heading">
 <p className="eyebrow">O que ficou com quem viajou</p>

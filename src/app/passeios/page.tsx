@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import TripQuiz from "@/components/TripQuiz";
+import HomeTravelPlannerCta from "@/components/HomeTravelPlannerCta";
 import QuizModal from "@/components/QuizModal";
 import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
@@ -18,118 +18,113 @@ interface TripRow {
 interface CatalogTour {
   id: string;
   name: string;
-  label: string;
+  categoryLabel: string;
+  duration: string;
+  priceFrom: number;
+  currency: string;
   description: string;
   image: string;
   alt: string;
   categories: string[];
-  tags: { icon: string; text: string }[];
+  tags?: { icon: string; text: string }[];
 }
 
 const CATALOG_TOURS: CatalogTour[] = [
   {
     id: "chichen-itza",
     name: "Chichén Itzá & Cenote Sagrado",
-    label: "CULTURA & HISTÓRIA · DIA TODO",
+    categoryLabel: "Cultura & História",
+    duration: "Dia todo (aprox. 10 horas)",
+    priceFrom: 119,
+    currency: "USD",
     description: "Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.",
     image: "/passeios/chichen-itza.jpg",
     alt: "Pirâmide de Chichén Itzá no México",
     categories: ["cenotes", "historico", "natureza"],
-    tags: [
-      { icon: "/images/icons/icon-4.svg", text: "Histórico" },
-      { icon: "/images/icons/icon-8.svg", text: "Cenotes" },
-    ],
   },
   {
     id: "isla-mujeres",
     name: "Isla Mujeres Exclusiva",
-    label: "ILHAS & NAVEGAÇÃO · DIA TODO",
+    categoryLabel: "Ilhas & Navegação",
+    duration: "Dia todo (aprox. 8 horas)",
+    priceFrom: 89,
+    currency: "USD",
     description: "Navegue em catamarã pelas águas azul-turquesa do Caribe com parada para snorkeling e o encanto de Playa Norte.",
     image: "/passeios/isla-mujeres.jpg",
     alt: "Águas cristalinas de Isla Mujeres",
     categories: ["ilhas", "natureza"],
-    tags: [
-      { icon: "/images/icons/icon-6.svg", text: "Ilhas" },
-      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
-    ],
   },
   {
     id: "xcaret",
     name: "Parque Eco-Arqueológico Xcaret",
-    label: "NATUREZA & CULTURA · DIA TODO",
+    categoryLabel: "Natureza & Cultura",
+    duration: "Dia todo (aprox. 12 horas)",
+    priceFrom: 145,
+    currency: "USD",
     description: "Rios subterrâneos, aquário de recife de coral e o emocionante espetáculo folclórico que homenageia o México.",
     image: "/passeios/xcaret.jpg",
     alt: "Parque eco-arqueológico Xcaret",
     categories: ["natureza", "historico", "aventura"],
-    tags: [
-      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
-      { icon: "/images/icons/icon-4.svg", text: "Histórico" },
-    ],
   },
   {
     id: "xelha",
     name: "Xel-Há Parque All-Inclusive",
-    label: "AQUÁTICO & NATUREZA · DIA TODO",
+    categoryLabel: "Aquático & Natureza",
+    duration: "Dia todo (aprox. 10 horas)",
+    priceFrom: 125,
+    currency: "USD",
     description: "Uma verdadeira enseada natural com snorkeling livre, tirolesas aquáticas e gastronomia completa inclusa.",
     image: "/passeios/xel-ha.jpg",
     alt: "Enseada natural e águas de Xel-Há",
     categories: ["natureza", "aventura", "cenotes"],
-    tags: [
-      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
-      { icon: "/images/icons/icon-11.svg", text: "Aventura" },
-    ],
   },
   {
     id: "xplor",
     name: "Xplor Aventura & Tirolesas",
-    label: "AVENTURA & ADRENALINA · DIA TODO",
+    categoryLabel: "Aventura & Adrenalina",
+    duration: "Dia todo (aprox. 8 horas)",
+    priceFrom: 139,
+    currency: "USD",
     description: "Tirolesas nas alturas sobre a selva maia, veículos anfíbios e jangadas em cavernas repletas de estalactites.",
     image: "/passeios/Tirolesas.jpg",
     alt: "Aventuras e tirolesas no parque Xplor",
     categories: ["aventura", "natureza"],
-    tags: [
-      { icon: "/images/icons/icon-11.svg", text: "Aventura" },
-      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
-    ],
   },
   {
     id: "cozumel-el-cielo",
     name: "Cozumel & El Cielo",
-    label: "SNORKELING & MAR · DIA TODO",
+    categoryLabel: "Snorkeling & Mar",
+    duration: "Dia todo (aprox. 9 horas)",
+    priceFrom: 95,
+    currency: "USD",
     description: "Mergulho nos recifes de corais protegidos e o espetacular banco de areia El Cielo, santuário de estrelas-do-mar.",
     image: "/passeios/cozumel-e-al-cielo.jpg",
     alt: "Águas azul-turquesa de Cozumel El Cielo",
     categories: ["ilhas", "natureza", "aventura"],
-    tags: [
-      { icon: "/images/icons/icon-6.svg", text: "Ilhas" },
-      { icon: "/images/icons/icon-2.svg", text: "Natureza" },
-    ],
   },
   {
     id: "tulum",
     name: "Ruínas de Tulum & Cenotes",
-    label: "HISTÓRIA & PRAIA · MEIO DIA",
+    categoryLabel: "História & Praia",
+    duration: "Meio dia (aprox. 6 horas)",
+    priceFrom: 85,
+    currency: "USD",
     description: "A clássica cidade murada maia sobre as falésias em frente ao mar caribenho aliada a mergulho em cenote aberto.",
     image: "/passeios/ruinas-de-tulum-cenotes.jpg",
     alt: "Ruínas maias de Tulum à beira do mar caribenho",
     categories: ["historico", "cenotes", "natureza"],
-    tags: [
-      { icon: "/images/icons/icon-4.svg", text: "Histórico" },
-      { icon: "/images/icons/icon-8.svg", text: "Cenotes" },
-    ],
   },
   {
     id: "coco-bongo",
     name: "Coco Bongo Show & Disco",
-    label: "VIDA NOTURNA · SHOW & DISCO",
+    categoryLabel: "Vida Noturna",
+    duration: "Noite (aprox. 5 horas)",
+    priceFrom: 95,
+    currency: "USD",
     description: "O espetáculo mais icônico de Cancún: acrobatas, tributos musicais ao vivo e festa eletrizante na zona hoteleira.",
     image: "/passeios/coco-bongo-show-disco.jpg",
     alt: "Espetáculo musical e festa na Coco Bongo",
     categories: ["noite", "aventura"],
-    tags: [
-      { icon: "/images/icons/icon-10.svg", text: "Vida Noturna" },
-      { icon: "/images/icons/icon-11.svg", text: "Aventura" },
-    ],
   },
 ];
 
@@ -319,34 +314,46 @@ export default function PasseiosPage() {
 <div className="catalog__cards">
   {filteredTours.map((tour) => (
     <article key={tour.id} className="excursion" data-categories={tour.categories.join(" ")}>
-      <div className="excursion__photo">
+      <Link href={`/passeios/${tour.id}`} className="excursion__photo-link" aria-label={`Ver detalhes de ${tour.name}`}>
         <img className="excursion__image" src={tour.image} alt={tour.alt} loading="lazy" />
+      </Link>
+      <div className="excursion__top-tags">
+        <span className="excursion__category-tag">{tour.categoryLabel}</span>
+        {tour.duration && (
+          <span className="excursion__duration-tag">{tour.duration}</span>
+        )}
       </div>
       <button
         className="excursion__add"
         type="button"
         aria-label={`Adicionar ${tour.name} ao roteiro`}
+        title={`Adicionar ${tour.name} ao roteiro`}
         onClick={() => addRow(tour.id, tour.name)}
       >
         +
       </button>
       <div className="excursion__body">
-        <h3 className="excursion__title">{tour.name}</h3>
+        <h3 className="excursion__title">
+          <Link href={`/passeios/${tour.id}`} className="excursion__title-link">
+            {tour.name}
+          </Link>
+        </h3>
         <p className="excursion__description">{tour.description}</p>
         <div className="excursion__bottom">
-          {tour.tags.map((tag, idx) => (
-            <span key={idx} className="excursion__tag">
-              <img className="catalog__icon" src={tag.icon} alt="" width={16} height={16} />
-              {tag.text}
-            </span>
-          ))}
-          <button
+          {tour.priceFrom > 0 && (
+            <div className="excursion__price-pill">
+              <span className="excursion__price-from">A partir de</span>
+              <strong className="excursion__price-val">
+                {tour.currency} ${tour.priceFrom}
+              </strong>
+            </div>
+          )}
+          <Link
+            href={`/passeios/${tour.id}`}
             className="excursion__details"
-            type="button"
-            onClick={() => addRow(tour.id, tour.name)}
           >
-            ADICIONAR
-          </button>
+            VER DETALHES
+          </Link>
         </div>
       </div>
     </article>
@@ -467,7 +474,7 @@ export default function PasseiosPage() {
           </article>
         </div>
       </section>
-<TripQuiz />
+<HomeTravelPlannerCta source="passeios" />
 <section className="banner" aria-label="Cancún, México">
 <img className="banner__image" src={bannerImageSrc} alt="Cancún e México" loading="lazy" />
 <p className="banner__title">cancún</p>
