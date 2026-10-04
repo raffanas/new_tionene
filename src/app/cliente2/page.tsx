@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "@/components/Header";
+import ClientHeader from "@/components/client/ClientHeader";
 import Footer from "@/components/Footer";
 import Client2Hero from "@/components/client2/Client2Hero";
 import Client2Tours from "@/components/client2/Client2Tours";
@@ -13,8 +13,8 @@ export default function Cliente2Page() {
 
   return (
     <div className="client2-page">
-      {/* 1. Header global existente */}
-      <Header />
+      {/* 1. Header do Cliente com Logo + Botão Sair (mesmo de /cliente) */}
+      <ClientHeader />
 
       <main className="client2-main">
         {/* 1. Hero personalizado da viagem */}

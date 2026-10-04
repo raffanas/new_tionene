@@ -10872,7 +10872,7 @@
   position: relative;
   background-color: #4A1A22;
   color: var(--cream);
-  padding: clamp(68px, 7.5vw, 110px) 5vw clamp(56px, 6vw, 86px);
+  padding: clamp(52px, 5.5vw, 84px) 5vw clamp(56px, 6vw, 86px);
   overflow: hidden;
   border-bottom: 1px solid rgba(242, 232, 183, 0.14);
 }
