@@ -35,14 +35,13 @@ export default function Footer() {
           <Link href={SITE_CONFIG.routes.sobreNos}>Sobre nós</Link>
         </nav>
 
-        <div className="footer__column">
-          <h2 className="footer__heading">Experiências</h2>
-          <Link href={SITE_CONFIG.routes.passeios}>Chichén Itzá Premium</Link>
-          <Link href={SITE_CONFIG.routes.passeios}>Isla Mujeres Exclusiva</Link>
-          <Link href={SITE_CONFIG.routes.passeios}>Cenotes Secretos</Link>
-          <Link href={SITE_CONFIG.routes.curadoriaBella}>Curadoria Gastronômica</Link>
-          <Link href={SITE_CONFIG.routes.programacao}>Roteiro Personalizado</Link>
-        </div>
+        <nav className="footer__column" aria-label="Institucional">
+          <h2 className="footer__heading">Institucional</h2>
+          <Link href={SITE_CONFIG.routes.sejaParceiro}>Seja Parceiro</Link>
+          <Link href="#">Perguntas Frequentes</Link>
+          <Link href="#">Políticas de Privacidade</Link>
+          <Link href="#">Termos de Uso</Link>
+        </nav>
 
         <div className="footer__column footer__contact">
           <h2 className="footer__heading">Atendimento Direto</h2>

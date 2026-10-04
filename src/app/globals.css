@@ -2321,7 +2321,7 @@
 @media(max-width:768px){.itinerary-hero{height:auto;padding:145px 25px 40px}.itinerary-hero h1{position:static;font-size:clamp(43px,10vw,65px);width:100%;max-width:460px;letter-spacing:-.065em;line-height:.9}.itinerary-hero__aside{position:static;width:250px;margin:35px 0 30px auto}.itinerary-hero__facts{position:static;width:100%;grid-template-columns:1fr 1fr;gap:20px 12px}.itinerary-hero__fact{padding:0;border:0;gap:10px}.itinerary-hero__fact .eyebrow{font-size:8px}.itinerary-hero>.button{position:static;display:flex;width:max-content;margin:30px 0 0 auto}.itinerary-tours{margin:0 20px;padding-top:40px}.itinerary-tours>h2{font-size:37px}.itinerary-tours__intro{line-height:1.5}.itinerary-tours__layout{grid-template-columns:1fr}.itinerary-tour__photo{height:250px}.itinerary-summary{margin-top:20px}.itinerary-summary__dates{padding:22px 25px}.itinerary-summary__dates>div:last-child{padding-left:15px}.itinerary-summary__date{font-size:25px}.itinerary-summary__reservation,.itinerary-summary__important{padding:25px}.itinerary-summary__help p{max-width:260px;margin:10px auto 20px}.itinerary-summary__help .itinerary__button{margin-top:20px}.itinerary-overview{margin:0 25px}.itinerary-overview h2{font-size:36px}.itinerary-memories{display:block;margin:0 20px 40px;padding:30px 25px}.itinerary-memories h2{font-size:38px}.itinerary-memories__aside{line-height:1.5}.itinerary-memories .itinerary__button{max-width:280px}}
 
 @media(min-width:1025px){
-  .header__nav{width:54vw}
+  .header__nav{width:58vw}
 }
 
 /* ==========================================================================

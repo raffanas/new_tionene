@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SITE_CONFIG } from "@/config/site";
 
 interface HeaderProps {
-  currentPage?: "home" | "passeios" | "viagem-completa" | "curadoria-bella" | "sobre-nos" | "programacao";
+  currentPage?: "home" | "passeios" | "viagem-completa" | "curadoria-bella" | "sobre-nos" | "programacao" | "seja-parceiro";
   logoSrc?: string;
 }
 
@@ -104,6 +104,14 @@ export default function Header({ currentPage, logoSrc }: HeaderProps) {
             onClick={closeMenu}
           >
             Sobre nós
+          </Link>
+          <Link
+            className="header__link"
+            href={SITE_CONFIG.routes.sejaParceiro}
+            aria-current={currentPage === "seja-parceiro" ? "page" : undefined}
+            onClick={closeMenu}
+          >
+            Seja Parceiro
           </Link>
           <a
             className="header__link header__link--contact"

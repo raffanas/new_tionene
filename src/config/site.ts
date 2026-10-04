@@ -18,5 +18,6 @@ export const SITE_CONFIG = {
     contato: "#contato",
     tripQuiz: "#trip-quiz",
     catalogo: "/passeios#catalogo",
+    sejaParceiro: "/seja-parceiro",
   },
 };

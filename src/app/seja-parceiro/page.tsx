@@ -75,8 +75,8 @@ export default function SejaParceiroPage() {
             fetchPriority="high"
           />
 
-          {/* Header global integrado sem alterações de menu */}
-          <Header />
+          {/* Header global integrado */}
+          <Header currentPage="seja-parceiro" />
 
           <div className="partner-hero__container">
             <p className="eyebrow partner-hero__eyebrow">PROGRAMA DE PARCERIAS</p>
