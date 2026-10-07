@@ -12,6 +12,8 @@ export interface Client2Info {
   travelers: string;
   hotel: string;
   status: string;
+  bookingCode?: string;
+  travelerType?: string;
 }
 
 export interface Client2Tour {
@@ -24,6 +26,8 @@ export interface Client2Tour {
   duration: string;
   meetingPoint: string;
   status: "Confirmado" | "Agendado";
+  badge?: string;
+  travelers?: string;
   shortDescription: string;
   detailsUrl: string;
 }
@@ -58,18 +62,20 @@ export interface Client2PageData {
 
 export const MOCK_CLIENT_2_DATA: Client2PageData = {
   client: {
-    name: "Isabella",
-    greetingTitle: "Isabella, essa é a sua programação de viagem",
+    name: "Isabelle",
+    greetingTitle: "Isabelle, essa é a sua programação de viagem",
     destination: "Cancún, México",
-    period: "14 a 21 de Novembro de 2026",
+    period: "21 a 28 de julho de 2027",
     travelers: "2 adultos + 1 criança",
     hotel: "Grand Fiesta Americana Coral Beach Cancún",
     status: "Viagem Confirmada",
+    bookingCode: "GASHHA4556",
+    travelerType: "cliente tio nenê",
   },
 
   summary: {
-    arrivalDate: "14/11/2026",
-    departureDate: "21/11/2026",
+    arrivalDate: "21/07/2027",
+    departureDate: "28/07/2027",
     hotel: "Grand Fiesta Americana Coral Beach Cancún",
     travelers: "2 adultos + 1 criança",
     roomType: "Suíte Familiar com Vista para o Mar",
@@ -80,46 +86,52 @@ export const MOCK_CLIENT_2_DATA: Client2PageData = {
 
   tours: [
     {
+      id: "tour-xcaret",
+      slug: "xcaret",
+      name: "Xcaret Plus",
+      image: "/passeios/xcaret.jpg",
+      date: "22/07 (terça-feira)",
+      time: "08:00",
+      duration: "Dia todo",
+      meetingPoint: "Recepção do Hotel",
+      status: "Confirmado",
+      badge: "incluso",
+      travelers: "2 adultos",
+      shortDescription:
+        "Rios subterrâneos, aquário de corais e espetáculo noturno México Espectacular com mais de 50 atrações culturais.",
+      detailsUrl: "/passeios/xcaret",
+    },
+    {
       id: "tour-isla-mujeres",
       slug: "isla-mujeres",
-      name: "Isla Mujeres em Catamarã Exclusivo",
+      name: "Isla Mujeres",
       image: "/passeios/isla-mujeres.jpg",
-      date: "16/11/2026",
+      date: "24/07 (quinta-feira)",
       time: "08:30",
       duration: "Aprox. 7 horas",
-      meetingPoint: "Marina Chac Chi (Zona Hoteleira de Cancún) ou saída da recepção",
+      meetingPoint: "Marina Chac Chi ou recepção",
       status: "Confirmado",
+      badge: "incluso",
+      travelers: "2 adultos",
       shortDescription:
-        "Navegação pelas águas cristalinas do mar do Caribe, parada com snorkel no recife de corais, almoço buffet em clube de praia privado e tempo livre para explorar a charmosa ilha.",
+        "Navegação em catamarã exclusivo pelas águas cristalinas do mar caribenho com parada para snorkel e almoço em clube privativo.",
       detailsUrl: "/passeios/isla-mujeres",
     },
     {
       id: "tour-chichen-itza",
       slug: "chichen-itza",
-      name: "Chichén Itzá Privativo & Cenote Sagrado",
+      name: "Chichén Itzá",
       image: "/passeios/chichen-itza.jpg",
-      date: "18/11/2026",
+      date: "26/07 (sábado)",
       time: "07:00",
-      duration: "Dia todo (aprox. 10 horas)",
-      meetingPoint: "Recepção do Grand Fiesta Americana Coral Beach",
+      duration: "Dia todo",
+      meetingPoint: "Recepção do Hotel",
       status: "Confirmado",
+      badge: "incluso",
+      travelers: "2 adultos",
       shortDescription:
-        "Visita guiada a uma das Sete Maravilhas do Mundo com arqueólogo credenciado, seguida de banho revigorante nas águas cristalinas de um cenote sagrado maia e almoço típico yucateco.",
+        "Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote sagrado.",
       detailsUrl: "/passeios/chichen-itza",
-    },
-    {
-      id: "tour-xcaret",
-      slug: "xcaret",
-      name: "Parque Eco-Arqueológico Xcaret Plus",
-      image: "/passeios/xcaret.jpg",
-      date: "20/11/2026",
-      time: "08:00",
-      duration: "Dia todo (aprox. 12 horas)",
-      meetingPoint: "Recepção do Grand Fiesta Americana Coral Beach",
-      status: "Confirmado",
-      shortDescription:
-        "Rios subterrâneos, aquário de recife de coral, praia caribenha e mais de 50 atrações culturais e naturais, culminando com o espetáculo noturno México Espectacular.",
-      detailsUrl: "/passeios/xcaret",
     },
   ],
 

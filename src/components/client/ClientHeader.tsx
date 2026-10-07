@@ -22,14 +22,11 @@ export default function ClientHeader() {
           />
         </Link>
 
-        {/* Ação Demonstrativa de Saída do Dashboard */}
+        {/* Ação de Saída do Dashboard com link ativo # */}
         <div className="client-header__actions">
           <a
             href="#"
             className="client-header__logout-btn"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
             aria-label="Sair da Área do Cliente"
           >
             <span>SAIR</span>

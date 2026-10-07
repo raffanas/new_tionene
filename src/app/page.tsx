@@ -359,11 +359,21 @@ export default function HomePage() {
                   title="Ver passeio"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <img
-                    className="arrow__image"
-                    src="/images/img-04-f9b50443.png"
-                    alt=""
-                  />
+                  <svg
+                    className="tour__arrow-icon arrow__image"
+                    viewBox="0 0 10 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 2.5L8 9L2 15.5"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </Link>
               </article>
             );
@@ -377,11 +387,21 @@ export default function HomePage() {
               aria-label="Passeio anterior"
               onClick={prevTour}
             >
-              <img
-                className="control__image"
-                src="/images/img-15-07b4863d.png"
-                alt="Anterior"
-              />
+              <svg
+                className="tours__control-icon control__image"
+                viewBox="0 0 29 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M27 8H2M9 2L2 8L9 14"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
             <button
               className="tours__control control--next"
@@ -389,11 +409,21 @@ export default function HomePage() {
               aria-label="Próximo passeio"
               onClick={nextTour}
             >
-              <img
-                className="control__image"
-                src="/images/img-16-59630f35.png"
-                alt="Próximo"
-              />
+              <svg
+                className="tours__control-icon control__image"
+                viewBox="0 0 29 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 8H27M20 2L27 8L20 14"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
           </div>
           <Link className="button tours__cta" href={SITE_CONFIG.routes.passeios}>

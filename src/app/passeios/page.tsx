@@ -6,6 +6,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HomeTravelPlannerCta from "@/components/HomeTravelPlannerCta";
 import QuizModal from "@/components/QuizModal";
+import PackageModal, { PackageProfileId } from "@/components/PackageModal";
+import TourDetailModal from "@/components/TourDetailModal";
 import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 
@@ -13,6 +15,7 @@ interface TripRow {
   id: string;
   name: string;
   count: number;
+  unitPrice: number;
 }
 
 interface CatalogTour {
@@ -35,8 +38,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Chichén Itzá & Cenote Sagrado",
     categoryLabel: "Cultura & História",
     duration: "Dia todo (aprox. 10 horas)",
-    priceFrom: 119,
-    currency: "USD",
+    priceFrom: 650,
+    currency: "R$",
     description: "Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.",
     image: "/passeios/chichen-itza.jpg",
     alt: "Pirâmide de Chichén Itzá no México",
@@ -47,8 +50,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Isla Mujeres Exclusiva",
     categoryLabel: "Ilhas & Navegação",
     duration: "Dia todo (aprox. 8 horas)",
-    priceFrom: 89,
-    currency: "USD",
+    priceFrom: 490,
+    currency: "R$",
     description: "Navegue em catamarã pelas águas azul-turquesa do Caribe com parada para snorkeling e o encanto de Playa Norte.",
     image: "/passeios/isla-mujeres.jpg",
     alt: "Águas cristalinas de Isla Mujeres",
@@ -59,8 +62,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Parque Eco-Arqueológico Xcaret",
     categoryLabel: "Natureza & Cultura",
     duration: "Dia todo (aprox. 12 horas)",
-    priceFrom: 145,
-    currency: "USD",
+    priceFrom: 790,
+    currency: "R$",
     description: "Rios subterrâneos, aquário de recife de coral e o emocionante espetáculo folclórico que homenageia o México.",
     image: "/passeios/xcaret.jpg",
     alt: "Parque eco-arqueológico Xcaret",
@@ -71,8 +74,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Xel-Há Parque All-Inclusive",
     categoryLabel: "Aquático & Natureza",
     duration: "Dia todo (aprox. 10 horas)",
-    priceFrom: 125,
-    currency: "USD",
+    priceFrom: 690,
+    currency: "R$",
     description: "Uma verdadeira enseada natural com snorkeling livre, tirolesas aquáticas e gastronomia completa inclusa.",
     image: "/passeios/xel-ha.jpg",
     alt: "Enseada natural e águas de Xel-Há",
@@ -83,8 +86,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Xplor Aventura & Tirolesas",
     categoryLabel: "Aventura & Adrenalina",
     duration: "Dia todo (aprox. 8 horas)",
-    priceFrom: 139,
-    currency: "USD",
+    priceFrom: 760,
+    currency: "R$",
     description: "Tirolesas nas alturas sobre a selva maia, veículos anfíbios e jangadas em cavernas repletas de estalactites.",
     image: "/passeios/Tirolesas.jpg",
     alt: "Aventuras e tirolesas no parque Xplor",
@@ -95,8 +98,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Cozumel & El Cielo",
     categoryLabel: "Snorkeling & Mar",
     duration: "Dia todo (aprox. 9 horas)",
-    priceFrom: 95,
-    currency: "USD",
+    priceFrom: 520,
+    currency: "R$",
     description: "Mergulho nos recifes de corais protegidos e o espetacular banco de areia El Cielo, santuário de estrelas-do-mar.",
     image: "/passeios/cozumel-e-al-cielo.jpg",
     alt: "Águas azul-turquesa de Cozumel El Cielo",
@@ -107,8 +110,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Ruínas de Tulum & Cenotes",
     categoryLabel: "História & Praia",
     duration: "Meio dia (aprox. 6 horas)",
-    priceFrom: 85,
-    currency: "USD",
+    priceFrom: 460,
+    currency: "R$",
     description: "A clássica cidade murada maia sobre as falésias em frente ao mar caribenho aliada a mergulho em cenote aberto.",
     image: "/passeios/ruinas-de-tulum-cenotes.jpg",
     alt: "Ruínas maias de Tulum à beira do mar caribenho",
@@ -119,8 +122,8 @@ const CATALOG_TOURS: CatalogTour[] = [
     name: "Coco Bongo Show & Disco",
     categoryLabel: "Vida Noturna",
     duration: "Noite (aprox. 5 horas)",
-    priceFrom: 95,
-    currency: "USD",
+    priceFrom: 520,
+    currency: "R$",
     description: "O espetáculo mais icônico de Cancún: acrobatas, tributos musicais ao vivo e festa eletrizante na zona hoteleira.",
     image: "/passeios/coco-bongo-show-disco.jpg",
     alt: "Espetáculo musical e festa na Coco Bongo",
@@ -137,11 +140,29 @@ export default function PasseiosPage() {
   const [infants04, setInfants04] = useState("00");
   const [notification, setNotification] = useState("");
   const [isQuizOpen, setIsQuizOpen] = useState(false);
-  const [tripRows, setTripRows] = useState<TripRow[]>([
-    { id: "isla", name: "Isla Mujeres Exclusiva", count: 2 },
-    { id: "cenotes", name: "Cenotes & Cavernas Secretas", count: 2 },
-    { id: "chichen", name: "Chichén Itzá & Cenote Sagrado", count: 2 }
-  ]);
+  const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<PackageProfileId | null>(null);
+  const [isTourModalOpen, setIsTourModalOpen] = useState(false);
+  const [selectedTourSlug, setSelectedTourSlug] = useState<string | null>(null);
+  const [tripRows, setTripRows] = useState<TripRow[]>([]);
+
+  const handleOpenTourModal = (slug: string) => {
+    setSelectedTourSlug(slug);
+    setIsTourModalOpen(true);
+  };
+
+  const handleCloseTourModal = () => {
+    setIsTourModalOpen(false);
+  };
+
+  const handleOpenPackageModal = (pkgId: PackageProfileId) => {
+    setSelectedPackage(pkgId);
+    setIsPackageModalOpen(true);
+  };
+
+  const handleClosePackageModal = () => {
+    setIsPackageModalOpen(false);
+  };
 
   const filteredTours = CATALOG_TOURS.filter((tour) => {
     if (activeFilter === "todos") return true;
@@ -202,19 +223,30 @@ export default function PasseiosPage() {
   };
 
   const addRow = (id: string, name: string) => {
+    const tour = CATALOG_TOURS.find((t) => t.id === id);
+    const unitPrice = tour ? tour.priceFrom : 0;
     setTripRows((prev) => {
       const exists = prev.find((r) => r.id === id);
       if (exists) {
         return prev.map((r) => (r.id === id ? { ...r, count: Math.min(99, r.count + 1) } : r));
       }
-      return [...prev, { id, name, count: 1 }];
+      return [...prev, { id, name, count: 1, unitPrice }];
     });
     setNotification(`${name} adicionado ao roteiro.`);
     setTimeout(() => setNotification(""), 4000);
   };
 
+  const estimatedTotal = tripRows.reduce(
+    (sum, row) => sum + (row.unitPrice || 0) * row.count,
+    0
+  );
+
   const handleQuote = () => {
     const whatsapp = SITE_CONFIG.whatsapp;
+    const formattedTotal =
+      estimatedTotal > 0
+        ? `R$ ${estimatedTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        : "A calcular";
     const lines = [
       "Olá! Gostaria de uma cotação de passeios.",
       `Chegada: ${arrivalDate || "A definir"}`,
@@ -225,13 +257,27 @@ export default function PasseiosPage() {
       "",
       "Roteiro de Passeios:",
       ...(tripRows.length > 0
-        ? tripRows.map((r) => `- ${r.name}: ${r.count} pessoa(s)`)
+        ? tripRows.map(
+            (r) =>
+              `- ${r.name}: ${r.count} pessoa(s) — R$ ${(
+                (r.unitPrice || 0) * r.count
+              ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+          )
         : ["(Nenhum passeio selecionado no roteiro)"]),
+      "",
+      `Total Estimado: ${formattedTotal}`,
     ];
     if (whatsapp) {
-      window.open(`https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
+      window.open(
+        `https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
+          lines.join("\n")
+        )}`,
+        "_blank"
+      );
     } else {
-      setNotification("O atendimento para envio da cotação no WhatsApp será conectado em breve.");
+      setNotification(
+        "O atendimento para envio da cotação no WhatsApp será conectado em breve."
+      );
     }
   };
 
@@ -314,9 +360,14 @@ export default function PasseiosPage() {
 <div className="catalog__cards">
   {filteredTours.map((tour) => (
     <article key={tour.id} className="excursion" data-categories={tour.categories.join(" ")}>
-      <Link href={`/passeios/${tour.id}`} className="excursion__photo-link" aria-label={`Ver detalhes de ${tour.name}`}>
+      <button
+        type="button"
+        className="excursion__photo-link excursion__photo-btn"
+        aria-label={`Ver detalhes de ${tour.name}`}
+        onClick={() => handleOpenTourModal(tour.id)}
+      >
         <img className="excursion__image" src={tour.image} alt={tour.alt} loading="lazy" />
-      </Link>
+      </button>
       <div className="excursion__top-tags">
         <span className="excursion__category-tag">{tour.categoryLabel}</span>
         {tour.duration && (
@@ -334,9 +385,13 @@ export default function PasseiosPage() {
       </button>
       <div className="excursion__body">
         <h3 className="excursion__title">
-          <Link href={`/passeios/${tour.id}`} className="excursion__title-link">
+          <button
+            type="button"
+            className="excursion__title-link excursion__title-btn"
+            onClick={() => handleOpenTourModal(tour.id)}
+          >
             {tour.name}
-          </Link>
+          </button>
         </h3>
         <p className="excursion__description">{tour.description}</p>
         <div className="excursion__bottom">
@@ -344,16 +399,18 @@ export default function PasseiosPage() {
             <div className="excursion__price-pill">
               <span className="excursion__price-from">A partir de</span>
               <strong className="excursion__price-val">
-                {tour.currency} ${tour.priceFrom}
+                {tour.currency} {tour.priceFrom.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
               </strong>
             </div>
           )}
-          <Link
-            href={`/passeios/${tour.id}`}
+          <button
+            type="button"
             className="excursion__details"
+            onClick={() => handleOpenTourModal(tour.id)}
+            aria-label={`Ver detalhes de ${tour.name}`}
           >
             VER DETALHES
-          </Link>
+          </button>
         </div>
       </div>
     </article>
@@ -415,7 +472,11 @@ export default function PasseiosPage() {
 </div>
 <div className="trip__quote">
 <p>Total estimado*</p>
-<p className="trip__price" data-price>Sob consulta</p>
+<p className="trip__price" data-price>
+  {estimatedTotal > 0
+    ? `R$ ${estimatedTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    : "R$ 0,00"}
+</p>
 <p className="trip__note">*O valor final pode variar de acordo com fatores da<br />viagem como época e quantidade de viajantes.</p>
 <button className="button" type="button" id="quote" onClick={handleQuote}>Solicitar cotação</button>
 </div>
@@ -430,47 +491,110 @@ export default function PasseiosPage() {
           <h2>Nem toda viagem pede o <em className="accent">mesmo</em> roteiro.</h2>
         </div>
         <div className="packages__grid">
-          <article className="package package--basic" id="pacote-basico">
-            <img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
+          <article
+            className="package package--basic"
+            id="pacote-basico"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenPackageModal("ponderado")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleOpenPackageModal("ponderado");
+              }
+            }}
+          >
+            <img className="package__image" src="/passeios/isla-mujeres.jpg" alt="Isla Mujeres — Viagem tranquila com praias e catamarã" loading="lazy" />
             <div className="package__body">
               <p className="package__tag">PACOTE BÁSICO</p>
               <h3 className="package__title">Viajante Ponderado</h3>
               <p className="package__description">Uma viagem tranquila, com o essencial bem resolvido e tempo para curtir cada lugar. Inclui: Isla Mujeres, Chichén Itzá e Barco de vidro.</p>
             </div>
-            <a className="package__link" href="/viagem-completa">
+            <button
+              type="button"
+              className="package__link"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenPackageModal("ponderado");
+              }}
+              aria-label="Conhecer pacote Viajante Ponderado"
+            >
               <span>explorar viagem completa</span>
               <svg className="package__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </a>
+            </button>
           </article>
-          <article className="package package--wine" id="pacote-intermediario">
-            <img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
+          <article
+            className="package package--wine"
+            id="pacote-intermediario"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenPackageModal("cultural")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleOpenPackageModal("cultural");
+              }
+            }}
+          >
+            <img className="package__image" src="/passeios/chichen-itza.jpg" alt="Chichén Itzá — História e cultura maia" loading="lazy" />
             <div className="package__body">
               <p className="package__tag">PACOTE INTERMEDIÁRIO</p>
-              <h3 className="package__title">Perfil<br />cultural</h3>
-              <p className="package__description">Uma viagem tranquila, com o essencial bem resolvido e tempo para curtir cada lugar. Inclui: Isla Mujeres, Chichén Itzá e Barco de vidro.</p>
+              <h3 className="package__title">Perfil Cultural</h3>
+              <p className="package__description">O equilíbrio ideal entre os clássicos e a autêntica cultura maia. Inclui: Chichén Itzá, Cenote Ik Kil, Tour gastronômico e vilas coloridas.</p>
             </div>
-            <a className="package__link" href="/viagem-completa">
+            <button
+              type="button"
+              className="package__link"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenPackageModal("cultural");
+              }}
+              aria-label="Conhecer pacote Perfil Cultural"
+            >
               <span>explorar viagem completa</span>
               <svg className="package__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </a>
+            </button>
           </article>
-          <article className="package package--blue" id="pacote-completo">
-            <img className="package__image" src="/images/img-11-cb103045.png" alt="Paisagem de Cancún" loading="lazy" />
+          <article
+            className="package package--blue"
+            id="pacote-completo"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenPackageModal("explorador")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleOpenPackageModal("explorador");
+              }
+            }}
+          >
+            <img className="package__image" src="/passeios/xcaret.jpg" alt="Xcaret — Aventura, natureza e atrações completas" loading="lazy" />
             <div className="package__body">
               <p className="package__tag">PACOTE COMPLETO</p>
               <h3 className="package__title">Viajante Explorador</h3>
               <p className="package__description">Para viver o máximo de Cancún e Yucatán, sem deixar experiências importantes de fora. Inclui: Isla Mujeres, Chichén Itzá, Tulum, Cozumel e Holbox.</p>
             </div>
-            <a className="package__link" href="/viagem-completa">
+            <button
+              type="button"
+              className="package__link"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenPackageModal("explorador");
+              }}
+              aria-label="Conhecer pacote Viajante Explorador"
+            >
               <span>explorar viagem completa</span>
               <svg className="package__arrow" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M1.25 1.5L6.75 7L1.25 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </a>
+            </button>
           </article>
         </div>
       </section>
@@ -490,6 +614,17 @@ export default function PasseiosPage() {
 
       </main>
       <QuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+      <PackageModal
+        isOpen={isPackageModalOpen}
+        onClose={handleClosePackageModal}
+        selectedPackage={selectedPackage}
+      />
+      <TourDetailModal
+        isOpen={isTourModalOpen}
+        onClose={handleCloseTourModal}
+        tourSlug={selectedTourSlug}
+        onAddToTrip={addRow}
+      />
       <Footer />
     </>
   );

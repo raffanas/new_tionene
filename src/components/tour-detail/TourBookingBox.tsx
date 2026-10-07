@@ -9,11 +9,12 @@ interface TourBookingBoxProps {
 }
 
 // Helper para formatação monetária padrão pt-BR
-function formatCurrency(amount: number, currency: string = "USD"): string {
+function formatCurrency(amount: number, currency: string = "R$"): string {
+  const code = currency === "USD" ? "USD" : "BRL";
   try {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
-      currency: currency,
+      currency: code,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);

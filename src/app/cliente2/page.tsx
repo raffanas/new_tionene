@@ -13,11 +13,11 @@ export default function Cliente2Page() {
 
   return (
     <div className="client2-page">
-      {/* 1. Header do Cliente com Logo + Botão Sair (mesmo de /cliente) */}
+      {/* 1. Header do Cliente com Logo + Botão Sair */}
       <ClientHeader />
 
       <main className="client2-main">
-        {/* 1. Hero personalizado da viagem */}
+        {/* 2. Hero personalizado da viagem */}
         <Client2Hero client={client} />
 
         {/* Container principal: 2. Seção “Seus passeios confirmados” + 3. Resumo lateral da viagem */}
