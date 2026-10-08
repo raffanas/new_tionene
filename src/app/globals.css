@@ -195,23 +195,23 @@
 /* 1. Quem é o Tio Nenê */
 .about-founder {
   background: #ffffff;
-  padding: clamp(80px, 8vw, 120px) 6vw clamp(60px, 6vw, 90px);
+  padding: clamp(70px, 7vw, 110px) 6vw clamp(60px, 6vw, 90px);
 }
 
 .about-founder__container {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: clamp(40px, 5.5vw, 84px);
+  grid-template-columns: minmax(320px, 440px) 1fr;
+  gap: clamp(36px, 5vw, 76px);
   align-items: center;
 }
 
 .about-founder__image-wrap {
-  border-radius: 16px;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 14px 34px rgba(60, 20, 25, 0.05);
-  aspect-ratio: 4 / 5;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+  aspect-ratio: 1 / 1.08;
   background: #f7f1e8;
 }
 
@@ -229,48 +229,66 @@
   justify-content: center;
 }
 
-.about-founder__content h2 {
-  font-size: clamp(32px, 2.6vw, 44px);
-  font-weight: 400;
-  line-height: 1.22;
+.about-founder__eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 2.5px;
+  color: var(--clay);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.about-founder__title {
+  font-family: var(--font-title);
+  font-size: clamp(32px, 3.2vw, 48px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--wine);
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+
+.about-founder__text {
   margin-bottom: 24px;
-  letter-spacing: -0.01em;
 }
 
-.about-founder__content .about-text {
-  margin-bottom: 8px;
-}
-
-.about-founder__content .about-text p {
-  font-size: clamp(16px, 1.05vw, 18px);
-  line-height: 1.76;
-  color: #423537;
-  margin-bottom: 0;
+.about-founder__text p {
+  font-family: var(--font-title);
+  font-size: clamp(16.5px, 1.15vw, 19px);
+  line-height: 1.68;
+  color: #4a3d40;
+  margin: 0;
 }
 
 .about-founder__quote-box {
-  margin-top: 36px;
-  padding: 22px 26px;
-  background: #faf7ee;
-  border-left: 2px solid var(--clay);
-  border-radius: 0 12px 12px 0;
+  background: #FAFAD2;
+  border-radius: 18px;
+  border: none;
+  padding: 22px 28px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .about-founder__quote-box blockquote {
   font-family: var(--font-title);
-  font-size: clamp(20px, 1.4vw, 24px);
+  font-size: clamp(18px, 1.25vw, 21px);
   font-style: italic;
   font-weight: 400;
   color: var(--wine);
   line-height: 1.35;
-  margin: 0 0 10px;
+  margin: 0;
 }
 
 .about-founder__quote-box cite {
   font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-weight: 800;
+  letter-spacing: 2px;
   color: var(--clay);
   display: block;
   font-style: normal;
@@ -738,26 +756,26 @@
   }
   .about-founder__image-wrap {
     width: 100%;
-    aspect-ratio: 4 / 3.4;
-    max-height: 380px;
-    border-radius: 14px;
+    aspect-ratio: 4 / 3.6;
+    max-height: 400px;
+    border-radius: 22px;
   }
-  .about-founder__content h2 {
-    font-size: clamp(26px, 6.5vw, 32px);
-    line-height: 1.22;
+  .about-founder__title {
+    font-size: clamp(28px, 6.5vw, 34px);
+    line-height: 1.2;
     margin-bottom: 18px;
   }
-  .about-founder__content .about-text p {
-    font-size: 16px;
-    line-height: 1.7;
+  .about-founder__text p {
+    font-size: 16.5px;
+    line-height: 1.65;
   }
   .about-founder__quote-box {
-    margin-top: 24px;
+    margin-top: 18px;
     padding: 18px 20px;
-    border-radius: 0 10px 10px 0;
+    border-radius: 14px;
   }
   .about-founder__quote-box blockquote {
-    font-size: 19px;
+    font-size: 18px;
     line-height: 1.35;
   }
 

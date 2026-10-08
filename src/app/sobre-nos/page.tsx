@@ -50,11 +50,14 @@ export default function SobreNosPage() {
                 />
               </div>
               <div className="about-founder__content">
-                <span className="about-eyebrow">QUEM É O TIO NENÊ?</span>
-                <h2 className="about-title">
-                  Sim, ele existe. E é o Tio Nenê de verdade.
+                <span className="about-eyebrow about-founder__eyebrow">
+                  QUEM É O TIO NENÊ?
+                </span>
+                <h2 className="about-founder__title">
+                  Sim, ele existe. E é o<br className="about-founder__br" />
+                  Tio Nenê de verdade.
                 </h2>
-                <div className="about-text">
+                <div className="about-founder__text">
                   <p>
                     Tio Nenê é o apelido carinhoso do pai da Bella, conhecido pela
                     família e pelos amigos pelo jeito acolhedor de receber as pessoas,
