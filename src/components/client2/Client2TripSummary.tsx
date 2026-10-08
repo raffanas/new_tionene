@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import type { Client2TripSummaryData } from "@/data/mock-client-2";
 import { SITE_CONFIG } from "@/config/site";
@@ -7,138 +9,208 @@ interface Client2TripSummaryProps {
   clientName: string;
 }
 
-export default function Client2TripSummary({ summary, clientName }: Client2TripSummaryProps) {
+export default function Client2TripSummary({
+  summary,
+  clientName,
+}: Client2TripSummaryProps) {
   const rawNumber = SITE_CONFIG.whatsapp?.replace(/\D/g, "");
   const whatsappUrl = rawNumber
     ? `https://wa.me/${rawNumber}?text=${encodeURIComponent(
-        `Olá, equipe Tio Nenê! Sou a ${clientName} e gostaria de tirar uma dúvida sobre o resumo e os detalhes da minha viagem a Cancún.`
+        `Olá, equipe Tio Nenê! Sou ${clientName} e gostaria de tirar uma dúvida sobre o resumo da minha viagem.`
       )}`
     : "#contato";
+
+  const handleDownloadItinerary = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
 
   return (
     <aside className="client2-summary" aria-labelledby="client2-summary-title">
       <div className="client2-summary__card">
-        {/* ========================================================================= */}
-        {/* 1. BLOCO PRINCIPAL: Resumo da sua viagem                                 */}
-        {/* ========================================================================= */}
-        <div className="client2-summary__header">
-          <span className="client2-summary__eyebrow">ESTADIA NO MÉXICO</span>
-          <h2 className="client2-summary__title" id="client2-summary-title">
-            Resumo da sua viagem
-          </h2>
-          <p className="client2-summary__subtitle">
-            Datas, hospedagem e estrutura confirmadas para a sua estadia.
-          </p>
+        {/* Título Principal */}
+        <h2 className="client2-summary__title" id="client2-summary-title">
+          Resumo da<br />
+          sua viagem
+        </h2>
+
+        {/* 1. Box Check In & Check Out */}
+        <div className="client2-summary__check-box">
+          {/* Check In */}
+          <div className="client2-summary__check-col">
+            <span className="client2-summary__check-label">CHECK IN</span>
+            <strong className="client2-summary__check-date">
+              {summary.arrivalDate}
+            </strong>
+            <span className="client2-summary__check-sub">
+              {summary.arrivalWeekday || "(quarta-feira)"}
+            </span>
+          </div>
+
+          <div className="client2-summary__check-divider" aria-hidden="true" />
+
+          {/* Check Out */}
+          <div className="client2-summary__check-col">
+            <span className="client2-summary__check-label">CHECK OUT</span>
+            <strong className="client2-summary__check-date">
+              {summary.departureDate}
+            </strong>
+            <span className="client2-summary__check-sub">
+              {summary.departureWeekday || "(quarta-feira)"}
+            </span>
+          </div>
         </div>
 
-        {/* Lista de dados essenciais */}
-        <div className="client2-summary__section">
-          {/* Hotel */}
-          <div className="client2-summary__item">
-            <div className="client2-summary__icon-box" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
+        {/* 2. Lista de Metadados: Duração, Hospedagem, Viajantes */}
+        <div className="client2-summary__meta-list">
+          {/* Duração */}
+          <div className="client2-summary__meta-row">
+            <div className="client2-summary__meta-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
               </svg>
             </div>
-            <div className="client2-summary__item-content">
-              <span className="client2-summary__item-label">Hotel &amp; Resort</span>
-              <strong className="client2-summary__item-val">{summary.hotel}</strong>
-              {summary.roomType && (
-                <span className="client2-summary__item-subval">{summary.roomType}</span>
-              )}
+            <div className="client2-summary__meta-info">
+              <span className="client2-summary__meta-label">DURAÇÃO</span>
+              <strong className="client2-summary__meta-val">
+                {summary.duration || "7 noites / 8 dias"}
+              </strong>
             </div>
           </div>
 
-          {/* Chegada & Retorno */}
-          <div className="client2-summary__item">
-            <div className="client2-summary__icon-box" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
+          {/* Hospedagem */}
+          <div className="client2-summary__meta-row">
+            <div className="client2-summary__meta-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9" />
+                <path d="M2 14h20" />
+                <path d="M6 14v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4" />
               </svg>
             </div>
-            <div className="client2-summary__item-content">
-              <span className="client2-summary__item-label">Período de Estadia</span>
-              <div className="client2-summary__dates-row">
-                <div className="client2-summary__date-col">
-                  <span className="client2-summary__date-tag">Chegada</span>
-                  <strong className="client2-summary__item-val">{summary.arrivalDate}</strong>
-                </div>
-                <span className="client2-summary__date-sep" aria-hidden="true">→</span>
-                <div className="client2-summary__date-col">
-                  <span className="client2-summary__date-tag">Retorno</span>
-                  <strong className="client2-summary__item-val">{summary.departureDate}</strong>
-                </div>
-              </div>
+            <div className="client2-summary__meta-info">
+              <span className="client2-summary__meta-label">HOSPEDAGEM</span>
+              <strong className="client2-summary__meta-val">
+                {summary.destinationCity || "Cancún"}
+              </strong>
+              <span className="client2-summary__meta-subval">
+                {summary.hotel || "Grand Fiesta Americana Coral Beach"}
+              </span>
             </div>
           </div>
 
           {/* Viajantes */}
-          <div className="client2-summary__item">
-            <div className="client2-summary__icon-box" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <div className="client2-summary__meta-row">
+            <div className="client2-summary__meta-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </div>
-            <div className="client2-summary__item-content">
-              <span className="client2-summary__item-label">Viajantes</span>
-              <strong className="client2-summary__item-val">{summary.travelers}</strong>
+            <div className="client2-summary__meta-info">
+              <span className="client2-summary__meta-label">VIAJANTES</span>
+              <strong className="client2-summary__meta-val">
+                {summary.travelers}
+              </strong>
+              {summary.travelersSub && (
+                <span className="client2-summary__meta-subval">
+                  {summary.travelersSub}
+                </span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* 2. BLOCO SECUNDÁRIO: Informações da reserva                               */}
-        {/* ========================================================================= */}
-        <div className="client2-summary__reserve-block">
-          <div className="client2-summary__block-header">
-            <span className="client2-summary__block-tag">RESERVA</span>
-            <h3 className="client2-summary__block-title">Informações da reserva</h3>
+        {/* 3. Box Informações da Reserva */}
+        <div className="client2-summary__reserve-box">
+          <h3 className="client2-summary__reserve-title">Informações da reserva</h3>
+
+          <div className="client2-summary__reserve-field">
+            <span className="client2-summary__field-label">CÓDIGO DA RESERVA</span>
+            <strong className="client2-summary__code-val">
+              {summary.bookingCode || "GASHHA4556"}
+            </strong>
           </div>
-          <p className="client2-summary__reserve-text">
-            {summary.bookingNotes}
+
+          <div className="client2-summary__reserve-field">
+            <span className="client2-summary__field-label">INFORMAÇÕES</span>
+            <p className="client2-summary__reserve-desc">{summary.bookingNotes}</p>
+          </div>
+        </div>
+
+        {/* 4. Botão Baixar Meu Roteiro */}
+        <button
+          type="button"
+          onClick={handleDownloadItinerary}
+          className="client2-summary__download-btn"
+          aria-label="Baixar meu roteiro de viagem"
+        >
+          BAIXAR MEU ROTEIRO
+        </button>
+
+        {/* 5. Box Importante (Amarelo Pastel) */}
+        <div className="client2-summary__important-box">
+          <h3 className="client2-summary__important-heading">Importante</h3>
+          <p className="client2-summary__important-body">
+            Os horários de busca serão confirmados até 1 dia antes de cada passeio.
+            Todos os passeios incluem transporte ida e volta saindo da sua
+            hospedagem.
           </p>
         </div>
 
-        {/* ========================================================================= */}
-        {/* 3. BLOCO IMPORTANTE                                                       */}
-        {/* ========================================================================= */}
-        <div className="client2-summary__important-block">
-          <div className="client2-summary__important-header">
-            <span className="client2-summary__important-icon" aria-hidden="true">💡</span>
-            <strong className="client2-summary__important-title">Importante</strong>
+        {/* 6. Bloco Precisa de algo? + Fale Conosco */}
+        <div className="client2-summary__contact-box">
+          <div className="client2-summary__contact-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              <line x1="9" y1="9" x2="15" y2="9" />
+              <line x1="9" y1="13" x2="13" y2="13" />
+            </svg>
           </div>
-          <p className="client2-summary__important-text">
-            Confira sempre os horários e orientações de cada passeio antes do dia da experiência.
+          <h3 className="client2-summary__contact-title">Precisa de algo?</h3>
+          <p className="client2-summary__contact-text">
+            Estamos aqui para personalizar ainda mais a sua experiência.
           </p>
-        </div>
 
-        {/* ========================================================================= */}
-        {/* 4. CTA LATERAL: FALAR COM NOSSA EQUIPE                                    */}
-        {/* ========================================================================= */}
-        <div className="client2-summary__cta-wrap">
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="client2-summary__cta-btn"
-            aria-label="Falar com nossa equipe pelo WhatsApp"
+            className="client2-summary__contact-btn"
+            aria-label="Fale conosco pelo WhatsApp"
           >
-            <span>FALAR COM NOSSA EQUIPE</span>
-            <svg
-              className="client2-summary__cta-wa-icon"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.539 1.772.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.806-5.768-5.806zm3.374 8.232c-.143.402-.83.743-1.15.789-.319.046-.732.062-2.127-.487-1.396-.549-2.275-1.979-2.345-2.073-.07-.094-.564-.75-.564-1.428 0-.678.354-1.011.48-1.152.125-.141.274-.176.365-.176.091 0 .183.001.263.005.084.004.197-.032.308.234.114.274.388.948.423 1.018.034.07.057.153.011.246-.046.094-.069.153-.137.234-.069.082-.144.183-.206.246-.069.07-.14.146-.06.284.08.138.355.586.762.949.524.467.965.611 1.103.68.137.069.217.058.297-.034.08-.093.343-.4.434-.537.092-.138.183-.115.309-.069.126.046.799.377.936.446.137.069.229.103.263.161.034.057.034.331-.109.733z" />
-            </svg>
+            FALE CONOSCO
           </a>
         </div>
       </div>

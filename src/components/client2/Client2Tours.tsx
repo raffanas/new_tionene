@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import type { Client2Tour } from "@/data/mock-client-2";
-import TourDetailModal from "@/components/TourDetailModal";
+import Client2TourDrawerModal from "@/components/client2/Client2TourDrawerModal";
 
 interface Client2ToursProps {
   tours: Client2Tour[];
 }
 
 export default function Client2Tours({ tours }: Client2ToursProps) {
-  const [selectedTourSlug, setSelectedTourSlug] = useState<string | null>(null);
+  const [selectedTour, setSelectedTour] = useState<Client2Tour | null>(null);
 
   return (
     <>
@@ -110,7 +110,7 @@ export default function Client2Tours({ tours }: Client2ToursProps) {
                 <div className="client2-tour-card__actions">
                   <button
                     type="button"
-                    onClick={() => setSelectedTourSlug(tour.slug)}
+                    onClick={() => setSelectedTour(tour)}
                     className="client2-tour-card__btn"
                     aria-label={`Ver detalhes do passeio ${tour.name}`}
                   >
@@ -123,11 +123,11 @@ export default function Client2Tours({ tours }: Client2ToursProps) {
         </div>
       </section>
 
-      {/* Modal de Detalhes do Passeio */}
-      <TourDetailModal
-        isOpen={!!selectedTourSlug}
-        onClose={() => setSelectedTourSlug(null)}
-        tourSlug={selectedTourSlug}
+      {/* Modal / Drawer Lateral à Direita de Detalhes Completos do Passeio */}
+      <Client2TourDrawerModal
+        isOpen={!!selectedTour}
+        onClose={() => setSelectedTour(null)}
+        tour={selectedTour}
       />
     </>
   );

@@ -21,18 +21,50 @@ export default function Footer() {
             Agência boutique brasileira com operação própria em Cancún desde 2014. Especialistas em transformar sua jornada pelo México em uma memória inesquecível.
           </p>
           <address className="footer__address">
-            <p>📍 &nbsp;{SITE_CONFIG.location}</p>
-            <p>🇧🇷 &nbsp;{SITE_CONFIG.supportLang}</p>
+            <p style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span aria-hidden="true">📍</span>
+              <span>{SITE_CONFIG.location}</span>
+            </p>
+            <p style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <svg
+                width="18"
+                height="13"
+                viewBox="0 0 20 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  display: "inline-block",
+                  borderRadius: "2px",
+                  overflow: "hidden",
+                  flexShrink: 0,
+                  boxShadow: "0 0 2px rgba(0,0,0,0.35)",
+                }}
+                aria-label="Bandeira do Brasil"
+                role="img"
+              >
+                <rect width="20" height="14" fill="#009739" />
+                <polygon points="10,1.8 18.2,7 10,12.2 1.8,7" fill="#FED100" />
+                <circle cx="10" cy="7" r="3.4" fill="#002776" />
+                <path
+                  d="M6.8 6.8C7.6 5.9 9.8 5.7 13.2 7.2"
+                  stroke="#FFFFFF"
+                  strokeWidth="0.8"
+                  fill="none"
+                />
+              </svg>
+              <span>{SITE_CONFIG.supportLang}</span>
+            </p>
           </address>
         </div>
 
         <nav className="footer__column" aria-label="Navegação do rodapé">
           <h2 className="footer__heading">Navegação</h2>
           <Link href={SITE_CONFIG.routes.home}>Início</Link>
-          <Link href={SITE_CONFIG.routes.passeios}>Passeios</Link>
-          <Link href={SITE_CONFIG.routes.viagemCompleta}>Viagem completa</Link>
-          <Link href={SITE_CONFIG.routes.curadoriaBella}>Curadoria Bella</Link>
           <Link href={SITE_CONFIG.routes.sobreNos}>Sobre nós</Link>
+          <Link href={SITE_CONFIG.routes.viagemCompleta}>Viagem completa</Link>
+          <Link href={SITE_CONFIG.routes.passeios}>Catálogo de passeios</Link>
+          <Link href={SITE_CONFIG.routes.curadoriaBella}>Curadoria Bella</Link>
+          <a href="#">Roteiro sob medida</a>
         </nav>
 
         <nav className="footer__column" aria-label="Institucional">

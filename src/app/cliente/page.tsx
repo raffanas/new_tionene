@@ -1,74 +1,47 @@
 import React from "react";
-import type { Metadata } from "next";
 import ClientHeader from "@/components/client/ClientHeader";
 import Footer from "@/components/Footer";
-import ClientTripHero from "@/components/client/ClientTripHero";
-import ClientTripSummary from "@/components/client/ClientTripSummary";
-import ClientTours from "@/components/client/ClientTours";
-import ClientTripTimeline from "@/components/client/ClientTripTimeline";
-import ClientDocuments from "@/components/client/ClientDocuments";
-import ClientImportantInfo from "@/components/client/ClientImportantInfo";
-import ClientSupport from "@/components/client/ClientSupport";
-import { MOCK_CLIENT_DATA } from "@/data/mock-client";
-
-export const metadata: Metadata = {
-  title: "Minha Viagem | Área do Cliente · Tio Nenê",
-  description: "Acompanhe seus passeios contratados, vouchers e roteiro no Caribe Mexicano.",
-};
+import Client2Hero from "@/components/client2/Client2Hero";
+import Client2Tours from "@/components/client2/Client2Tours";
+import Client2TripSummary from "@/components/client2/Client2TripSummary";
+import Client2Timeline from "@/components/client2/Client2Timeline";
+import Client2ClosingCta from "@/components/client2/Client2ClosingCta";
+import { MOCK_CLIENT_2_DATA } from "@/data/mock-client-2";
 
 export default function ClientePage() {
-  const {
-    cliente,
-    viagem,
-    passeios,
-    roteiroTimeline,
-    documentos,
-    informacoesImportantes,
-    suporte,
-  } = MOCK_CLIENT_DATA;
+  const { client, tours, summary, timeline } = MOCK_CLIENT_2_DATA;
 
   return (
-    <div className="client-page">
-      {/* 1. Header Exclusivo da Área do Cliente */}
+    <div className="client2-page">
+      {/* 1. Header do Cliente com Logo + Botão Sair */}
       <ClientHeader />
 
-      <main className="client-page__main">
-        {/* 1. Abertura / Hero do Cliente */}
-        <ClientTripHero
-          cliente={cliente}
-          viagem={viagem}
-          totalPasseios={passeios.length}
-        />
+      <main className="client2-main">
+        {/* 2. Hero personalizado da viagem */}
+        <Client2Hero client={client} />
 
-        {/* 2. Resumo da Viagem */}
-        <ClientTripSummary
-          viagem={viagem}
-          totalPasseios={passeios.length}
-        />
+        {/* Container principal: Seção “Seus passeios confirmados” + Resumo lateral da viagem */}
+        <div className="client2-container">
+          <div className="client2-layout">
+            <div className="client2-layout__primary">
+              <Client2Tours tours={tours} />
+            </div>
+            <div className="client2-layout__secondary">
+              <Client2TripSummary summary={summary} clientName={client.name} />
+            </div>
+          </div>
+        </div>
 
-        {/* 3. Seus Passeios (Principal seção) */}
-        <ClientTours passeios={passeios} />
+        {/* 3. Linha do tempo “Visão geral da viagem” */}
+        <div className="client2-container">
+          <Client2Timeline timeline={timeline} />
+        </div>
 
-        {/* 4. Seu Roteiro no México (Timeline) */}
-        <ClientTripTimeline timeline={roteiroTimeline} />
-
-        {/* 5. Seus Documentos (Vouchers) */}
-        <ClientDocuments
-          documentos={documentos}
-          clienteNome={cliente.nome}
-        />
-
-        {/* 6. Informações Importantes */}
-        <ClientImportantInfo informacoes={informacoesImportantes} />
-
-        {/* 7. Suporte & Concierge Local */}
-        <ClientSupport
-          suporte={suporte}
-          clienteNome={cliente.nome}
-        />
+        {/* 4. Bloco emocional final */}
+        <Client2ClosingCta clientName={client.name} />
       </main>
 
-      {/* 8. Footer Global Existente */}
+      {/* 5. Footer global existente */}
       <Footer />
     </div>
   );
