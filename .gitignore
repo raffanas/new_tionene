@@ -27,7 +27,8 @@ prisma/*.db-journal
 *.pem
 .vscode/
 .idea/
-Thumbs.db
-
 tsconfig.tsbuildinfo
 .playwright-mcp/
+
+# Dados brutos de handoff / informações internas de fornecedores
+03_DEVELOPER_HANDOFF/

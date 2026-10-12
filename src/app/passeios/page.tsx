@@ -10,6 +10,7 @@ import PackageModal, { PackageProfileId } from "@/components/PackageModal";
 import TourDetailModal from "@/components/TourDetailModal";
 import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
+import { TOURS } from "@/data/tours";
 
 interface TripRow {
   id: string;
@@ -32,104 +33,18 @@ interface CatalogTour {
   tags?: { icon: string; text: string }[];
 }
 
-const CATALOG_TOURS: CatalogTour[] = [
-  {
-    id: "chichen-itza",
-    name: "Chichén Itzá & Cenote Sagrado",
-    categoryLabel: "Cultura & História",
-    duration: "Dia todo (aprox. 10 horas)",
-    priceFrom: 650,
-    currency: "R$",
-    description: "Explore a mística pirâmide maia com guia historiador privativo e banho nas águas cristalinas do cenote Ik Kil.",
-    image: "/passeios/chichen-itza.jpg",
-    alt: "Pirâmide de Chichén Itzá no México",
-    categories: ["cenotes", "historico", "natureza"],
-  },
-  {
-    id: "isla-mujeres",
-    name: "Isla Mujeres Exclusiva",
-    categoryLabel: "Ilhas & Navegação",
-    duration: "Dia todo (aprox. 8 horas)",
-    priceFrom: 490,
-    currency: "R$",
-    description: "Navegue em catamarã pelas águas azul-turquesa do Caribe com parada para snorkeling e o encanto de Playa Norte.",
-    image: "/passeios/isla-mujeres.jpg",
-    alt: "Águas cristalinas de Isla Mujeres",
-    categories: ["ilhas", "natureza"],
-  },
-  {
-    id: "xcaret",
-    name: "Parque Eco-Arqueológico Xcaret",
-    categoryLabel: "Natureza & Cultura",
-    duration: "Dia todo (aprox. 12 horas)",
-    priceFrom: 790,
-    currency: "R$",
-    description: "Rios subterrâneos, aquário de recife de coral e o emocionante espetáculo folclórico que homenageia o México.",
-    image: "/passeios/xcaret.jpg",
-    alt: "Parque eco-arqueológico Xcaret",
-    categories: ["natureza", "historico", "aventura"],
-  },
-  {
-    id: "xelha",
-    name: "Xel-Há Parque All-Inclusive",
-    categoryLabel: "Aquático & Natureza",
-    duration: "Dia todo (aprox. 10 horas)",
-    priceFrom: 690,
-    currency: "R$",
-    description: "Uma verdadeira enseada natural com snorkeling livre, tirolesas aquáticas e gastronomia completa inclusa.",
-    image: "/passeios/xel-ha.jpg",
-    alt: "Enseada natural e águas de Xel-Há",
-    categories: ["natureza", "aventura", "cenotes"],
-  },
-  {
-    id: "xplor",
-    name: "Xplor Aventura & Tirolesas",
-    categoryLabel: "Aventura & Adrenalina",
-    duration: "Dia todo (aprox. 8 horas)",
-    priceFrom: 760,
-    currency: "R$",
-    description: "Tirolesas nas alturas sobre a selva maia, veículos anfíbios e jangadas em cavernas repletas de estalactites.",
-    image: "/passeios/Tirolesas.jpg",
-    alt: "Aventuras e tirolesas no parque Xplor",
-    categories: ["aventura", "natureza"],
-  },
-  {
-    id: "cozumel-el-cielo",
-    name: "Cozumel & El Cielo",
-    categoryLabel: "Snorkeling & Mar",
-    duration: "Dia todo (aprox. 9 horas)",
-    priceFrom: 520,
-    currency: "R$",
-    description: "Mergulho nos recifes de corais protegidos e o espetacular banco de areia El Cielo, santuário de estrelas-do-mar.",
-    image: "/passeios/cozumel-e-al-cielo.jpg",
-    alt: "Águas azul-turquesa de Cozumel El Cielo",
-    categories: ["ilhas", "natureza", "aventura"],
-  },
-  {
-    id: "tulum",
-    name: "Ruínas de Tulum & Cenotes",
-    categoryLabel: "História & Praia",
-    duration: "Meio dia (aprox. 6 horas)",
-    priceFrom: 460,
-    currency: "R$",
-    description: "A clássica cidade murada maia sobre as falésias em frente ao mar caribenho aliada a mergulho em cenote aberto.",
-    image: "/passeios/ruinas-de-tulum-cenotes.jpg",
-    alt: "Ruínas maias de Tulum à beira do mar caribenho",
-    categories: ["historico", "cenotes", "natureza"],
-  },
-  {
-    id: "coco-bongo",
-    name: "Coco Bongo Show & Disco",
-    categoryLabel: "Vida Noturna",
-    duration: "Noite (aprox. 5 horas)",
-    priceFrom: 520,
-    currency: "R$",
-    description: "O espetáculo mais icônico de Cancún: acrobatas, tributos musicais ao vivo e festa eletrizante na zona hoteleira.",
-    image: "/passeios/coco-bongo-show-disco.jpg",
-    alt: "Espetáculo musical e festa na Coco Bongo",
-    categories: ["noite", "aventura"],
-  },
-];
+const CATALOG_TOURS: CatalogTour[] = TOURS.map((t) => ({
+  id: t.slug,
+  name: t.name,
+  categoryLabel: t.category.split(" · ")[0],
+  duration: t.duration,
+  priceFrom: t.priceFrom,
+  currency: t.currency,
+  description: t.shortDescription,
+  image: t.heroImage,
+  alt: t.name,
+  categories: t.categories || ["natureza"],
+}));
 
 export default function PasseiosPage() {
   const [activeFilter, setActiveFilter] = useState("todos");

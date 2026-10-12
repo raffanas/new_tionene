@@ -73,6 +73,7 @@ export default function Footer() {
           <Link href="#">Perguntas Frequentes</Link>
           <Link href="#">Políticas de Privacidade</Link>
           <Link href="#">Termos de Uso</Link>
+          <Link href="/admin">Painel Administrativo</Link>
         </nav>
 
         <div className="footer__column footer__contact">

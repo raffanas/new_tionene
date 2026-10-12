@@ -250,6 +250,23 @@ export default function TourDetailModal({
                     </li>
                   )}
                 </ul>
+
+                {/* NÃO INCLUI (quando houver) */}
+                {tour.notIncluded && tour.notIncluded.length > 0 && (
+                  <div style={{ marginTop: "18px", paddingTop: "14px", borderTop: "1px dashed rgba(105, 48, 57, 0.15)" }}>
+                    <span className="trip-modal-section-title tour-modal-section-title" style={{ color: "#8A7276" }}>
+                      NÃO INCLUI
+                    </span>
+                    <ul className="trip-modal-composed-list tour-modal-composed-list" style={{ marginTop: "6px" }}>
+                      {tour.notIncluded.map((item, idx) => (
+                        <li key={idx} className="trip-modal-composed-item tour-modal-composed-item" style={{ color: "#6A585B" }}>
+                          <span style={{ color: "#A55E40", fontWeight: "bold" }} aria-hidden="true">—</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -270,6 +287,35 @@ export default function TourDetailModal({
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* Perguntas Frequentes (FAQs) no Modal */}
+            {tour.faqs && tour.faqs.length > 0 && (
+              <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid rgba(105, 48, 57, 0.1)" }}>
+                <span className="trip-modal-section-title tour-modal-section-title">
+                  DÚVIDAS FREQUENTES
+                </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
+                  {tour.faqs.map((faq, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        backgroundColor: "rgba(250, 247, 238, 0.8)",
+                        border: "1px solid rgba(105, 48, 57, 0.1)",
+                        borderRadius: "10px",
+                        padding: "12px 16px",
+                      }}
+                    >
+                      <strong style={{ display: "block", color: "#693039", fontSize: "14px", marginBottom: "4px" }}>
+                        {faq.question}
+                      </strong>
+                      <p style={{ margin: 0, color: "#4A3A3D", fontSize: "13.5px", lineHeight: "1.5" }}>
+                        {faq.answer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -301,6 +347,22 @@ export default function TourDetailModal({
               >
                 Consultar no WhatsApp
               </button>
+            </div>
+
+            {/* Link direto para a página do passeio */}
+            <div style={{ textAlign: "center", marginTop: "14px" }}>
+              <a
+                href={`/passeios/${tour.slug}`}
+                style={{
+                  fontSize: "13px",
+                  color: "#693039",
+                  textDecoration: "underline",
+                  fontWeight: 600,
+                  opacity: 0.85,
+                }}
+              >
+                Ver página completa do passeio →
+              </a>
             </div>
 
             {/* Disclaimer Final */}

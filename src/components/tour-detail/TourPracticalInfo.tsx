@@ -102,6 +102,79 @@ export default function TourPracticalInfo({ tour }: TourPracticalInfoProps) {
             )}
           </div>
         </div>
+
+        {/* Perguntas Frequentes (FAQs) Específicas do Passeio */}
+        {tour.faqs && tour.faqs.length > 0 && (
+          <div
+            className="tour-detail-practical__faqs"
+            style={{
+              marginTop: "60px",
+              paddingTop: "50px",
+              borderTop: "1px solid rgba(105, 48, 57, 0.12)",
+            }}
+          >
+            <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 36px auto" }}>
+              <span className="eyebrow tour-detail-practical__eyebrow">DÚVIDAS FREQUENTES</span>
+              <h3 className="tour-detail-practical__title" style={{ fontSize: "32px", margin: "8px 0" }}>
+                Perguntas comuns sobre este passeio
+              </h3>
+              <p className="tour-detail-practical__subtitle" style={{ fontSize: "16px" }}>
+                Orientações práticas para você planejar seu dia com total tranquilidade.
+              </p>
+            </div>
+
+            <div
+              className="tour-detail-faqs-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: tour.faqs.length > 1 ? "repeat(auto-fit, minmax(320px, 1fr))" : "1fr",
+                gap: "24px",
+                maxWidth: "1000px",
+                margin: "0 auto",
+              }}
+            >
+              {tour.faqs.map((faq, idx) => (
+                <div
+                  key={idx}
+                  className="tour-detail-faq-card"
+                  style={{
+                    backgroundColor: "#FAF7EE",
+                    border: "1px solid rgba(105, 48, 57, 0.12)",
+                    borderRadius: "16px",
+                    padding: "26px 28px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <h4
+                    style={{
+                      fontFamily: "var(--font-title), 'Ibarra Real Nova', Georgia, serif",
+                      fontSize: "20px",
+                      color: "#693039",
+                      margin: 0,
+                      fontWeight: 500,
+                      lineHeight: "1.25",
+                    }}
+                  >
+                    {faq.question}
+                  </h4>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-body), 'Alegreya Sans', sans-serif",
+                      fontSize: "16px",
+                      lineHeight: "1.6",
+                      color: "#4A3A3D",
+                      margin: 0,
+                    }}
+                  >
+                    {faq.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
