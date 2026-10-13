@@ -812,22 +812,24 @@ function ContractsContent() {
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-      {/* Cabeçalho */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-        <div>
-          <span className="admin-brand-tag">OPERAÇÃO & CONTRATOS</span>
-          <h2 style={{ fontSize: "28px", color: "var(--adm-wine)" }}>Contratos & Reservas da Agência</h2>
-          <p style={{ color: "var(--adm-text-muted)", fontSize: "14px", marginTop: "2px" }}>
-            Cadastre contratos com voos, hotéis, passeios e condições financeiras em um único lugar.
-          </p>
-        </div>
+    <>
+      {/* PAINEL PRINCIPAL (DASHBOARD) - OCULTO NA IMPRESSÃO */}
+      <div className="adm-no-print admin-dashboard-content" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        {/* Cabeçalho */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <span className="admin-brand-tag">OPERAÇÃO & CONTRATOS</span>
+            <h2 style={{ fontSize: "28px", color: "var(--adm-wine)" }}>Contratos & Reservas da Agência</h2>
+            <p style={{ color: "var(--adm-text-muted)", fontSize: "14px", marginTop: "2px" }}>
+              Cadastre contratos com voos, hotéis, passeios e condições financeiras em um único lugar.
+            </p>
+          </div>
 
-        <button type="button" className="adm-btn adm-btn-clay" onClick={openCreateModal}>
-          <Plus size={16} />
-          <span>Novo Contrato</span>
-        </button>
-      </div>
+          <button type="button" className="adm-btn adm-btn-clay" onClick={openCreateModal}>
+            <Plus size={16} />
+            <span>Novo Contrato</span>
+          </button>
+        </div>
 
       {/* Cards de Resumo */}
       <div className="adm-kpi-grid">
@@ -1028,12 +1030,13 @@ function ContractsContent() {
           </table>
         </div>
       )}
+      </div>
 
       {/* =========================================================================
           MODAL DE CRIAÇÃO / EDIÇÃO DE CONTRATO
          ========================================================================= */}
       {formModalOpen && (
-        <div className="adm-modal-backdrop" onClick={() => setFormModalOpen(false)}>
+        <div className="adm-modal-backdrop adm-no-print" onClick={() => setFormModalOpen(false)}>
           <div
             className="adm-modal-card"
             style={{ maxWidth: "860px", maxHeight: "90vh", overflowY: "auto" }}
@@ -1653,14 +1656,14 @@ function ContractsContent() {
             {/* DOCUMENTO DO CONTRATO (FORMATO A4 / MODELO TIO NENÊ) */}
             <div className="printable-contract" style={{ padding: "24px 20px" }}>
               {/* PÁGINA 1: DADOS, VOOS E HOTÉIS */}
-              <div className="contract-page">
+              <div className="contract-page contract-page-1">
                 {/* Header Página 1 */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <img
                       src="/img/tio-nene-03.svg"
                       alt="Tio Nenê"
-                      style={{ height: "48px", width: "auto", display: "block" }}
+                      style={{ height: "46px", width: "auto", display: "block" }}
                     />
                   </div>
 
@@ -1674,32 +1677,32 @@ function ContractsContent() {
                   </div>
                 </div>
 
-                <div style={{ fontSize: "11px", color: "#666", lineHeight: 1.4, marginBottom: "20px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+                <div style={{ fontSize: "11px", color: "#666", lineHeight: 1.4, marginBottom: "16px", borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                   Calle Ocote, Lote 53, 10, SM 44, M3 - CEP 77506 - CANCÚN, Q.R. | contato@tionenetours.com.br
                 </div>
 
-                <div style={{ fontSize: "14px", lineHeight: 1.6, marginBottom: "24px" }}>
-                  <p><strong>Prezado cliente,</strong></p>
-                  <p style={{ marginTop: "4px" }}>
+                <div style={{ fontSize: "13.5px", lineHeight: 1.5, marginBottom: "18px" }}>
+                  <p style={{ margin: "0 0 4px 0" }}><strong>Prezado cliente,</strong></p>
+                  <p style={{ margin: 0 }}>
                     Nós da Equipe <strong>Tio Nenê Tours</strong>, RFC no. BCT140723D5A, confirmamos a contratação de nossos serviços durante sua estadia na cidade de Cancún - Quintana Roo.
                   </p>
                 </div>
 
                 {/* Tabela de Dados do Cliente e Voos */}
-                <div style={{ background: "#fbfbfb", border: "1px solid #e5e5e5", borderRadius: "8px", padding: "16px", marginBottom: "24px", fontSize: "13px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "8px", marginBottom: "8px" }}>
+                <div style={{ background: "#fbfbfb", border: "1px solid #e5e5e5", borderRadius: "8px", padding: "14px 16px", marginBottom: "20px", fontSize: "12.5px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "8px", marginBottom: "8px" }}>
                     <div><strong>NOME:</strong> {selectedContract.client_name}</div>
                     <div><strong>CPF:</strong> {selectedContract.client_cpf || "Não informado"}</div>
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "8px", marginBottom: "8px" }}>
-                    <div><strong>PAX:</strong> {selectedContract.adults_count} Adulto(s) {selectedContract.children_count > 0 ? `, ${selectedContract.children_count} Criança(s)` : ""}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "8px", marginBottom: "8px" }}>
+                    <div><strong>PAX:</strong> {selectedContract.adults_count} Adulto(s){selectedContract.children_count > 0 ? `, ${selectedContract.children_count} Criança(s)` : ""}{selectedContract.infants_count > 0 ? `, ${selectedContract.infants_count} Bebê(s)` : ""}</div>
                     <div><strong>CONTATO:</strong> {selectedContract.client_phone || "—"}</div>
                   </div>
-                  <div style={{ marginBottom: "14px" }}>
+                  <div style={{ marginBottom: "12px" }}>
                     <strong>EMAIL:</strong> {selectedContract.client_email || "—"}
                   </div>
 
-                  <div style={{ borderTop: "1px dashed #ccc", paddingTop: "10px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div style={{ borderTop: "1px dashed #ccc", paddingTop: "10px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                     <div>
                       <div><strong>NÚMERO DE VOO CHEGADA:</strong> {selectedContract.arrival_flight_number || "—"}</div>
                       <div><strong>HORÁRIO DE CHEGADA:</strong> {selectedContract.arrival_flight_time || "—"}</div>
@@ -1715,29 +1718,29 @@ function ContractsContent() {
                 </div>
 
                 {/* Resumo de Hotéis */}
-                <div style={{ marginBottom: "30px" }}>
-                  <div style={{ background: "#e8eff7", padding: "8px 12px", fontWeight: 700, fontSize: "13px", color: "#1e3a8a", border: "1px solid #cbd5e1" }}>
+                <div style={{ marginBottom: "20px" }}>
+                  <div style={{ background: "#e8eff7", padding: "7px 12px", fontWeight: 700, fontSize: "12.5px", color: "#1e3a8a", border: "1px solid #cbd5e1" }}>
                     Resumo de hotéis durante a estadia:
                   </div>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11.5px" }}>
                     <thead>
                       <tr style={{ background: "#f8fafc", borderBottom: "1px solid #cbd5e1" }}>
-                        <th style={{ padding: "8px", textAlign: "left", border: "1px solid #cbd5e1" }}>Hotel</th>
-                        <th style={{ padding: "8px", textAlign: "left", border: "1px solid #cbd5e1", width: "130px" }}>Data Check In</th>
-                        <th style={{ padding: "8px", textAlign: "left", border: "1px solid #cbd5e1", width: "130px" }}>Data Check Out</th>
+                        <th style={{ padding: "7px 10px", textAlign: "left", border: "1px solid #cbd5e1" }}>Hotel</th>
+                        <th style={{ padding: "7px 10px", textAlign: "left", border: "1px solid #cbd5e1", width: "130px" }}>Data Check In</th>
+                        <th style={{ padding: "7px 10px", textAlign: "left", border: "1px solid #cbd5e1", width: "130px" }}>Data Check Out</th>
                       </tr>
                     </thead>
                     <tbody>
                       {(selectedContract.hotels_schedule || []).map((h, hIdx) => (
                         <tr key={hIdx}>
-                          <td style={{ padding: "8px", border: "1px solid #cbd5e1" }}>{h.hotel_name || "—"}</td>
-                          <td style={{ padding: "8px", border: "1px solid #cbd5e1" }}>{h.checkin ? new Date(h.checkin + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</td>
-                          <td style={{ padding: "8px", border: "1px solid #cbd5e1" }}>{h.checkout ? new Date(h.checkout + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</td>
+                          <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>{h.hotel_name || "—"}</td>
+                          <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>{h.checkin ? new Date(h.checkin + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</td>
+                          <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>{h.checkout ? new Date(h.checkout + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</td>
                         </tr>
                       ))}
                       {(!selectedContract.hotels_schedule || selectedContract.hotels_schedule.length === 0) && (
                         <tr>
-                          <td colSpan={3} style={{ padding: "8px", border: "1px solid #cbd5e1", textAlign: "center", color: "#888" }}>
+                          <td colSpan={3} style={{ padding: "7px 10px", border: "1px solid #cbd5e1", textAlign: "center", color: "#888" }}>
                             Nenhum hotel informado
                           </td>
                         </tr>
@@ -1755,79 +1758,84 @@ function ContractsContent() {
               </div>
 
               {/* PÁGINA 2: SERVIÇOS & PAGAMENTOS */}
-              <div className="contract-page" style={{ marginTop: "30px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+              <div className="contract-page contract-page-2" style={{ marginTop: "30px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                   <img src="/img/tio-nene-03.svg" alt="Tio Nenê" style={{ height: "36px", width: "auto" }} />
                   <span style={{ fontSize: "12px", color: "#666" }}>Ref: {selectedContract.contract_number} · Página 2</span>
                 </div>
 
                 {/* Serviços Contratados */}
-                <div style={{ marginBottom: "28px" }}>
-                  <div style={{ background: "#fffbeb", padding: "8px 12px", fontWeight: 700, fontSize: "13px", color: "#92400e", border: "1px solid #fef3c7" }}>
+                <div style={{ marginBottom: "18px" }}>
+                  <div style={{ background: "#fffbeb", padding: "7px 12px", fontWeight: 700, fontSize: "12.5px", color: "#92400e", border: "1px solid #fef3c7" }}>
                     Os serviços contratados são:
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "12px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
                     {(selectedContract.items || []).map((it, idx) => (
-                      <div key={idx} style={{ padding: "10px 14px", border: "1px solid #e5e5e5", borderRadius: "6px", fontSize: "13px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                          <strong>
+                      <div key={idx} className="contract-tour-item" style={{ padding: "8px 12px", border: "1px solid #e5e5e5", borderRadius: "6px", fontSize: "12px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px", marginBottom: "3px" }}>
+                          <strong style={{ color: "#111" }}>
                             Data: {it.tour_date ? new Date(it.tour_date + "T12:00:00").toLocaleDateString("pt-BR") : "—"} — {it.tour_name}
                           </strong>
-                          <span style={{ fontWeight: 600, color: "var(--adm-wine)" }}>
+                          <span style={{ fontWeight: 700, color: "var(--adm-wine)", whiteSpace: "nowrap" }}>
                             R$ {Number(it.sale_price || 0).toLocaleString("pt-BR")}
                           </span>
                         </div>
                         {it.included && (
-                          <div style={{ fontSize: "11px", color: "#166534", marginTop: "2px" }}>
+                          <div className="tour-includes" style={{ fontSize: "11px", color: "#166534", marginTop: "2px", lineHeight: 1.35 }}>
                             <strong>Inclui:</strong> {it.included}
                           </div>
                         )}
                         {it.not_included && (
-                          <div style={{ fontSize: "11px", color: "#991b1b", marginTop: "2px" }}>
+                          <div className="tour-not-includes" style={{ fontSize: "11px", color: "#991b1b", marginTop: "2px", lineHeight: 1.35 }}>
                             <strong>Não inclui:</strong> {it.not_included}
                           </div>
                         )}
                       </div>
                     ))}
+                    {(!selectedContract.items || selectedContract.items.length === 0) && (
+                      <div style={{ padding: "12px", textAlign: "center", color: "#888", fontStyle: "italic", fontSize: "12px" }}>
+                        Nenhum passeio contratado neste documento.
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Remuneração & Pagamento */}
-                <div style={{ marginBottom: "30px" }}>
-                  <div style={{ background: "#dcfce7", padding: "8px 12px", fontWeight: 700, fontSize: "13px", color: "#166534", border: "1px solid #bbf7d0" }}>
+                <div style={{ marginBottom: "20px" }}>
+                  <div style={{ background: "#dcfce7", padding: "7px 12px", fontWeight: 700, fontSize: "12.5px", color: "#166534", border: "1px solid #bbf7d0" }}>
                     Os serviços serão remunerados da seguinte maneira:
                   </div>
 
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", marginTop: "10px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", marginTop: "8px" }}>
                     <thead>
                       <tr style={{ background: "#f8fafc" }}>
-                        <th style={{ padding: "10px", textAlign: "left", border: "1px solid #cbd5e1", width: "180px" }}>Forma de pagamento</th>
-                        <th style={{ padding: "10px", textAlign: "left", border: "1px solid #cbd5e1", width: "150px" }}>Valor</th>
-                        <th style={{ padding: "10px", textAlign: "left", border: "1px solid #cbd5e1" }}>Observação</th>
+                        <th style={{ padding: "8px 10px", textAlign: "left", border: "1px solid #cbd5e1", width: "180px" }}>Forma de pagamento</th>
+                        <th style={{ padding: "8px 10px", textAlign: "left", border: "1px solid #cbd5e1", width: "140px" }}>Valor</th>
+                        <th style={{ padding: "8px 10px", textAlign: "left", border: "1px solid #cbd5e1" }}>Observação</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontWeight: 600 }}>Depósito</td>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontWeight: 700 }}>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontWeight: 600 }}>Depósito</td>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontWeight: 700 }}>
                           R$ {Number(selectedContract.deposit_amount || 0).toLocaleString("pt-BR")}
                         </td>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1" }}>{selectedContract.deposit_observation || "—"}</td>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1" }}>{selectedContract.deposit_observation || "—"}</td>
                       </tr>
                       <tr>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontWeight: 600 }}>Saldo</td>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontWeight: 700, color: "var(--adm-amber)" }}>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontWeight: 600 }}>Saldo</td>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontWeight: 700, color: "var(--adm-amber)" }}>
                           R$ {Number(selectedContract.balance_amount || 0).toLocaleString("pt-BR")}
                         </td>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1" }}>{selectedContract.balance_observation || "—"}</td>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1" }}>{selectedContract.balance_observation || "—"}</td>
                       </tr>
                       <tr style={{ background: "#fef9c3" }}>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontWeight: 700, color: "var(--adm-wine)" }}>Total do Contrato</td>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontWeight: 800, fontSize: "14px", color: "var(--adm-wine)" }}>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontWeight: 700, color: "var(--adm-wine)" }}>Total do Contrato</td>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontWeight: 800, fontSize: "13.5px", color: "var(--adm-wine)" }}>
                           R$ {Number(selectedContract.total_amount || 0).toLocaleString("pt-BR")}
                         </td>
-                        <td style={{ padding: "10px", border: "1px solid #cbd5e1", fontSize: "11px", color: "#555" }}>Valor total da contratação</td>
+                        <td style={{ padding: "8px 10px", border: "1px solid #cbd5e1", fontSize: "11px", color: "#555" }}>Valor total da contratação</td>
                       </tr>
                     </tbody>
                   </table>
@@ -1841,17 +1849,17 @@ function ContractsContent() {
               </div>
 
               {/* PÁGINA 3: TERMOS E CLÁUSULAS */}
-              <div className="contract-page" style={{ marginTop: "30px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+              <div className="contract-page contract-page-3" style={{ marginTop: "30px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", borderBottom: "1px solid #ddd", paddingBottom: "8px" }}>
                   <img src="/img/tio-nene-03.svg" alt="Tio Nenê" style={{ height: "36px", width: "auto" }} />
                   <span style={{ fontSize: "12px", color: "#666" }}>Ref: {selectedContract.contract_number} · Página 3</span>
                 </div>
 
-                <div style={{ textAlign: "center", fontWeight: 800, fontSize: "14px", color: "var(--adm-wine)", marginBottom: "16px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                <div style={{ textAlign: "center", fontWeight: 800, fontSize: "13.5px", color: "var(--adm-wine)", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   TERMOS DE CONTRATO
                 </div>
 
-                <div className="contract-clauses-body" style={{ fontSize: "10.5px", lineHeight: 1.5, color: "#222", marginBottom: "24px" }}>
+                <div className="contract-clauses-body">
                   {(() => {
                     const rawText = (selectedContract.terms_clauses || DEFAULT_TERMS)
                       .replace(/\u00A0/g, " ")
@@ -1864,20 +1872,13 @@ function ContractsContent() {
 
                       const isClause = /^Cláusula\s+\d+ª/i.test(trimmed);
                       if (isClause) {
-                        const dotIndex = trimmed.indexOf(".");
-                        const prefix = dotIndex !== -1 ? trimmed.substring(0, dotIndex + 1) : "";
-                        const rest = dotIndex !== -1 ? trimmed.substring(dotIndex + 1) : trimmed;
+                        const clauseMatch = trimmed.match(/^(Cláusula\s+\d+ª(?:\.|\s*[-–:]\s*)?)/i);
+                        const prefix = clauseMatch ? clauseMatch[1] : "";
+                        const rest = clauseMatch ? trimmed.substring(clauseMatch[0].length).trim() : trimmed;
                         return (
                           <p
                             key={pIdx}
-                            style={{
-                              margin: "0 0 8px 0",
-                              textAlign: "justify",
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                              whiteSpace: "normal",
-                              lineHeight: 1.5,
-                            }}
+                            className="contract-clause-p"
                           >
                             <strong style={{ color: "var(--adm-wine)", fontWeight: 700 }}>
                               {prefix}{" "}
@@ -1890,14 +1891,7 @@ function ContractsContent() {
                       return (
                         <p
                           key={pIdx}
-                          style={{
-                            margin: "0 0 8px 0",
-                            textAlign: "justify",
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                            whiteSpace: "normal",
-                            lineHeight: 1.5,
-                          }}
+                          className="contract-intro-p"
                         >
                           {trimmed}
                         </p>
@@ -1921,7 +1915,7 @@ function ContractsContent() {
       <style jsx global>{`
         .contract-page {
           background: #ffffff;
-          padding: 40px;
+          padding: 36px 40px;
           border-radius: 8px;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
           max-width: 800px;
@@ -1929,21 +1923,51 @@ function ContractsContent() {
           color: #222;
           font-family: 'Alegreya Sans', sans-serif;
           position: relative;
+          box-sizing: border-box;
         }
 
         .contract-footer {
-          margin-top: 30px;
+          margin-top: 24px;
           border-top: 1px solid #e5e5e5;
-          padding-top: 10px;
-          font-size: 11px;
+          padding-top: 8px;
+          font-size: 10.5px;
           color: #777;
           line-height: 1.4;
+        }
+
+        .contract-clauses-body {
+          column-count: 2;
+          column-gap: 22px;
+          text-align: justify;
+          margin-bottom: 16px;
+        }
+
+        .contract-intro-p {
+          column-span: all;
+          margin: 0 0 10px 0;
+          text-align: justify;
+          font-style: italic;
+          font-size: 11px;
+          line-height: 1.45;
+          color: #444;
+        }
+
+        .contract-clause-p {
+          margin: 0 0 6px 0;
+          text-align: justify;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          white-space: normal;
+          line-height: 1.4;
+          font-size: 10px;
+          break-inside: avoid;
+          page-break-inside: avoid;
         }
 
         @media print {
           @page {
             size: A4 portrait;
-            margin: 10mm 15mm;
+            margin: 8mm 10mm;
           }
 
           html, body {
@@ -1953,22 +1977,64 @@ function ContractsContent() {
             padding: 0 !important;
             width: 100% !important;
             height: auto !important;
+            min-height: auto !important;
             overflow: visible !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
 
-          /* Ocultar toda a estrutura do admin e barras do modal */
+          /* Ocultar toda a estrutura do admin, dashboard, KPIs, tabelas e barras de controle */
           .admin-sidebar,
           .admin-topbar,
-          .adm-header,
+          .admin-dashboard-content,
+          .adm-no-print,
+          .adm-kpi-grid,
+          .adm-kpi-card,
+          .adm-table-wrap,
+          .adm-table,
           .adm-card,
+          .adm-header,
           .adm-filters,
-          .adm-table-container,
           .adm-modal-header,
           .adm-modal-footer,
           .contract-toolbar,
+          header,
           nav,
-          header {
+          aside,
+          button {
             display: none !important;
+            visibility: hidden !important;
+          }
+
+          /* Resetar containers do layout para não aplicarem margem lateral nem offset */
+          .admin-scope {
+            display: block !important;
+            min-height: auto !important;
+            height: auto !important;
+            background: #ffffff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+          }
+
+          .admin-main {
+            display: block !important;
+            margin: 0 !important;
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: auto !important;
+            height: auto !important;
+            background: #ffffff !important;
+          }
+
+          .admin-content-area {
+            display: block !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
 
           /* O modal se torna parte do fluxo normal da folha */
@@ -1988,6 +2054,9 @@ function ContractsContent() {
             position: static !important;
             display: block !important;
             max-width: 100% !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: auto !important;
             max-height: none !important;
             overflow: visible !important;
             background: transparent !important;
@@ -2001,40 +2070,94 @@ function ContractsContent() {
             display: block !important;
             position: static !important;
             width: 100% !important;
+            max-width: 100% !important;
             padding: 0 !important;
             margin: 0 !important;
             background: transparent !important;
           }
 
+          /* Enquadramento exato por página */
           .contract-page {
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            box-sizing: border-box !important;
             box-shadow: none !important;
             border: none !important;
             border-radius: 0 !important;
-            padding: 0 0 15mm 0 !important;
+            padding: 0 !important;
             margin: 0 !important;
+            margin-top: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
+            min-height: 260mm !important;
             background: #ffffff !important;
             color: #111111 !important;
             page-break-after: always !important;
             break-after: page !important;
-            min-height: auto !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            position: relative !important;
           }
 
           .contract-page:last-child {
             page-break-after: auto !important;
             break-after: auto !important;
+            min-height: auto !important;
           }
 
-          .contract-clauses-body p {
+          .contract-footer {
+            margin-top: auto !important;
+            padding-top: 2.5mm !important;
+            border-top: 1px solid #ddd !important;
+            font-size: 7.2pt !important;
+            line-height: 1.3 !important;
+            color: #777 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+
+          /* Ajuste dos itens de passeios */
+          .contract-tour-item {
+            padding: 5px 8px !important;
+            margin-bottom: 1.8mm !important;
+            font-size: 8pt !important;
+            line-height: 1.3 !important;
+          }
+
+          .contract-tour-item .tour-includes,
+          .contract-tour-item .tour-not-includes {
+            font-size: 7.2pt !important;
+            line-height: 1.25 !important;
+          }
+
+          /* Ajuste das Cláusulas: 2 colunas para caber na folha sem cortes */
+          .contract-clauses-body {
+            column-count: 2 !important;
+            column-gap: 5mm !important;
+            text-align: justify !important;
+            margin-bottom: 2mm !important;
+          }
+
+          .contract-intro-p {
+            column-span: all !important;
             margin: 0 0 2mm 0 !important;
-            font-size: 8.5pt !important;
-            line-height: 1.4 !important;
+            font-size: 7.2pt !important;
+            line-height: 1.3 !important;
+            font-style: italic !important;
+            text-align: justify !important;
+          }
+
+          .contract-clause-p {
+            margin: 0 0 1.6mm 0 !important;
+            font-size: 7.2pt !important;
+            line-height: 1.32 !important;
             text-align: justify !important;
             word-break: break-word !important;
             overflow-wrap: break-word !important;
             white-space: normal !important;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
           }
 
           * {
@@ -2043,7 +2166,7 @@ function ContractsContent() {
           }
         }
       `}</style>
-    </div>
+    </>
   );
 }
 

@@ -731,3 +731,43 @@
   background: var(--adm-surface-alt, #fcfbfa);
 }
 
+/* Reset Global de Impressão para o Painel Admin */
+@media print {
+  .admin-sidebar,
+  .admin-topbar,
+  .adm-no-print {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .admin-scope {
+    display: block !important;
+    min-height: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .admin-main {
+    display: block !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    background: transparent !important;
+  }
+
+  .admin-content-area {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
