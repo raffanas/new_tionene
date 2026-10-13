@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Tour, getTourBySlug } from "@/data/tours";
 import { SITE_CONFIG } from "@/config/site";
+import LeadCaptureModal from "@/components/LeadCaptureModal";
 
 interface TourDetailModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function TourDetailModal({
   onAddToTrip,
 }: TourDetailModalProps) {
   const [addedToast, setAddedToast] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
 
   // Handle escape key and body scroll lock
   useEffect(() => {
@@ -61,20 +63,7 @@ export default function TourDetailModal({
   };
 
   const handleWhatsAppInquiry = () => {
-    const whatsapp = (SITE_CONFIG.whatsapp || "529981234567").replace(/\D/g, "");
-    const message = [
-      "Olá, equipe Tio Nenê! Gostaria de solicitar informações sobre o passeio:",
-      "",
-      `*PASSEIO:* ${tour.name}`,
-      `*CATEGORIA:* ${tour.category}`,
-      `*DURAÇÃO:* ${tour.duration}`,
-      `*VALOR A PARTIR DE:* ${tour.currency} ${tour.priceFrom.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} por pessoa`,
-      "",
-      "Poderiam me enviar mais detalhes sobre disponibilidade e reserva?",
-    ].join("\n");
-
-    const whatsappUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    setLeadModalOpen(true);
   };
 
   return (
@@ -373,6 +362,16 @@ export default function TourDetailModal({
           </div>
         </div>
       </div>
+
+      <LeadCaptureModal
+        isOpen={leadModalOpen}
+        onClose={() => setLeadModalOpen(false)}
+        interestType="tour"
+        interestName={tour.name}
+        interestSlug={tour.slug}
+        priceFrom={tour.priceFrom}
+        currency={tour.currency}
+      />
     </div>
   );
 }

@@ -657,3 +657,77 @@
     padding: 20px 16px;
   }
 }
+
+/* ========================================================
+   MODAIS ADMINISTRATIVOS (BACKDROP, CARD, HEADER, BODY, FOOTER)
+   ======================================================== */
+.adm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(20, 6, 9, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+
+.adm-modal-card {
+  background: #ffffff;
+  border-radius: var(--adm-radius-lg, 16px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--adm-border, #e8e2d8);
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: admModalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes admModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.adm-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--adm-border, #e8e2d8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--adm-surface-alt, #fcfbfa);
+}
+
+.adm-modal-header h3 {
+  font-family: 'Ibarra Real Nova', Georgia, serif;
+  font-size: 20px;
+  color: var(--adm-wine, #3d181f);
+  margin: 0;
+}
+
+.adm-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(85vh - 140px);
+}
+
+.adm-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--adm-border, #e8e2d8);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: var(--adm-surface-alt, #fcfbfa);
+}
+

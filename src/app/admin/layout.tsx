@@ -16,7 +16,13 @@ import {
   Menu,
   X,
   ShieldCheck,
-  LogOut
+  LogOut,
+  Truck,
+  FileText,
+  CalendarDays,
+  DollarSign,
+  UserCheck,
+  Sparkles
 } from "lucide-react";
 
 interface NavItem {
@@ -28,11 +34,16 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/leads", label: "Leads do Site", icon: Sparkles },
+  { href: "/admin/clientes", label: "Clientes", icon: UserCheck },
+  { href: "/admin/contratos", label: "Contratos da Agência", icon: FileText },
+  { href: "/admin/chegadas", label: "Chegadas no Mês", icon: CalendarDays },
+  { href: "/admin/custos-fornecedores", label: "Custos por Fornecedor", icon: DollarSign },
+  { href: "/admin/fornecedores", label: "Fornecedores Locais", icon: Truck },
   { href: "/admin/passeios", label: "Catálogo de Passeios", icon: Compass },
   { href: "/admin/viagem-completa", label: "Pacotes de Viagem", icon: Briefcase },
   { href: "/admin/curadoria", label: "Curadoria Bella VIP", icon: Star },
   { href: "/admin/parceiros", label: "Parceiros B2B", icon: Users },
-  { href: "/admin/reservas", label: "Reservas & Vouchers", icon: CalendarCheck },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
