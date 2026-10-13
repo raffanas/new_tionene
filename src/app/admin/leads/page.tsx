@@ -26,9 +26,11 @@ interface Lead {
   phone: string;
   email?: string | null;
   source: string;
-  interest_type: "tour" | "package" | "geral";
+  interest_type: "tour" | "package" | "roteiro" | "geral";
   interest_name?: string | null;
   interest_slug?: string | null;
+  selected_items?: any;
+  notes?: string | null;
   status: "novo" | "em_atendimento" | "convertido" | "perdido";
   converted_client_id?: string | null;
   created_at: string;
@@ -74,7 +76,21 @@ export default function AdminLeadsPage() {
 
     setConvertingId(lead.id);
     try {
-      // 1. Criar cliente na tabela `clients`
+      // Monta notas completas preservando todo o histórico capturado do lead
+      const noteParts: string[] = [
+        `Convertido do Lead do site (${lead.interest_name || "Sem interesse especificado"}).`,
+      ];
+      if (lead.notes) {
+        noteParts.push(`Detalhes da Viagem: ${lead.notes}`);
+      }
+      if (Array.isArray(lead.selected_items) && lead.selected_items.length > 0) {
+        const items = lead.selected_items
+          .map((item: any) => `${item.name || item.tour_name} (${item.quantity || item.count || 1}x)`)
+          .join(", ");
+        noteParts.push(`Passeios de interesse: ${items}`);
+      }
+
+      // 1. Criar cliente na tabela `clients` (apenas com campos reais da tabela)
       const { data: newClient, error: clientErr } = await supabase
         .from("clients")
         .insert([
@@ -83,14 +99,7 @@ export default function AdminLeadsPage() {
             phone: lead.phone,
             whatsapp: lead.phone,
             email: lead.email || null,
-            notes: `Convertido do Lead do site (${lead.interest_name || "Sem interesse especificado"}).`,
-            arrival_date: new Date().toISOString().split("T")[0],
-            adults_count: 2,
-            children_count: 0,
-            hotels_schedule: [],
-            selected_tours: lead.interest_name
-              ? [{ tour_name: lead.interest_name, tour_date: new Date().toISOString().split("T")[0] }]
-              : [],
+            notes: noteParts.join("\n"),
           },
         ])
         .select()
@@ -108,7 +117,16 @@ export default function AdminLeadsPage() {
         })
         .eq("id", lead.id);
 
-      // 3. Redirecionar para a Ficha do Cliente
+      // 3. Atualizar localmente a lista de leads
+      setLeads((prev) =>
+        prev.map((l) =>
+          l.id === lead.id
+            ? { ...l, status: "convertido", converted_client_id: newClient.id }
+            : l
+        )
+      );
+
+      // 4. Redirecionar para a Ficha do Cliente
       router.push(`/admin/clientes?clientId=${newClient.id}`);
     } catch (err: any) {
       alert("Erro ao converter lead: " + (err.message || "Tente novamente"));
