@@ -215,6 +215,19 @@ function ContractsContent() {
 
   const [formItems, setFormItems] = useState<ContractItem[]>([]);
 
+  // Diálogo para quando o cliente já possui contratos existentes
+  const [clientExistingModal, setClientExistingModal] = useState<{
+    open: boolean;
+    clientName: string;
+    clientId: string;
+    existingContracts: any[];
+  }>({
+    open: false,
+    clientName: "",
+    clientId: "",
+    existingContracts: [],
+  });
+
   // Carregar dados
   const loadData = async () => {
     setLoading(true);
@@ -440,19 +453,156 @@ function ContractsContent() {
     loadData();
   }, []);
 
-  // Preencher formulário e abrir modal automaticamente se veio de Clientes
-  useEffect(() => {
-    const autoOpen = searchParams?.get("autoOpen");
-    if (autoOpen === "true") {
-      populateContractFromClientAndLead(
-        searchParams?.get("clientId") || undefined,
-        searchParams?.get("clientName") || "",
-        searchParams?.get("clientPhone") || "",
-        searchParams?.get("clientCpf") || "",
-        searchParams?.get("clientEmail") || ""
-      );
+  // Abrir criação de contrato para uma nova viagem de cliente cadastrado
+  const openNewTripForClient = async (clientId: string, clientName?: string) => {
+    let clientRecord: any = null;
+    if (clientId) {
+      const { data } = await supabase.from("clients").select("*").eq("id", clientId).single();
+      if (data) clientRecord = data;
     }
-  }, [searchParams]);
+
+    const nextNum = `TN-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const effectiveName = clientRecord?.name || clientName || "";
+    const effectivePhone = clientRecord?.phone || clientRecord?.whatsapp || "";
+    const effectiveCpf = clientRecord?.cpf || "";
+    const effectiveEmail = clientRecord?.email || "";
+    const today = new Date().toISOString().split("T")[0];
+
+    setSelectedContract(null); // Cria novo registro, preservando histórico
+    setFormData({
+      contract_number: nextNum,
+      client_id: clientId,
+      client_name: effectiveName,
+      client_cpf: effectiveCpf,
+      client_phone: effectivePhone,
+      client_email: effectiveEmail,
+      arrival_date: today,
+      departure_date: "",
+      arrival_flight_number: "",
+      arrival_flight_time: "",
+      depart_flight_number: "",
+      depart_flight_time: "",
+      adults_count: 2,
+      children_count: 0,
+      infants_count: 0,
+      hotels_schedule: clientRecord?.default_hotel
+        ? [{ hotel_name: clientRecord.default_hotel, checkin: today, checkout: "" }]
+        : [{ hotel_name: "", checkin: "", checkout: "" }],
+      deposit_amount: 0,
+      deposit_observation: "Sinal via PIX",
+      balance_amount: 0,
+      balance_observation: "Saldo a acertar no check-in em Cancún",
+      total_amount: 0,
+      currency: "BRL",
+      status: "emitido",
+      terms_clauses: DEFAULT_TERMS,
+      internal_notes: `Nova viagem / Pacote adicional para cliente cadastrado (${effectiveName})`,
+    });
+    setFormItems([]);
+    setFormModalOpen(true);
+  };
+
+  // Preencher formulário ou abrir contrato existente automaticamente via URL
+  useEffect(() => {
+    if (!searchParams) return;
+    const openContractId = searchParams.get("openContractId");
+    const printMode = searchParams.get("print") === "true";
+    const autoOpen = searchParams.get("autoOpen") === "true";
+    const clientId = searchParams.get("clientId") || undefined;
+    const newTrip = searchParams.get("newTrip") === "true";
+
+    // 1. Abrir contrato específico diretamente por ID
+    if (openContractId) {
+      const found = contracts.find((c) => c.id === openContractId);
+      if (found) {
+        if (printMode) openPrintModal(found);
+        else openEditModal(found);
+      } else {
+        supabase
+          .from("contracts")
+          .select("*, contract_items(*)")
+          .eq("id", openContractId)
+          .single()
+          .then(({ data }) => {
+            if (data) {
+              const formatted: Contract = {
+                ...data,
+                items: (data.contract_items || []).map((i: any) => ({
+                  id: i.id,
+                  tour_id: i.tour_id,
+                  tour_name: i.tour_name_snapshot,
+                  tour_date: i.tour_date,
+                  adults_count: i.adults_count,
+                  children_count: i.children_count,
+                  sale_price: Number(i.sale_price || 0),
+                  cost_applied: Number(i.cost_applied || 0),
+                  calculated_total_cost: Number(i.calculated_total_cost || 0),
+                  supplier_id: i.supplier_id,
+                  supplier_name: i.supplier_name_snapshot,
+                  voucher_ref: i.voucher_ref,
+                  included: i.tour_included_snapshot,
+                  not_included: i.tour_not_included_snapshot,
+                })),
+              };
+              if (printMode) openPrintModal(formatted);
+              else openEditModal(formatted);
+            }
+          });
+      }
+      return;
+    }
+
+    // 2. Veio de Clientes com autoOpen
+    if (autoOpen && clientId) {
+      if (newTrip) {
+        openNewTripForClient(clientId, searchParams.get("clientName") || "");
+        return;
+      }
+
+      // Checa se este cliente já tem contratos emitidos no banco
+      supabase
+        .from("contracts")
+        .select("*, contract_items(*)")
+        .eq("client_id", clientId)
+        .order("created_at", { ascending: false })
+        .then(({ data: existing }) => {
+          if (existing && existing.length > 0) {
+            setClientExistingModal({
+              open: true,
+              clientName: searchParams.get("clientName") || existing[0].client_name || "Cliente",
+              clientId: clientId,
+              existingContracts: existing.map((c: any) => ({
+                ...c,
+                items: (c.contract_items || []).map((i: any) => ({
+                  id: i.id,
+                  tour_id: i.tour_id,
+                  tour_name: i.tour_name_snapshot,
+                  tour_date: i.tour_date,
+                  adults_count: i.adults_count,
+                  children_count: i.children_count,
+                  sale_price: Number(i.sale_price || 0),
+                  cost_applied: Number(i.cost_applied || 0),
+                  calculated_total_cost: Number(i.calculated_total_cost || 0),
+                  supplier_id: i.supplier_id,
+                  supplier_name: i.supplier_name_snapshot,
+                  voucher_ref: i.voucher_ref,
+                  included: i.tour_included_snapshot,
+                  not_included: i.tour_not_included_snapshot,
+                })),
+              })),
+            });
+          } else {
+            populateContractFromClientAndLead(
+              clientId,
+              searchParams.get("clientName") || "",
+              searchParams.get("clientPhone") || "",
+              searchParams.get("clientCpf") || "",
+              searchParams.get("clientEmail") || ""
+            );
+          }
+        });
+    }
+  }, [searchParams, contracts.length]);
 
   // Abrir Modal de Criação
   const openCreateModal = () => {
@@ -1573,6 +1723,133 @@ function ContractsContent() {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL DE ESCOLHA QUANDO O CLIENTE JÁ TEM CONTRATO(S) EXISTENTE(S)
+         ========================================================================= */}
+      {clientExistingModal.open && (
+        <div className="adm-modal-backdrop" onClick={() => setClientExistingModal((prev) => ({ ...prev, open: false }))}>
+          <div
+            className="adm-modal-card"
+            style={{ maxWidth: "580px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="adm-modal-header">
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--adm-gold-light)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--adm-wine)" }}>
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "18px", color: "var(--adm-wine)" }}>Contratos Encontrados</h3>
+                  <p style={{ fontSize: "12px", color: "var(--adm-text-muted)" }}>
+                    Este cliente já possui contrato(s) no sistema
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="adm-btn adm-btn-icon adm-btn-outline"
+                onClick={() => setClientExistingModal((prev) => ({ ...prev, open: false }))}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="adm-modal-body" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ background: "rgba(247, 241, 221, 0.4)", border: "1px solid var(--adm-gold-border)", borderRadius: "10px", padding: "14px 16px" }}>
+                <p style={{ fontSize: "14px", color: "var(--adm-wine)", fontWeight: 600 }}>
+                  Atenção: O cliente <u>{clientExistingModal.clientName}</u> já possui {clientExistingModal.existingContracts.length} contrato(s) registrado(s).
+                </p>
+                <p style={{ fontSize: "12px", color: "var(--adm-text-muted)", marginTop: "4px" }}>
+                  Para evitar duplicidades acidentais, selecione abaixo se deseja <strong>editar o contrato existente</strong> ou <strong>emitir um novo contrato</strong> (para outra viagem/pacote futuro).
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <label className="adm-label" style={{ marginBottom: "2px" }}>Contratos Cadastrados deste Cliente:</label>
+                {clientExistingModal.existingContracts.map((c: any) => (
+                  <div
+                    key={c.id}
+                    style={{
+                      border: "1px solid var(--adm-border)",
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      background: "#fff",
+                      gap: "12px"
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <strong style={{ fontSize: "15px", color: "var(--adm-wine)" }}>{c.contract_number}</strong>
+                        <span className={`adm-badge ${c.status === "emitido" ? "badge-blue" : c.status === "assinado" ? "badge-green" : "badge-amber"}`} style={{ fontSize: "10px" }}>
+                          {c.status}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: "12px", color: "var(--adm-text-muted)", marginTop: "2px" }}>
+                        Chegada: {c.arrival_date ? new Date(c.arrival_date + "T12:00:00").toLocaleDateString("pt-BR") : "—"} | Total: R$ {Number(c.total_amount || 0).toLocaleString("pt-BR")}
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      <button
+                        type="button"
+                        className="adm-btn adm-btn-outline adm-btn-sm"
+                        onClick={() => {
+                          setClientExistingModal((prev) => ({ ...prev, open: false }));
+                          openPrintModal(c);
+                        }}
+                        title="Visualizar e Imprimir Contrato"
+                      >
+                        <Eye size={13} />
+                        <span>Ver</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        className="adm-btn adm-btn-primary adm-btn-sm"
+                        onClick={() => {
+                          setClientExistingModal((prev) => ({ ...prev, open: false }));
+                          openEditModal(c);
+                        }}
+                        title="Editar Contrato Existente"
+                      >
+                        <Edit2 size={13} />
+                        <span>Editar</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="adm-modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+              <button
+                type="button"
+                className="adm-btn adm-btn-outline"
+                onClick={() => setClientExistingModal((prev) => ({ ...prev, open: false }))}
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                className="adm-btn adm-btn-clay"
+                onClick={() => {
+                  setClientExistingModal((prev) => ({ ...prev, open: false }));
+                  openNewTripForClient(clientExistingModal.clientId, clientExistingModal.clientName);
+                }}
+                title="Emitir um contrato adicional para este cliente mantendo os anteriores intactos"
+              >
+                <Plus size={15} />
+                <span>+ Emitir Novo Contrato (Outra Viagem)</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
