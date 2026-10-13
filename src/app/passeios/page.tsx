@@ -8,6 +8,7 @@ import HomeTravelPlannerCta from "@/components/HomeTravelPlannerCta";
 import QuizModal from "@/components/QuizModal";
 import PackageModal, { PackageProfileId } from "@/components/PackageModal";
 import TourDetailModal from "@/components/TourDetailModal";
+import LeadCaptureModal from "@/components/LeadCaptureModal";
 import CalendarIcon from "@/components/CalendarIcon";
 import { SITE_CONFIG } from "@/config/site";
 import { TOURS } from "@/data/tours";
@@ -59,6 +60,7 @@ export default function PasseiosPage() {
   const [selectedPackage, setSelectedPackage] = useState<PackageProfileId | null>(null);
   const [isTourModalOpen, setIsTourModalOpen] = useState(false);
   const [selectedTourSlug, setSelectedTourSlug] = useState<string | null>(null);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [tripRows, setTripRows] = useState<TripRow[]>([]);
 
   const handleOpenTourModal = (slug: string) => {
@@ -157,43 +159,14 @@ export default function PasseiosPage() {
   );
 
   const handleQuote = () => {
-    const whatsapp = SITE_CONFIG.whatsapp;
-    const formattedTotal =
-      estimatedTotal > 0
-        ? `R$ ${estimatedTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        : "A calcular";
-    const lines = [
-      "Olá! Gostaria de uma cotação de passeios.",
-      `Chegada: ${arrivalDate || "A definir"}`,
-      `Adultos: ${adults || "0"}`,
-      `Crianças (12 - 17 anos): ${childrenCount || "0"}`,
-      `Infantes (5 - 11 anos): ${infants511 || "0"}`,
-      `Infantes (0 - 4 anos): ${infants04 || "0"}`,
-      "",
-      "Roteiro de Passeios:",
-      ...(tripRows.length > 0
-        ? tripRows.map(
-            (r) =>
-              `- ${r.name}: ${r.count} pessoa(s) — R$ ${(
-                (r.unitPrice || 0) * r.count
-              ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
-          )
-        : ["(Nenhum passeio selecionado no roteiro)"]),
-      "",
-      `Total Estimado: ${formattedTotal}`,
-    ];
-    if (whatsapp) {
-      window.open(
-        `https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-          lines.join("\n")
-        )}`,
-        "_blank"
-      );
-    } else {
+    if (tripRows.length === 0) {
       setNotification(
-        "O atendimento para envio da cotação no WhatsApp será conectado em breve."
+        "Por favor, adicione pelo menos um passeio ao seu roteiro no catálogo acima para solicitar uma cotação."
       );
+      setTimeout(() => setNotification(""), 4500);
+      return;
     }
+    setLeadModalOpen(true);
   };
 
   return (
@@ -371,13 +344,15 @@ export default function PasseiosPage() {
 <div className="trip__rows">
 {tripRows.map((row) => (
 <div key={row.id} className="trip__row" data-row={row.id}>
-<span className="trip__name">{row.name}</span>
+<span className="trip__name" title={row.name}>{row.name}</span>
+<div className="trip__actions">
 <button className="trip__step" type="button" data-step="1" aria-label={`Aumentar quantidade de ${row.name}`} onClick={() => updateCount(row.id, 1)}>+</button>
 <output className="trip__quantity" aria-label={`Quantidade de ${row.name}`}>{String(row.count).padStart(2, '0')}</output>
 <button className="trip__step" type="button" data-step="-1" aria-label={`Diminuir quantidade de ${row.name}`} onClick={() => updateCount(row.id, -1)}>−</button>
 <button className="trip__remove" type="button" aria-label={`Remover ${row.name}`} onClick={() => removeRow(row.id)}>
 <img className="catalog__icon" src="/images/icons/trash.svg" alt="" width={16} height={16} />
 </button>
+</div>
 </div>
 ))}
 {tripRows.length === 0 && (
@@ -539,6 +514,65 @@ export default function PasseiosPage() {
         onClose={handleCloseTourModal}
         tourSlug={selectedTourSlug}
         onAddToTrip={addRow}
+      />
+      <LeadCaptureModal
+        isOpen={leadModalOpen}
+        onClose={() => setLeadModalOpen(false)}
+        interestType="roteiro"
+        interestName={`Roteiro Personalizado (${tripRows.length} ${tripRows.length === 1 ? "passeio" : "passeios"})`}
+        priceFrom={estimatedTotal}
+        currency="R$"
+        selectedItems={tripRows.map((r) => ({
+          id: r.id,
+          name: r.name,
+          quantity: r.count,
+          unitPrice: r.unitPrice || 0,
+          totalPrice: (r.unitPrice || 0) * r.count,
+        }))}
+        notes={`Data de chegada: ${arrivalDate || "A definir"} | Adultos: ${adults || "2"} | Crianças (12-17): ${childrenCount || "0"} | Infantes (5-11): ${infants511 || "0"} | Infantes (0-4): ${infants04 || "0"}`}
+        customWhatsappMessage={(clientName) => {
+          const formattedTotal =
+            estimatedTotal > 0
+              ? `R$ ${estimatedTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+              : "A calcular";
+          const totalPassengers =
+            Number(adults || 2) +
+            Number(childrenCount || 0) +
+            Number(infants511 || 0) +
+            Number(infants04 || 0);
+
+          const itemsList = tripRows
+            .map(
+              (r) =>
+                `• *${r.name}*\n  Quantidade: ${r.count} pessoa(s) | Subtotal: R$ ${(
+                  (r.unitPrice || 0) * r.count
+                ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+            )
+            .join("\n\n");
+
+          return [
+            "Olá, equipe Tio Nenê! 👋",
+            "",
+            `Meu nome é *${clientName}*.`,
+            "Montei meu roteiro de passeios pelo site e gostaria de uma cotação oficial e confirmação de disponibilidade:",
+            "",
+            "🗓️ *Detalhes da Viagem:*",
+            `• *Chegada em Cancún:* ${arrivalDate || "A definir"}`,
+            `• *Total de Viajantes:* ${totalPassengers} pessoa(s) (${adults || 2} adulto(s)` +
+              (Number(childrenCount) > 0 ? `, ${childrenCount} criança(s)` : "") +
+              (Number(infants511) + Number(infants04) > 0
+                ? `, ${Number(infants511) + Number(infants04)} infante(s)`
+                : "") +
+              ")",
+            "",
+            "📍 *Passeios Escolhidos:*",
+            itemsList,
+            "",
+            `💰 *Total Estimado:* ${formattedTotal}`,
+            "",
+            "Poderiam me passar mais detalhes e as opções de pagamento?",
+          ].join("\n");
+        }}
       />
       <Footer />
     </>

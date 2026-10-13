@@ -17,11 +17,14 @@ import {
 interface LeadCaptureModalProps {
   isOpen: boolean;
   onClose: () => void;
-  interestType: "tour" | "package";
+  interestType: "tour" | "package" | "roteiro";
   interestName: string;
   interestSlug?: string;
   priceFrom?: number;
   currency?: string;
+  selectedItems?: any[];
+  notes?: string;
+  customWhatsappMessage?: (clientName: string) => string;
 }
 
 export default function LeadCaptureModal({
@@ -32,6 +35,9 @@ export default function LeadCaptureModal({
   interestSlug,
   priceFrom,
   currency = "R$",
+  selectedItems,
+  notes,
+  customWhatsappMessage,
 }: LeadCaptureModalProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -53,15 +59,23 @@ export default function LeadCaptureModal({
 
     try {
       // 1. Salvar Lead no Supabase
+      const sourceMap: Record<string, string> = {
+        tour: "site_tour",
+        package: "site_package",
+        roteiro: "site_roteiro",
+      };
+
       const { error } = await supabase.from("leads").insert([
         {
           name: name.trim(),
           phone: fullPhone,
           email: email.trim() || null,
-          source: interestType === "tour" ? "site_tour" : "site_package",
+          source: sourceMap[interestType] || "site_roteiro",
           interest_type: interestType,
           interest_name: interestName,
           interest_slug: interestSlug || null,
+          selected_items: selectedItems || [],
+          notes: notes || null,
           status: "novo",
         },
       ]);
@@ -71,19 +85,26 @@ export default function LeadCaptureModal({
       }
 
       // 2. Montar mensagem personalizada para o WhatsApp
-      const whatsappNumber = (SITE_CONFIG.whatsapp || "529981234567").replace(/\D/g, "");
-      const message = [
-        "Olá, equipe Tio Nenê!",
-        "",
-        `Meu nome é *${name.trim()}*.`,
-        `Gostaria de solicitar informações sobre o ${interestType === "tour" ? "passeio" : "pacote"}:`,
-        `*${interestName}*`,
-        priceFrom ? `*Valor de referência:* ${currency} ${priceFrom.toLocaleString("pt-BR")}` : "",
-        "",
-        "Poderiam me enviar mais detalhes sobre datas e disponibilidade?",
-      ]
-        .filter(Boolean)
-        .join("\n");
+      const fallbackNumber = "5541991998512";
+      const whatsappNumber = (SITE_CONFIG.whatsapp || fallbackNumber).replace(/\D/g, "");
+
+      let message = "";
+      if (customWhatsappMessage) {
+        message = customWhatsappMessage(name.trim());
+      } else {
+        message = [
+          "Olá, equipe Tio Nenê!",
+          "",
+          `Meu nome é *${name.trim()}*.`,
+          `Gostaria de solicitar informações sobre o ${interestType === "tour" ? "passeio" : interestType === "package" ? "pacote" : "roteiro"}:`,
+          `*${interestName}*`,
+          priceFrom ? `*Valor de referência:* ${currency} ${priceFrom.toLocaleString("pt-BR")}` : "",
+          "",
+          "Poderiam me enviar mais detalhes sobre datas e disponibilidade?",
+        ]
+          .filter(Boolean)
+          .join("\n");
+      }
 
       // 3. Redirecionar para o WhatsApp
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;

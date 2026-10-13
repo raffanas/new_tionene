@@ -3056,11 +3056,14 @@
 .catalog {
   height: auto !important;
   min-height: unset !important;
-  width: 69.15vw !important;
+  width: 100% !important;
+  max-width: 1360px !important;
   margin: 0 auto !important;
-  padding-bottom: 3.5vw !important;
+  padding: 20px 24px 60px !important;
   position: relative !important;
+  box-sizing: border-box !important;
 }
+
 
 .catalog__heading {
   height: auto !important;
@@ -3305,16 +3308,178 @@
   color: #FAF7EE !important;
 }
 
-/* Trip Form Natural Flow */
+/* Trip Form Natural Flow & Grid Fix */
 .trip {
   position: static !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
-  margin-top: 2.5vw !important;
-  margin-bottom: 2vw !important;
+  margin-top: 40px !important;
+  margin-bottom: 40px !important;
   width: 100% !important;
   min-height: unset !important;
+  background: var(--soft, #fcfbfa) !important;
+  border-radius: 20px !important;
+  padding: 32px 36px !important;
+  border: 1px solid rgba(61, 24, 31, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(61, 24, 31, 0.04) !important;
+  display: grid !important;
+  grid-template-columns: minmax(270px, 310px) minmax(0, 1fr) minmax(280px, 320px) !important;
+  gap: 32px !important;
+  align-items: start !important;
+  box-sizing: border-box !important;
+}
+
+.trip__travel {
+  width: 100% !important;
+}
+
+.trip__selection {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.trip__rows {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.trip__row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: #ffffff !important;
+  border: 1px solid #e8e2d8 !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  height: auto !important;
+  min-height: 48px !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+  overflow: hidden !important;
+}
+
+.trip__name {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--wine, #3d181f) !important;
+  margin-right: 0 !important;
+}
+
+.trip__actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+.trip__step {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  background: #f7f4ef !important;
+  color: var(--wine, #3d181f) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  border: 0 !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.trip__step:hover {
+  background: var(--wine, #3d181f) !important;
+  color: #ffffff !important;
+}
+
+.trip__quantity {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: var(--wine, #3d181f) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  display: grid !important;
+  place-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+.trip__remove {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 4px !important;
+  cursor: pointer !important;
+  opacity: 0.6 !important;
+  flex-shrink: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.trip__remove:hover {
+  opacity: 1 !important;
+}
+
+.trip__quote {
+  width: 100% !important;
+  padding: 24px 26px !important;
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: 1px solid #e8e2d8 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.trip__price {
+  font-size: 34px !important;
+  font-weight: 800 !important;
+  color: var(--wine, #3d181f) !important;
+  line-height: 1.1 !important;
+  margin: 6px 0 !important;
+}
+
+.trip__note {
+  font-size: 11.5px !important;
+  color: #786568 !important;
+  line-height: 1.35 !important;
+  margin: 4px 0 14px 0 !important;
+}
+
+.trip__quote .button {
+  width: 100% !important;
+  height: 48px !important;
+  border-radius: 99px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  background: var(--cream, #f2e8b7) !important;
+  color: var(--wine, #3d181f) !important;
+  border: 1px solid rgba(61, 24, 31, 0.12) !important;
+  transition: all 0.2s ease !important;
+}
+
+.trip__quote .button:hover {
+  background: var(--clay, #a55e40) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(165, 94, 64, 0.25) !important;
 }
 
 @media (max-width: 1200px) {
@@ -3324,31 +3489,19 @@
   }
 }
 
-@media (max-width: 1024px) {
-  .catalog {
-    width: auto !important;
-    margin: 0 6vw !important;
-  }
-  .catalog__cards {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 16px !important;
-    margin: 24px 0 !important;
-  }
-  .excursion {
-    height: 400px !important;
-    border-radius: 16px !important;
-  }
+@media (max-width: 1100px) {
   .trip {
-    position: static !important;
     grid-template-columns: 1fr 1fr !important;
-    margin-top: 28px !important;
+    gap: 24px !important;
+  }
+  .trip__quote {
+    grid-column: 1 / -1 !important;
+    max-width: 500px !important;
+    margin: 10px auto 0 !important;
   }
 }
 
-@media (max-width: 640px) {
-  .catalog {
-    margin: 0 20px !important;
-  }
+@media (max-width: 720px) {
   .catalog__cards {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
@@ -3358,8 +3511,16 @@
   }
   .trip {
     grid-template-columns: 1fr !important;
+    padding: 20px 16px !important;
+    gap: 20px !important;
+  }
+  .trip__quote {
+    grid-column: 1 / -1 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
   }
 }
+
 
 /* Trip Date Picker Button & Input */
 .trip__date-wrapper {
