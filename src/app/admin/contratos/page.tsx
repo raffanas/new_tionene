@@ -122,6 +122,51 @@ Cláusula 17ª. O contrato tem 1 ano de validade após o fechamento da emissão.
 
 Cláusula 18ª. Os valores de cada passeio podem sofrer alteração de última hora por alta ou baixa temporada sem aviso prévio. Caso isso ocorra, comunicaremos ao CONTRATANTE e daremos a opção de substituição por outro passeio.`;
 
+function parseLeadNotes(notesText?: string | null) {
+  if (!notesText) return {};
+  const result: {
+    arrival_date?: string;
+    departure_date?: string;
+    adults_count?: number;
+    children_count?: number;
+    infants_count?: number;
+    flight_number?: string;
+    flight_time?: string;
+    hotel?: string;
+  } = {};
+
+  const dateMatch = notesText.match(/chegada:?\s*(\d{2}[\/\-]\d{2}[\/\-]\d{4}|\d{4}[\/\-]\d{2}[\/\-]\d{2})/i);
+  if (dateMatch) {
+    const raw = dateMatch[1];
+    if (raw.includes("/")) {
+      const [d, m, y] = raw.split("/");
+      result.arrival_date = `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    } else {
+      result.arrival_date = raw;
+    }
+  }
+
+  const adultsMatch = notesText.match(/adultos?:?\s*(\d+)/i);
+  if (adultsMatch) result.adults_count = Number(adultsMatch[1]);
+
+  const childMatch = notesText.match(/crian[çc]as?(?:\s*\([^)]*\))?:?\s*(\d+)/i);
+  if (childMatch) result.children_count = Number(childMatch[1]);
+
+  const infantMatch = notesText.match(/infantes?(?:\s*\([^)]*\))?:?\s*(\d+)/i);
+  if (infantMatch) result.infants_count = Number(infantMatch[1]);
+
+  const flightMatch = notesText.match(/voo:?\s*([A-Z0-9\s]+?)(?:\||\n|$)/i);
+  if (flightMatch) result.flight_number = flightMatch[1].trim();
+
+  const flightTimeMatch = notesText.match(/hor[áa]rio(?:\s*voo)?:?\s*(\d{2}:\d{2})/i);
+  if (flightTimeMatch) result.flight_time = flightTimeMatch[1].trim();
+
+  const hotelMatch = notesText.match(/hotel:?\s*([^|\n]+)/i);
+  if (hotelMatch) result.hotel = hotelMatch[1].trim();
+
+  return result;
+}
+
 function ContractsContent() {
   const searchParams = useSearchParams();
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -129,9 +174,10 @@ function ContractsContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Suppliers & Tours para seleção
+  // Suppliers, Tours & Clientes para seleção
   const [availableSuppliers, setAvailableSuppliers] = useState<any[]>([]);
   const [availableTours, setAvailableTours] = useState<any[]>([]);
+  const [availableClients, setAvailableClients] = useState<any[]>([]);
 
   // Modais
   const [formModalOpen, setFormModalOpen] = useState(false);
@@ -228,11 +274,166 @@ function ContractsContent() {
           }))
         );
       }
+
+      // 4. Clientes para autocompletar
+      const { data: clientsData } = await supabase
+        .from("clients")
+        .select("id, name, phone, email, cpf, default_hotel, notes")
+        .order("name");
+      if (clientsData) setAvailableClients(clientsData);
     } catch (err) {
       console.error("Erro geral:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Preencher formulário e passeios automaticamente a partir de cliente e lead
+  const populateContractFromClientAndLead = async (
+    clientId?: string,
+    clientName?: string,
+    clientPhone?: string,
+    clientCpf?: string,
+    clientEmail?: string
+  ) => {
+    let associatedLead: any = null;
+    let clientRecord: any = null;
+
+    if (clientId) {
+      const { data: cData } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("id", clientId)
+        .single();
+      if (cData) clientRecord = cData;
+
+      const { data: lData } = await supabase
+        .from("leads")
+        .select("*")
+        .eq("converted_client_id", clientId)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (lData && lData.length > 0) associatedLead = lData[0];
+    }
+
+    const effectivePhone = clientRecord?.phone || clientRecord?.whatsapp || clientPhone || "";
+    const effectiveEmail = clientRecord?.email || clientEmail || "";
+
+    if (!associatedLead && (effectivePhone || effectiveEmail)) {
+      const cleanP = effectivePhone.replace(/\D/g, "");
+      let query = supabase.from("leads").select("*");
+      if (cleanP && effectiveEmail) {
+        query = query.or(`phone.ilike.%${cleanP}%,email.eq.${effectiveEmail}`);
+      } else if (cleanP) {
+        query = query.ilike("phone", `%${cleanP}%`);
+      } else if (effectiveEmail) {
+        query = query.eq("email", effectiveEmail);
+      }
+      const { data: lData } = await query.order("created_at", { ascending: false }).limit(1);
+      if (lData && lData.length > 0) associatedLead = lData[0];
+    }
+
+    const notesToParse = `${associatedLead?.notes || ""} \n ${clientRecord?.notes || ""}`;
+    const parsed = parseLeadNotes(notesToParse);
+
+    const arrival = parsed.arrival_date || new Date().toISOString().split("T")[0];
+    const nextNum = `TN-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const mappedItems: ContractItem[] = [];
+    const rawTours = associatedLead?.selected_items;
+
+    if (Array.isArray(rawTours) && rawTours.length > 0) {
+      rawTours.forEach((it: any, idx: number) => {
+        const match = DEFAULT_TOURS.find(
+          (t) => t.slug === it.id || t.name.toLowerCase() === (it.name || "").toLowerCase()
+        );
+        const itemDate = new Date(new Date(arrival).getTime() + (idx + 1) * 86400000)
+          .toISOString()
+          .split("T")[0];
+        const qty = Number(it.quantity || it.count || parsed.adults_count || 2);
+        const unit = Number(it.unitPrice || match?.priceFrom || 0);
+        const sale = Number(it.totalPrice || unit * qty || 0);
+        const cost = Math.round(sale * 0.65);
+
+        mappedItems.push({
+          tour_id: match?.slug || it.id || undefined,
+          tour_name: it.name || match?.name || "Passeio",
+          tour_date: itemDate,
+          adults_count: parsed.adults_count ?? 2,
+          children_count: parsed.children_count ?? 0,
+          sale_price: sale,
+          cost_applied: cost,
+          calculated_total_cost: cost,
+          supplier_id: availableSuppliers[0]?.id || null,
+          supplier_name: availableSuppliers[0]?.name || "Operadora Local",
+          voucher_ref: "",
+          included: match?.included ? (Array.isArray(match.included) ? match.included.join(", ") : match.included) : "Transporte e acessos inclusos",
+          not_included: match?.notIncluded ? (Array.isArray(match.notIncluded) ? match.notIncluded.join(", ") : match.notIncluded) : "",
+        });
+      });
+    } else if (associatedLead?.interest_name) {
+      const match = DEFAULT_TOURS.find(
+        (t) => t.slug === associatedLead.interest_slug || t.name.toLowerCase() === associatedLead.interest_name.toLowerCase()
+      );
+      const itemDate = new Date(new Date(arrival).getTime() + 86400000).toISOString().split("T")[0];
+      const qty = parsed.adults_count || 2;
+      const unit = Number(match?.priceFrom || 0);
+      const sale = unit * qty;
+      const cost = Math.round(sale * 0.65);
+
+      mappedItems.push({
+        tour_id: match?.slug || undefined,
+        tour_name: associatedLead.interest_name,
+        tour_date: itemDate,
+        adults_count: parsed.adults_count ?? 2,
+        children_count: parsed.children_count ?? 0,
+        sale_price: sale,
+        cost_applied: cost,
+        calculated_total_cost: cost,
+        supplier_id: availableSuppliers[0]?.id || null,
+        supplier_name: availableSuppliers[0]?.name || "Operadora Local",
+        voucher_ref: "",
+        included: match?.included ? (Array.isArray(match.included) ? match.included.join(", ") : match.included) : "",
+        not_included: match?.notIncluded ? (Array.isArray(match.notIncluded) ? match.notIncluded.join(", ") : match.notIncluded) : "",
+      });
+    }
+
+    const totalSum = mappedItems.reduce((acc, it) => acc + (it.sale_price || 0), 0);
+    const deposit = Math.round(totalSum * 0.3);
+    const balance = totalSum - deposit;
+
+    setSelectedContract(null);
+    setFormData({
+      contract_number: nextNum,
+      client_id: clientId || clientRecord?.id || undefined,
+      client_name: clientRecord?.name || clientName || "",
+      client_cpf: clientRecord?.cpf || clientCpf || "",
+      client_phone: effectivePhone,
+      client_email: effectiveEmail,
+      arrival_date: arrival,
+      departure_date: "",
+      arrival_flight_number: parsed.flight_number || "",
+      arrival_flight_time: parsed.flight_time || "",
+      depart_flight_number: "",
+      depart_flight_time: "",
+      adults_count: parsed.adults_count ?? 2,
+      children_count: parsed.children_count ?? 0,
+      infants_count: parsed.infants_count ?? 0,
+      hotels_schedule: (clientRecord?.default_hotel || parsed.hotel)
+        ? [{ hotel_name: clientRecord?.default_hotel || parsed.hotel, checkin: arrival, checkout: "" }]
+        : [{ hotel_name: "", checkin: "", checkout: "" }],
+      deposit_amount: deposit,
+      deposit_observation: "Sinal via PIX",
+      balance_amount: balance,
+      balance_observation: "Saldo a acertar no check-in em Cancún",
+      total_amount: totalSum,
+      currency: "BRL",
+      status: "emitido",
+      terms_clauses: DEFAULT_TERMS,
+      internal_notes: associatedLead ? `Origem: Lead do site (${associatedLead.interest_name || "Roteiro"})` : "",
+    });
+    setFormItems(mappedItems);
+    setFormModalOpen(true);
   };
 
   useEffect(() => {
@@ -243,37 +444,13 @@ function ContractsContent() {
   useEffect(() => {
     const autoOpen = searchParams?.get("autoOpen");
     if (autoOpen === "true") {
-      const nextNum = `TN-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-      setSelectedContract(null);
-      setFormData({
-        contract_number: nextNum,
-        client_id: searchParams?.get("clientId") || undefined,
-        client_name: searchParams?.get("clientName") || "",
-        client_cpf: searchParams?.get("clientCpf") || "",
-        client_phone: searchParams?.get("clientPhone") || "",
-        client_email: searchParams?.get("clientEmail") || "",
-        arrival_date: new Date().toISOString().split("T")[0],
-        departure_date: "",
-        arrival_flight_number: "",
-        arrival_flight_time: "",
-        depart_flight_number: "",
-        depart_flight_time: "",
-        adults_count: 2,
-        children_count: 0,
-        infants_count: 0,
-        hotels_schedule: [{ hotel_name: "", checkin: "", checkout: "" }],
-        deposit_amount: 0,
-        deposit_observation: "Sinal via PIX",
-        balance_amount: 0,
-        balance_observation: "Saldo a acertar no check-in em Cancún",
-        total_amount: 0,
-        currency: "BRL",
-        status: "emitido",
-        terms_clauses: DEFAULT_TERMS,
-        internal_notes: "",
-      });
-      setFormItems([]);
-      setFormModalOpen(true);
+      populateContractFromClientAndLead(
+        searchParams?.get("clientId") || undefined,
+        searchParams?.get("clientName") || "",
+        searchParams?.get("clientPhone") || "",
+        searchParams?.get("clientCpf") || "",
+        searchParams?.get("clientEmail") || ""
+      );
     }
   }, [searchParams]);
 
@@ -398,10 +575,19 @@ function ContractsContent() {
   };
 
   // Salvar Contrato
-  const handleSaveContract = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.client_name || !formData.arrival_date) {
-      alert("Por favor, preencha o Nome do Cliente e a Data de Chegada.");
+  const handleSaveContract = async (
+    e?: React.FormEvent,
+    statusOverride?: "rascunho" | "emitido" | "assinado"
+  ) => {
+    if (e) e.preventDefault();
+    if (!formData.client_name) {
+      alert("Por favor, preencha o Nome do Cliente.");
+      return;
+    }
+
+    const finalStatus = statusOverride || formData.status || "emitido";
+    if (finalStatus !== "rascunho" && !formData.arrival_date) {
+      alert("Por favor, preencha a Data de Chegada para emitir o contrato oficial.");
       return;
     }
 
@@ -495,7 +681,7 @@ function ContractsContent() {
             client_cpf: formData.client_cpf || null,
             client_phone: formData.client_phone || null,
             client_email: formData.client_email || null,
-            arrival_date: formData.arrival_date,
+            arrival_date: formData.arrival_date || new Date().toISOString().split("T")[0],
             departure_date: formData.departure_date || null,
             arrival_flight_number: formData.arrival_flight_number || null,
             arrival_flight_time: formData.arrival_flight_time || null,
@@ -511,7 +697,7 @@ function ContractsContent() {
             balance_observation: formData.balance_observation || null,
             total_amount: formData.total_amount || 0,
             currency: formData.currency || "BRL",
-            status: formData.status || "emitido",
+            status: finalStatus,
             terms_clauses: formData.terms_clauses || null,
             internal_notes: formData.internal_notes || null,
             updated_at: new Date().toISOString(),
@@ -534,7 +720,7 @@ function ContractsContent() {
               client_cpf: formData.client_cpf || null,
               client_phone: formData.client_phone || null,
               client_email: formData.client_email || null,
-              arrival_date: formData.arrival_date,
+              arrival_date: formData.arrival_date || new Date().toISOString().split("T")[0],
               departure_date: formData.departure_date || null,
               arrival_flight_number: formData.arrival_flight_number || null,
               arrival_flight_time: formData.arrival_flight_time || null,
@@ -550,7 +736,7 @@ function ContractsContent() {
               balance_observation: formData.balance_observation || null,
               total_amount: formData.total_amount || 0,
               currency: formData.currency || "BRL",
-              status: formData.status || "emitido",
+              status: finalStatus,
               terms_clauses: formData.terms_clauses || null,
               internal_notes: formData.internal_notes || null,
             },
@@ -589,6 +775,11 @@ function ContractsContent() {
 
       setFormModalOpen(false);
       await loadData();
+      if (finalStatus === "rascunho") {
+        alert("Rascunho de contrato salvo com sucesso! Você pode continuar editando os voos e pagamentos a qualquer momento.");
+      } else {
+        alert(selectedContract ? "Contrato atualizado com sucesso!" : "Contrato oficial gerado e salvo com sucesso!");
+      }
     } catch (err: any) {
       alert("Erro ao salvar contrato: " + (err.message || "Tente novamente"));
     } finally {
@@ -848,26 +1039,67 @@ function ContractsContent() {
             style={{ maxWidth: "860px", maxHeight: "90vh", overflowY: "auto" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="adm-modal-header">
+            <div className="adm-modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
               <div>
                 <span className="admin-brand-tag">CONTRATO DA AGÊNCIA</span>
                 <h3 style={{ fontSize: "20px" }}>
                   {selectedContract ? `Editar Contrato ${formData.contract_number}` : "Novo Contrato de Prestação de Serviços"}
                 </h3>
               </div>
-              <button type="button" className="adm-btn adm-btn-icon adm-btn-outline" onClick={() => setFormModalOpen(false)}>
-                <X size={16} />
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--adm-wine)" }}>Status:</label>
+                  <select
+                    className="adm-select"
+                    style={{ width: "auto", padding: "4px 8px", fontSize: "12px", height: "32px", minWidth: "150px" }}
+                    value={formData.status || "emitido"}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                  >
+                    <option value="rascunho">📝 Rascunho (Pré-contrato)</option>
+                    <option value="emitido">📄 Emitido (Aguardando Assinatura)</option>
+                    <option value="assinado">✅ Assinado</option>
+                    <option value="cancelado">❌ Cancelado</option>
+                  </select>
+                </div>
+                <button type="button" className="adm-btn adm-btn-icon adm-btn-outline" onClick={() => setFormModalOpen(false)}>
+                  <X size={16} />
+                </button>
+              </div>
             </div>
 
             <form onSubmit={handleSaveContract}>
               <div className="adm-modal-body" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
                 {/* 1. DADOS DO CLIENTE */}
                 <div>
-                  <h4 style={{ fontSize: "15px", color: "var(--adm-wine)", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Users size={16} color="var(--adm-clay)" />
-                    <span>1. Dados do Cliente & Passageiros</span>
-                  </h4>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexWrap: "wrap", gap: "8px" }}>
+                    <h4 style={{ fontSize: "15px", color: "var(--adm-wine)", margin: 0, display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Users size={16} color="var(--adm-clay)" />
+                      <span>1. Dados do Cliente & Passageiros</span>
+                    </h4>
+                    {availableClients && availableClients.length > 0 && !selectedContract && (
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontSize: "12px", color: "var(--adm-text-muted)" }}>Carregar Cliente:</span>
+                        <select
+                          className="adm-select"
+                          style={{ width: "auto", minWidth: "200px", padding: "4px 8px", fontSize: "12px" }}
+                          value={formData.client_id || ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val) {
+                              populateContractFromClientAndLead(val);
+                            }
+                          }}
+                        >
+                          <option value="">-- Selecione para preencher --</option>
+                          {availableClients.map((cl) => (
+                            <option key={cl.id} value={cl.id}>
+                              {cl.name} {cl.phone ? `(${cl.phone})` : ""}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
                   <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "12px", marginBottom: "10px" }}>
                     <div>
                       <label className="adm-label">Nome Completo do Cliente *</label>
@@ -1309,13 +1541,33 @@ function ContractsContent() {
                 </div>
               </div>
 
-              <div className="adm-modal-footer">
+              <div className="adm-modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
                 <button type="button" className="adm-btn adm-btn-outline" onClick={() => setFormModalOpen(false)}>
                   Cancelar
                 </button>
-                <button type="submit" className="adm-btn adm-btn-clay" disabled={saving}>
-                  {saving ? "Salvando..." : selectedContract ? "Atualizar Contrato" : "Gerar e Salvar Contrato"}
-                </button>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    type="button"
+                    className="adm-btn adm-btn-outline"
+                    disabled={saving}
+                    onClick={(e) => handleSaveContract(e, "rascunho")}
+                    title="Salva como Rascunho para você ir pré-cadastrando voos, datas e hotéis aos poucos durante o atendimento no WhatsApp"
+                  >
+                    {saving ? "Salvando..." : "📝 Salvar como Rascunho"}
+                  </button>
+                  <button
+                    type="submit"
+                    className="adm-btn adm-btn-clay"
+                    disabled={saving}
+                    onClick={() => {
+                      if (!formData.status || formData.status === "rascunho") {
+                        setFormData((prev) => ({ ...prev, status: "emitido" }));
+                      }
+                    }}
+                  >
+                    {saving ? "Salvando..." : selectedContract ? "Atualizar Contrato" : "Gerar Contrato Oficial"}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

@@ -30,6 +30,7 @@ interface Client {
   phone?: string | null;
   whatsapp?: string | null;
   email?: string | null;
+  default_hotel?: string | null;
   notes?: string | null;
   contract_id?: string | null;
   created_at: string;
@@ -54,6 +55,7 @@ function ClientsContent() {
     cpf: "",
     phone: "",
     email: "",
+    default_hotel: "",
     notes: "",
   });
 
@@ -90,6 +92,7 @@ function ClientsContent() {
       cpf: "",
       phone: "",
       email: "",
+      default_hotel: "",
       notes: "",
     });
     setModalOpen(true);
@@ -102,6 +105,7 @@ function ClientsContent() {
       cpf: client.cpf || "",
       phone: client.phone || client.whatsapp || "",
       email: client.email || "",
+      default_hotel: client.default_hotel || "",
       notes: client.notes || "",
     });
     setModalOpen(true);
@@ -122,6 +126,7 @@ function ClientsContent() {
             phone: formData.phone || null,
             whatsapp: formData.phone || null,
             email: formData.email || null,
+            default_hotel: formData.default_hotel || null,
             notes: formData.notes || null,
             updated_at: new Date().toISOString(),
           })
@@ -136,6 +141,7 @@ function ClientsContent() {
             phone: formData.phone || null,
             whatsapp: formData.phone || null,
             email: formData.email || null,
+            default_hotel: formData.default_hotel || null,
             notes: formData.notes || null,
           },
         ]);
@@ -414,6 +420,17 @@ function ClientsContent() {
                     placeholder="cliente@email.com"
                     value={formData.email || ""}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="adm-label">Hotel / Resort em Cancún</label>
+                  <input
+                    type="text"
+                    className="adm-input"
+                    placeholder="Ex: Riu Cancun, Secrets The Vine, Occidental..."
+                    value={formData.default_hotel || ""}
+                    onChange={(e) => setFormData({ ...formData, default_hotel: e.target.value })}
                   />
                 </div>
 
