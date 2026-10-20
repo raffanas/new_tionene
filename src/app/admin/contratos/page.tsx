@@ -6,6 +6,16 @@ import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { TOURS as DEFAULT_TOURS } from "@/data/tours";
 import {
+  SUPPLIER_COST_OPTIONS,
+  SupplierCostOption
+} from "@/data/supplier-catalog";
+import {
+  calculateSupplierCost,
+  getCostOptionByCode,
+  findDefaultCostOptionForTour,
+  validateCocoBongoDay,
+} from "@/lib/cost-calculator";
+import {
   FileText,
   Plus,
   Search,
@@ -25,7 +35,10 @@ import {
   PlusCircle,
   ChevronRight,
   ExternalLink,
-  ShieldCheck
+  ShieldCheck,
+  Layers,
+  Info,
+  Calculator
 } from "lucide-react";
 
 interface HotelSchedule {
@@ -43,12 +56,19 @@ interface ContractItem {
   children_count: number;
   sale_price: number;
   cost_applied: number;
+  cost_currency?: string;
   calculated_total_cost: number;
   supplier_id?: string;
   supplier_name?: string;
   voucher_ref?: string;
   included?: string;
   not_included?: string;
+  tariff_code?: string;
+  pricing_model?: string;
+  units_count?: number;
+  legs_count?: number;
+  calculation_formula?: string;
+  external_fees?: string;
 }
 
 interface Contract {
@@ -167,6 +187,32 @@ function parseLeadNotes(notesText?: string | null) {
   return result;
 }
 
+function formatDbContractItem(i: any): ContractItem {
+  const codeMatch = i.tariff_code_snapshot || i.notes?.match(/^\[(TN-\d{3})\]/)?.[1];
+  return {
+    id: i.id,
+    tour_id: i.tour_id,
+    tour_name: i.tour_name_snapshot,
+    tour_date: i.tour_date,
+    adults_count: i.adults_count || 1,
+    children_count: i.children_count || 0,
+    units_count: i.units_count || 1,
+    sale_price: Number(i.sale_price || 0),
+    cost_applied: Number(i.cost_applied || 0),
+    cost_currency: i.cost_currency || "USD",
+    calculated_total_cost: Number(i.calculated_total_cost || i.cost_applied || 0),
+    supplier_id: i.supplier_id,
+    supplier_name: i.supplier_name_snapshot,
+    voucher_ref: i.voucher_ref,
+    included: i.tour_included_snapshot,
+    not_included: i.tour_not_included_snapshot,
+    tariff_code: codeMatch || undefined,
+    pricing_model: i.pricing_model_snapshot || i.cost_type,
+    calculation_formula: i.notes || undefined,
+    external_fees: i.external_fees_snapshot || undefined,
+  };
+}
+
 function ContractsContent() {
   const searchParams = useSearchParams();
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -247,22 +293,7 @@ function ContractsContent() {
         setContracts(
           contractsData.map((c: any) => ({
             ...c,
-            items: (c.contract_items || []).map((i: any) => ({
-              id: i.id,
-              tour_id: i.tour_id,
-              tour_name: i.tour_name_snapshot,
-              tour_date: i.tour_date,
-              adults_count: i.adults_count,
-              children_count: i.children_count,
-              sale_price: Number(i.sale_price || 0),
-              cost_applied: Number(i.cost_applied || 0),
-              calculated_total_cost: Number(i.calculated_total_cost || 0),
-              supplier_id: i.supplier_id,
-              supplier_name: i.supplier_name_snapshot,
-              voucher_ref: i.voucher_ref,
-              included: i.tour_included_snapshot,
-              not_included: i.tour_not_included_snapshot,
-            })),
+            items: (c.contract_items || []).map(formatDbContractItem),
           }))
         );
       }
@@ -366,7 +397,33 @@ function ContractsContent() {
         const qty = Number(it.quantity || it.count || parsed.adults_count || 2);
         const unit = Number(it.unitPrice || match?.priceFrom || 0);
         const sale = Number(it.totalPrice || unit * qty || 0);
-        const cost = Math.round(sale * 0.65);
+
+        const defaultCostOpt = findDefaultCostOptionForTour(match?.name || it.name || "");
+        let costApplied = 0;
+        let costCurrency = "USD";
+        let totalCost = 0;
+        let formula = "";
+        let supplierName = "Operadora Local";
+        let tariffCode: string | undefined = defaultCostOpt?.code;
+        let pricingModel = defaultCostOpt?.pricingModel;
+
+        if (defaultCostOpt) {
+          const calc = calculateSupplierCost(defaultCostOpt.code, {
+            adultsCount: parsed.adults_count ?? 2,
+            childrenCount: parsed.children_count ?? 0,
+            serviceDate: itemDate,
+          });
+          costApplied = calc.unitCostAdult || calc.calculatedTotalCost;
+          costCurrency = calc.currency;
+          totalCost = calc.calculatedTotalCost;
+          formula = calc.formulaApplied;
+          supplierName = calc.supplierName;
+        }
+
+        const matchedSupplier = availableSuppliers.find((s) =>
+          s.name.toLowerCase().includes(supplierName.toLowerCase()) ||
+          supplierName.toLowerCase().includes(s.name.toLowerCase())
+        );
 
         mappedItems.push({
           tour_id: match?.slug || it.id || undefined,
@@ -374,11 +431,17 @@ function ContractsContent() {
           tour_date: itemDate,
           adults_count: parsed.adults_count ?? 2,
           children_count: parsed.children_count ?? 0,
+          units_count: 1,
           sale_price: sale,
-          cost_applied: cost,
-          calculated_total_cost: cost,
-          supplier_id: availableSuppliers[0]?.id || null,
-          supplier_name: availableSuppliers[0]?.name || "Operadora Local",
+          cost_applied: costApplied,
+          cost_currency: costCurrency,
+          calculated_total_cost: totalCost,
+          tariff_code: tariffCode,
+          pricing_model: pricingModel,
+          calculation_formula: formula,
+          external_fees: defaultCostOpt?.externalFeesNote || "",
+          supplier_id: matchedSupplier?.id || availableSuppliers[0]?.id || null,
+          supplier_name: supplierName,
           voucher_ref: "",
           included: match?.included ? (Array.isArray(match.included) ? match.included.join(", ") : match.included) : "Transporte e acessos inclusos",
           not_included: match?.notIncluded ? (Array.isArray(match.notIncluded) ? match.notIncluded.join(", ") : match.notIncluded) : "",
@@ -392,7 +455,33 @@ function ContractsContent() {
       const qty = parsed.adults_count || 2;
       const unit = Number(match?.priceFrom || 0);
       const sale = unit * qty;
-      const cost = Math.round(sale * 0.65);
+
+      const defaultCostOpt = findDefaultCostOptionForTour(match?.name || associatedLead.interest_name);
+      let costApplied = 0;
+      let costCurrency = "USD";
+      let totalCost = 0;
+      let formula = "";
+      let supplierName = "Operadora Local";
+      let tariffCode: string | undefined = defaultCostOpt?.code;
+      let pricingModel = defaultCostOpt?.pricingModel;
+
+      if (defaultCostOpt) {
+        const calc = calculateSupplierCost(defaultCostOpt.code, {
+          adultsCount: parsed.adults_count ?? 2,
+          childrenCount: parsed.children_count ?? 0,
+          serviceDate: itemDate,
+        });
+        costApplied = calc.unitCostAdult || calc.calculatedTotalCost;
+        costCurrency = calc.currency;
+        totalCost = calc.calculatedTotalCost;
+        formula = calc.formulaApplied;
+        supplierName = calc.supplierName;
+      }
+
+      const matchedSupplier = availableSuppliers.find((s) =>
+        s.name.toLowerCase().includes(supplierName.toLowerCase()) ||
+        supplierName.toLowerCase().includes(s.name.toLowerCase())
+      );
 
       mappedItems.push({
         tour_id: match?.slug || undefined,
@@ -400,11 +489,17 @@ function ContractsContent() {
         tour_date: itemDate,
         adults_count: parsed.adults_count ?? 2,
         children_count: parsed.children_count ?? 0,
+        units_count: 1,
         sale_price: sale,
-        cost_applied: cost,
-        calculated_total_cost: cost,
-        supplier_id: availableSuppliers[0]?.id || null,
-        supplier_name: availableSuppliers[0]?.name || "Operadora Local",
+        cost_applied: costApplied,
+        cost_currency: costCurrency,
+        calculated_total_cost: totalCost,
+        tariff_code: tariffCode,
+        pricing_model: pricingModel,
+        calculation_formula: formula,
+        external_fees: defaultCostOpt?.externalFeesNote || "",
+        supplier_id: matchedSupplier?.id || availableSuppliers[0]?.id || null,
+        supplier_name: supplierName,
         voucher_ref: "",
         included: match?.included ? (Array.isArray(match.included) ? match.included.join(", ") : match.included) : "",
         not_included: match?.notIncluded ? (Array.isArray(match.notIncluded) ? match.notIncluded.join(", ") : match.notIncluded) : "",
@@ -527,22 +622,7 @@ function ContractsContent() {
             if (data) {
               const formatted: Contract = {
                 ...data,
-                items: (data.contract_items || []).map((i: any) => ({
-                  id: i.id,
-                  tour_id: i.tour_id,
-                  tour_name: i.tour_name_snapshot,
-                  tour_date: i.tour_date,
-                  adults_count: i.adults_count,
-                  children_count: i.children_count,
-                  sale_price: Number(i.sale_price || 0),
-                  cost_applied: Number(i.cost_applied || 0),
-                  calculated_total_cost: Number(i.calculated_total_cost || 0),
-                  supplier_id: i.supplier_id,
-                  supplier_name: i.supplier_name_snapshot,
-                  voucher_ref: i.voucher_ref,
-                  included: i.tour_included_snapshot,
-                  not_included: i.tour_not_included_snapshot,
-                })),
+                items: (data.contract_items || []).map(formatDbContractItem),
               };
               if (printMode) openPrintModal(formatted);
               else openEditModal(formatted);
@@ -573,22 +653,7 @@ function ContractsContent() {
               clientId: clientId,
               existingContracts: existing.map((c: any) => ({
                 ...c,
-                items: (c.contract_items || []).map((i: any) => ({
-                  id: i.id,
-                  tour_id: i.tour_id,
-                  tour_name: i.tour_name_snapshot,
-                  tour_date: i.tour_date,
-                  adults_count: i.adults_count,
-                  children_count: i.children_count,
-                  sale_price: Number(i.sale_price || 0),
-                  cost_applied: Number(i.cost_applied || 0),
-                  calculated_total_cost: Number(i.calculated_total_cost || 0),
-                  supplier_id: i.supplier_id,
-                  supplier_name: i.supplier_name_snapshot,
-                  voucher_ref: i.voucher_ref,
-                  included: i.tour_included_snapshot,
-                  not_included: i.tour_not_included_snapshot,
-                })),
+                items: (c.contract_items || []).map(formatDbContractItem),
               })),
             });
           } else {
@@ -666,7 +731,7 @@ function ContractsContent() {
     setFormData({ ...formData, hotels_schedule: list });
   };
 
-  // Adicionar Passeio no Contrato
+  // Adicionar Passeio do Catálogo no Contrato
   const addTourItem = (tourSlugOrId: string) => {
     const t = availableTours.find((x) => x.id === tourSlugOrId || x.slug === tourSlugOrId);
     if (!t) return;
@@ -675,21 +740,113 @@ function ContractsContent() {
     const children = Number(formData.children_count || 0);
     const unitPrice = Number(t.price || 0);
     const salePrice = unitPrice * adults + unitPrice * children * 0.8;
+    const itemDate = formData.arrival_date || new Date().toISOString().split("T")[0];
+
+    const defaultCostOpt = findDefaultCostOptionForTour(t.slug || t.name);
+    let costApplied = 0;
+    let costCurrency = "USD";
+    let totalCost = 0;
+    let formula = "";
+    let supplierName = "Operadora Local";
+    let tariffCode: string | undefined = defaultCostOpt?.code;
+    let pricingModel = defaultCostOpt?.pricingModel;
+
+    if (defaultCostOpt) {
+      const calc = calculateSupplierCost(defaultCostOpt.code, {
+        adultsCount: adults,
+        childrenCount: children,
+        serviceDate: itemDate,
+      });
+      costApplied = calc.unitCostAdult || calc.calculatedTotalCost;
+      costCurrency = calc.currency;
+      totalCost = calc.calculatedTotalCost;
+      formula = calc.formulaApplied;
+      supplierName = calc.supplierName;
+    }
+
+    const matchedSupplier = availableSuppliers.find((s) =>
+      s.name.toLowerCase().includes(supplierName.toLowerCase()) ||
+      supplierName.toLowerCase().includes(s.name.toLowerCase())
+    );
 
     const newItem: ContractItem = {
       tour_id: t.id,
       tour_name: t.name,
-      tour_date: formData.arrival_date || new Date().toISOString().split("T")[0],
+      tour_date: itemDate,
       adults_count: adults,
       children_count: children,
+      units_count: 1,
       sale_price: salePrice,
-      cost_applied: Math.round(salePrice * 0.65), // Custo padrão estimado caso não haja tabela
-      calculated_total_cost: Math.round(salePrice * 0.65),
-      supplier_id: availableSuppliers[0]?.id || null,
-      supplier_name: availableSuppliers[0]?.name || "Operadora Local",
+      cost_applied: costApplied,
+      cost_currency: costCurrency,
+      calculated_total_cost: totalCost,
+      supplier_id: matchedSupplier?.id || availableSuppliers[0]?.id || null,
+      supplier_name: supplierName,
       voucher_ref: "",
+      tariff_code: tariffCode,
+      pricing_model: pricingModel,
+      calculation_formula: formula,
+      external_fees: defaultCostOpt?.externalFeesNote || "",
       included: Array.isArray(t.included) ? t.included.join(", ") : t.included || "",
       not_included: Array.isArray(t.not_included) ? t.not_included.join(", ") : t.not_included || "",
+    };
+
+    const updatedItems = [...formItems, newItem];
+    setFormItems(updatedItems);
+    recalcTotal(updatedItems);
+  };
+
+  // Adicionar Opção Direta de Fornecedor Homologado (TN-001 a TN-042)
+  const addSupplierOptionItem = (optionCode: string) => {
+    const opt = getCostOptionByCode(optionCode);
+    if (!opt) return;
+
+    const adults = Number(formData.adults_count || 2);
+    const children = Number(formData.children_count || 0);
+    const itemDate = formData.arrival_date || new Date().toISOString().split("T")[0];
+
+    const calc = calculateSupplierCost(opt.code, {
+      adultsCount: adults,
+      childrenCount: children,
+      unitsCount: 1,
+      legsCount: 1,
+      serviceDate: itemDate,
+    });
+
+    const matchedSupplier = availableSuppliers.find((s) =>
+      s.name.toLowerCase().includes(opt.supplierName.toLowerCase()) ||
+      opt.supplierName.toLowerCase().includes(s.name.toLowerCase())
+    );
+
+    // Estimativa de venda sugerida para transfer ou passeio (editável pelo operador)
+    let suggestedSale = 0;
+    if (opt.currency === "USD") {
+      suggestedSale = Math.round(calc.calculatedTotalCost * 6.5);
+    } else if (opt.currency === "MXN") {
+      suggestedSale = Math.round(calc.calculatedTotalCost * 0.35);
+    }
+
+    const newItem: ContractItem = {
+      tour_id: undefined,
+      tour_name: `[${opt.supplierName}] ${opt.serviceName}${opt.variant ? ` (${opt.variant})` : ""}`,
+      tour_date: itemDate,
+      adults_count: adults,
+      children_count: children,
+      units_count: 1,
+      legs_count: 1,
+      sale_price: suggestedSale,
+      cost_applied: calc.unitCostAdult || calc.calculatedTotalCost,
+      cost_currency: calc.currency,
+      calculated_total_cost: calc.calculatedTotalCost,
+      supplier_id: matchedSupplier?.id || null,
+      supplier_name: opt.supplierName,
+      voucher_ref: "",
+      tariff_code: opt.code,
+      pricing_model: opt.pricingModel,
+      calculation_formula: calc.formulaApplied,
+      included: opt.included || "",
+      not_included: opt.notIncluded || "",
+      external_fees: opt.externalFeesNote || "",
     };
 
     const updatedItems = [...formItems, newItem];
@@ -706,7 +863,39 @@ function ContractsContent() {
 
   const updateTourItem = (idx: number, field: keyof ContractItem, val: any) => {
     const list = [...formItems];
-    list[idx] = { ...list[idx], [field]: val };
+    const current = { ...list[idx], [field]: val };
+
+    // Se alterou pax, units, legs, data ou tariff_code e existe código homologado, recalcula automaticamente
+    if (
+      (field === "adults_count" || field === "children_count" || field === "units_count" || field === "legs_count" || field === "tour_date" || field === "tariff_code") &&
+      current.tariff_code
+    ) {
+      const calc = calculateSupplierCost(current.tariff_code, {
+        adultsCount: Number(current.adults_count || 1),
+        childrenCount: Number(current.children_count || 0),
+        unitsCount: Number(current.units_count || 1),
+        legsCount: Number(current.legs_count || 1),
+        serviceDate: current.tour_date,
+        manualCostOverride: current.cost_applied,
+      });
+
+      current.cost_applied = calc.unitCostAdult || calc.calculatedTotalCost;
+      current.calculated_total_cost = calc.calculatedTotalCost;
+      current.cost_currency = calc.currency;
+      current.calculation_formula = calc.formulaApplied;
+      current.pricing_model = calc.pricingModel;
+    } else if (field === "cost_applied") {
+      // Ajuste manual de custo
+      const adults = Number(current.adults_count || 1);
+      const units = Number(current.units_count || 1);
+      if (current.pricing_model === "per_person" || !current.pricing_model) {
+        current.calculated_total_cost = Number(val) * adults;
+      } else {
+        current.calculated_total_cost = Number(val) * units;
+      }
+    }
+
+    list[idx] = current;
 
     if (field === "sale_price" || field === "cost_applied") {
       recalcTotal(list);
@@ -911,10 +1100,23 @@ function ContractsContent() {
           supplier_name_snapshot: item.supplier_name || null,
           adults_count: item.adults_count || formData.adults_count || 1,
           children_count: item.children_count || formData.children_count || 0,
+          units_count: item.units_count || 1,
           sale_price: item.sale_price || 0,
           cost_applied: item.cost_applied || 0,
+          cost_currency: item.cost_currency || "USD",
+          cost_type: item.pricing_model || "per_person",
           calculated_total_cost: item.calculated_total_cost || item.cost_applied || 0,
-          cost_status: "calculado",
+          cost_status: item.tariff_code ? "calculado" : "pendente",
+          tariff_code_snapshot: item.tariff_code || null,
+          pricing_model_snapshot: item.pricing_model || "per_person",
+          external_fees_snapshot: item.external_fees || null,
+          calculation_breakdown: {
+            formula: item.calculation_formula || "",
+            tariff_code: item.tariff_code || null,
+          },
+          notes: item.tariff_code
+            ? `[${item.tariff_code}] ${item.calculation_formula || ""}${item.external_fees ? ` | Taxas ext: ${item.external_fees}` : ""}`
+            : (item.calculation_formula || null),
           voucher_ref: item.voucher_ref || null,
           status: "agendado",
         }));
@@ -1465,12 +1667,36 @@ function ContractsContent() {
                         <CheckCircle2 size={16} color="var(--adm-clay)" />
                         <span>4. Passeios e Serviços Contratados</span>
                       </h4>
-                      <p style={{ fontSize: "12px", color: "var(--adm-text-muted)" }}>
-                        Selecione passeios do catálogo. Os custos de fornecedor são calculados automaticamente.
+                      <p style={{ fontSize: "12px", color: "var(--adm-text-muted)", marginTop: "2px" }}>
+                        Selecione passeios gerais do site ou serviços homologados (TN-001 a TN-042). Os custos e moedas (USD/MXN/BRL) são calculados automaticamente sem sobrescrever o original.
                       </p>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                      {/* Seletor de Opções Homologadas TN-001 a TN-042 */}
+                      <select
+                        className="adm-select"
+                        style={{ width: "auto", fontWeight: 600, borderColor: "var(--adm-wine)", color: "var(--adm-wine)", background: "#fff" }}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            addSupplierOptionItem(e.target.value);
+                            e.target.value = "";
+                          }
+                        }}
+                      >
+                        <option value="">+ Adicionar Serviço de Fornecedor (TN-001 a TN-042)...</option>
+                        {Array.from(new Set(SUPPLIER_COST_OPTIONS.map((o) => o.supplierName))).map((supName) => (
+                          <optgroup key={supName} label={`Fornecedor: ${supName}`}>
+                            {SUPPLIER_COST_OPTIONS.filter((o) => o.supplierName === supName).map((o) => (
+                              <option key={o.code} value={o.code}>
+                                [{o.code}] {o.serviceName} {o.variant ? `(${o.variant})` : ""} — {o.currency} {o.costAdult || o.costFixed || "Sob cotação"}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
+
+                      {/* Seletor de Passeio Geral */}
                       <select
                         className="adm-select"
                         style={{ width: "auto" }}
@@ -1481,7 +1707,7 @@ function ContractsContent() {
                           }
                         }}
                       >
-                        <option value="">+ Selecionar Passeio do Catálogo...</option>
+                        <option value="">+ Selecionar Passeio do Catálogo Geral...</option>
                         {availableTours.map((t) => (
                           <option key={t.id} value={t.slug || t.id}>
                             {t.name} (R$ {t.price})
@@ -1492,99 +1718,237 @@ function ContractsContent() {
                   </div>
 
                   {formItems.length === 0 ? (
-                    <div style={{ padding: "20px", background: "var(--adm-surface-alt)", borderRadius: "10px", textAlign: "center", border: "1px dashed var(--adm-border)" }}>
-                      <span style={{ fontSize: "13px", color: "var(--adm-text-muted)" }}>Nenhum passeio adicionado. Selecione no menu acima.</span>
+                    <div style={{ padding: "24px", background: "var(--adm-surface-alt)", borderRadius: "10px", textAlign: "center", border: "1px dashed var(--adm-border)" }}>
+                      <span style={{ fontSize: "13px", color: "var(--adm-text-muted)" }}>
+                        Nenhum passeio ou serviço adicionado ao contrato. Utilize os seletores acima para incluir passeios ou transfers.
+                      </span>
                     </div>
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                      {formItems.map((item, itIdx) => (
-                        <div
-                          key={itIdx}
-                          style={{
-                            padding: "12px 14px",
-                            background: "var(--adm-surface-alt)",
-                            borderRadius: "10px",
-                            border: "1px solid var(--adm-border)",
-                            display: "grid",
-                            gridTemplateColumns: "130px 1fr 140px 140px 100px auto",
-                            gap: "8px",
-                            alignItems: "center"
-                          }}
-                        >
-                          <div>
-                            <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)" }}>Data do Passeio</label>
-                            <input
-                              type="date"
-                              className="adm-input"
-                              value={item.tour_date}
-                              onChange={(e) => updateTourItem(itIdx, "tour_date", e.target.value)}
-                            />
-                          </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {formItems.map((item, itIdx) => {
+                        const cocoCheck = item.tariff_code?.startsWith("TN-00")
+                          ? validateCocoBongoDay(item.tariff_code, item.tour_date)
+                          : { valid: true };
 
-                          <div>
-                            <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)" }}>Passeio</label>
-                            <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--adm-wine)" }}>{item.tour_name}</div>
-                            <input
-                              type="text"
-                              className="adm-input"
-                              style={{ fontSize: "11px", height: "26px", marginTop: "2px" }}
-                              placeholder="Inclusões resumidas..."
-                              value={item.included || ""}
-                              onChange={(e) => updateTourItem(itIdx, "included", e.target.value)}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)" }}>Fornecedor</label>
-                            <select
-                              className="adm-select"
-                              style={{ fontSize: "12px", height: "34px" }}
-                              value={item.supplier_id || ""}
-                              onChange={(e) => {
-                                const sup = availableSuppliers.find((s) => s.id === e.target.value);
-                                updateTourItem(itIdx, "supplier_id", e.target.value);
-                                if (sup) updateTourItem(itIdx, "supplier_name", sup.name);
+                        return (
+                          <div
+                            key={itIdx}
+                            style={{
+                              padding: "14px 16px",
+                              background: "#ffffff",
+                              borderRadius: "10px",
+                              border: "1px solid var(--adm-border)",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "10px",
+                            }}
+                          >
+                            {/* Linha Principal de Dados */}
+                            <div
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns: "130px 1.4fr 120px 130px 140px 140px auto",
+                                gap: "10px",
+                                alignItems: "center",
                               }}
                             >
-                              <option value="">Selecione...</option>
-                              {availableSuppliers.map((s) => (
-                                <option key={s.id} value={s.id}>
-                                  {s.name}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+                              {/* 1. Data */}
+                              <div>
+                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                  Data do Serviço
+                                </label>
+                                <input
+                                  type="date"
+                                  className="adm-input"
+                                  value={item.tour_date}
+                                  onChange={(e) => updateTourItem(itIdx, "tour_date", e.target.value)}
+                                />
+                              </div>
 
-                          <div>
-                            <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)" }}>Preço Venda (Total)</label>
-                            <input
-                              type="number"
-                              className="adm-input"
-                              value={item.sale_price}
-                              onChange={(e) => updateTourItem(itIdx, "sale_price", Number(e.target.value))}
-                            />
-                          </div>
+                              {/* 2. Nome do Serviço & Código Canônico */}
+                              <div>
+                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                  Serviço & Fornecedor
+                                </label>
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                                  {item.tariff_code ? (
+                                    <span
+                                      className="adm-badge adm-badge-success"
+                                      style={{ fontSize: "10px", fontWeight: 700, padding: "2px 6px" }}
+                                    >
+                                      {item.tariff_code}
+                                    </span>
+                                  ) : (
+                                    <span
+                                      className="adm-badge adm-badge-neutral"
+                                      style={{ fontSize: "10px", padding: "2px 6px" }}
+                                    >
+                                      Personalizado
+                                    </span>
+                                  )}
+                                  <span style={{ fontWeight: 600, fontSize: "13px", color: "var(--adm-wine)" }}>
+                                    {item.tour_name}
+                                  </span>
+                                </div>
+                                <div style={{ fontSize: "11px", color: "var(--adm-text-muted)", marginTop: "2px" }}>
+                                  Fornecedor: <strong>{item.supplier_name || "Não informado"}</strong>
+                                </div>
+                              </div>
 
-                          <div>
-                            <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)" }}>Custo Fornec.</label>
-                            <input
-                              type="number"
-                              className="adm-input"
-                              value={item.cost_applied}
-                              onChange={(e) => updateTourItem(itIdx, "cost_applied", Number(e.target.value))}
-                            />
-                          </div>
+                              {/* 3. Passageiros / Unidades */}
+                              <div>
+                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                  Adultos / Crianças
+                                </label>
+                                <div style={{ display: "flex", gap: "4px" }}>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    className="adm-input"
+                                    title="Adultos"
+                                    placeholder="Ad"
+                                    value={item.adults_count}
+                                    onChange={(e) => updateTourItem(itIdx, "adults_count", Number(e.target.value))}
+                                  />
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    className="adm-input"
+                                    title="Crianças"
+                                    placeholder="Cr"
+                                    value={item.children_count}
+                                    onChange={(e) => updateTourItem(itIdx, "children_count", Number(e.target.value))}
+                                  />
+                                </div>
+                              </div>
 
-                          <button
-                            type="button"
-                            className="adm-btn adm-btn-icon adm-btn-outline adm-btn-sm"
-                            style={{ color: "var(--adm-rose)" }}
-                            onClick={() => removeTourItem(itIdx)}
-                          >
-                            <Trash2 size={13} />
-                          </button>
-                        </div>
-                      ))}
+                              {/* 4. Fornecedor Vinculado */}
+                              <div>
+                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                  Operador
+                                </label>
+                                <select
+                                  className="adm-select"
+                                  style={{ fontSize: "11px", height: "34px" }}
+                                  value={item.supplier_id || ""}
+                                  onChange={(e) => {
+                                    const sup = availableSuppliers.find((s) => s.id === e.target.value);
+                                    updateTourItem(itIdx, "supplier_id", e.target.value);
+                                    if (sup) updateTourItem(itIdx, "supplier_name", sup.name);
+                                  }}
+                                >
+                                  <option value="">Selecione...</option>
+                                  {availableSuppliers.map((s) => (
+                                    <option key={s.id} value={s.id}>
+                                      {s.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+
+                              {/* 5. Preço Venda Total R$ */}
+                              <div>
+                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                  Venda (Total R$)
+                                </label>
+                                <input
+                                  type="number"
+                                  className="adm-input"
+                                  style={{ fontWeight: 600 }}
+                                  value={item.sale_price}
+                                  onChange={(e) => updateTourItem(itIdx, "sale_price", Number(e.target.value))}
+                                />
+                              </div>
+
+                              {/* 6. Custo Fornecedor com Moeda */}
+                              <div>
+                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                  Custo ({item.cost_currency || "USD"})
+                                </label>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                  <input
+                                    type="number"
+                                    step="0.01"
+                                    className="adm-input"
+                                    style={{ fontWeight: 600, color: "var(--adm-wine)" }}
+                                    title="Custo Unitário ou Aplicado"
+                                    value={item.cost_applied}
+                                    onChange={(e) => updateTourItem(itIdx, "cost_applied", Number(e.target.value))}
+                                  />
+                                  <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                    Total: <strong>{item.cost_currency || "USD"} {Number(item.calculated_total_cost || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong>
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* 7. Excluir */}
+                              <button
+                                type="button"
+                                className="adm-btn adm-btn-icon adm-btn-outline adm-btn-sm"
+                                style={{ color: "var(--adm-rose)" }}
+                                onClick={() => removeTourItem(itIdx)}
+                                title="Remover Passeio"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+
+                            {/* Linha de Auditoria, Inclusões e Alertas */}
+                            <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingTop: "8px", borderTop: "1px dashed var(--adm-border)" }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", fontSize: "11px" }}>
+                                  {item.calculation_formula && (
+                                    <span style={{ color: "var(--adm-text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+                                      <Calculator size={13} color="var(--adm-clay)" />
+                                      <strong>Fórmula:</strong> {item.calculation_formula}
+                                    </span>
+                                  )}
+                                  {item.external_fees && (
+                                    <span style={{ color: "#d97706", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}>
+                                      <AlertCircle size={13} />
+                                      <strong>Taxa adicional:</strong> {item.external_fees}
+                                    </span>
+                                  )}
+                                  {!cocoCheck.valid && (
+                                    <span style={{ color: "#b91c1c", display: "flex", alignItems: "center", gap: "4px", fontWeight: 700 }}>
+                                      <AlertCircle size={13} />
+                                      {cocoCheck.reason}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Reatribuir Código TN-xxx se desejado */}
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <span style={{ fontSize: "10px", color: "var(--adm-text-muted)" }}>Tabela:</span>
+                                  <select
+                                    className="adm-select"
+                                    style={{ fontSize: "10px", height: "24px", padding: "0 6px", width: "auto" }}
+                                    value={item.tariff_code || ""}
+                                    onChange={(e) => updateTourItem(itIdx, "tariff_code", e.target.value || undefined)}
+                                  >
+                                    <option value="">(Sem tabela vinculada)</option>
+                                    {SUPPLIER_COST_OPTIONS.map((o) => (
+                                      <option key={o.code} value={o.code}>
+                                        {o.code} — {o.supplierName} ({o.serviceName})
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <input
+                                type="text"
+                                className="adm-input"
+                                style={{ fontSize: "11px", height: "26px" }}
+                                placeholder="Inclusões resumidas que aparecerão no contrato do cliente..."
+                                value={item.included || ""}
+                                onChange={(e) => updateTourItem(itIdx, "included", e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

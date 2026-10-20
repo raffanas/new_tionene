@@ -34,6 +34,8 @@ interface SupplierCostItem {
   cost_currency: string;
   calculated_total_cost: number;
   cost_status: string;
+  tariff_code?: string;
+  calculation_formula?: string;
   voucher_ref?: string;
   supplier_id: string;
   supplier_name: string;
@@ -95,6 +97,8 @@ export default function AdminSupplierCostsPage() {
           calculated_total_cost,
           cost_status,
           voucher_ref,
+          notes,
+          tariff_code_snapshot,
           contracts (
             contract_number,
             client_name
@@ -122,6 +126,8 @@ export default function AdminSupplierCostsPage() {
             cost_currency: it.cost_currency || "BRL",
             calculated_total_cost: Number(it.calculated_total_cost || it.cost_applied || 0),
             cost_status: it.cost_status || "calculado",
+            tariff_code: it.tariff_code_snapshot || it.notes?.match(/^\[(TN-\d{3})\]/)?.[1] || undefined,
+            calculation_formula: it.notes || undefined,
             voucher_ref: it.voucher_ref,
             supplier_id: it.supplier_id || "unassigned",
             supplier_name: it.supplier_name_snapshot || "Fornecedor não informado",
@@ -398,7 +404,22 @@ export default function AdminSupplierCostsPage() {
                     </td>
 
                     <td>
-                      <div style={{ fontWeight: 600, color: "var(--adm-wine)" }}>{item.tour_name}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                        {item.tariff_code && (
+                          <span
+                            className="adm-badge adm-badge-success"
+                            style={{ fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}
+                          >
+                            {item.tariff_code}
+                          </span>
+                        )}
+                        <span style={{ fontWeight: 600, color: "var(--adm-wine)" }}>{item.tour_name}</span>
+                      </div>
+                      {item.calculation_formula && (
+                        <div style={{ fontSize: "11px", color: "var(--adm-text-muted)", marginTop: "2px" }}>
+                          {item.calculation_formula}
+                        </div>
+                      )}
                     </td>
 
                     <td>

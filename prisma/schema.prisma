@@ -101,3 +101,209 @@ model SiteSetting {
 
   @@map("site_settings")
 }
+
+// -------------------------------------------------------------
+// Backoffice: Fornecedores e Catálogo de Custos (TN-001 a TN-042)
+// -------------------------------------------------------------
+model Supplier {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String               @unique
+  tradeName       String?              @map("trade_name")
+  category        String?
+  contactName     String?              @map("contact_name")
+  email           String?
+  phone           String?
+  whatsapp        String?
+  currencyDefault String               @default("USD") @map("currency_default")
+  paymentTerms    String?              @map("payment_terms")
+  bankDetails     String?              @map("bank_details")
+  notes           String?
+  active          Boolean              @default(true)
+  status          String               @default("ativo")
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  costOptions     SupplierCostOption[]
+  contractItems   ContractItem[]
+  payments        SupplierPayment[]
+
+  @@map("suppliers")
+}
+
+model SupplierCostOption {
+  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code             String                 @unique // TN-001 a TN-042
+  supplierId       String                 @map("supplier_id") @db.Uuid
+  supplierName     String                 @map("supplier_name")
+  serviceName      String                 @map("service_name")
+  variant          String?
+  pricingModel     String                 @default("per_person") @map("pricing_model")
+  costAdult        Decimal?               @map("cost_adult") @db.Decimal(10, 2)
+  costChild        Decimal?               @map("cost_child") @db.Decimal(10, 2)
+  costInfant       Decimal?               @map("cost_infant") @db.Decimal(10, 2)
+  costFixed        Decimal?               @map("cost_fixed") @db.Decimal(10, 2)
+  currency         String                 @default("USD")
+  pricingRule      String?                @map("pricing_rule")
+  externalFeesNote String?                @map("external_fees_note")
+  operationDays    String?                @map("operation_days")
+  operationHours   String?                @map("operation_hours")
+  duration         String?
+  description      String?
+  included         String?
+  notIncluded      String?                @map("not_included")
+  operationalNotes String?                @map("operational_notes")
+  commercialNotes  String?                @map("commercial_notes")
+  pendingIssues    String?                @map("pending_issues")
+  sourceReference  String?                @map("source_reference")
+  validationStatus String                 @default("revisado") @map("validation_status")
+  publicTourSlug   String?                @map("public_tour_slug")
+  active           Boolean                @default(true)
+  createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  supplier         Supplier               @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  auditLogs        SupplierCostAuditLog[]
+  contractItems    ContractItem[]
+
+  @@index([supplierId])
+  @@index([validationStatus])
+  @@map("supplier_cost_options")
+}
+
+model SupplierCostAuditLog {
+  id                   String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supplierCostOptionId String?             @map("supplier_cost_option_id") @db.Uuid
+  optionCode           String              @map("option_code")
+  changedBy            String?             @map("changed_by")
+  changeType           String              @map("change_type")
+  previousData         Json?               @map("previous_data")
+  newData              Json?               @map("new_data")
+  notes                String?
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz
+
+  costOption           SupplierCostOption? @relation(fields: [supplierCostOptionId], references: [id], onDelete: Cascade)
+
+  @@index([optionCode])
+  @@map("supplier_cost_audit_log")
+}
+
+model Client {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  cpf          String?
+  documentId   String?    @map("document_id")
+  email        String?
+  phone        String?
+  whatsapp     String?
+  defaultHotel String?    @map("default_hotel")
+  notes        String?
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  contracts    Contract[]
+
+  @@map("clients")
+}
+
+model Contract {
+  id                  String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contractNumber      String         @unique @map("contract_number")
+  clientId            String?        @map("client_id") @db.Uuid
+  clientName          String         @map("client_name")
+  clientCpf           String?        @map("client_cpf")
+  clientPhone         String?        @map("client_phone")
+  clientEmail         String?        @map("client_email")
+  arrivalDate         DateTime?      @map("arrival_date") @db.Date
+  departureDate       DateTime?      @map("departure_date") @db.Date
+  arrivalFlightNumber String?        @map("arrival_flight_number")
+  arrivalFlightTime   String?        @map("arrival_flight_time")
+  departFlightNumber  String?        @map("depart_flight_number")
+  departFlightTime    String?        @map("depart_flight_time")
+  adultsCount         Int            @default(1) @map("adults_count")
+  childrenCount       Int            @default(0) @map("children_count")
+  infantsCount        Int            @default(0) @map("infants_count")
+  hotelsSchedule      Json?          @default("[]") @map("hotels_schedule")
+  depositAmount       Decimal        @default(0) @map("deposit_amount") @db.Decimal(10, 2)
+  depositObservation  String?        @map("deposit_observation")
+  balanceAmount       Decimal        @default(0) @map("balance_amount") @db.Decimal(10, 2)
+  balanceObservation  String?        @map("balance_observation")
+  totalAmount         Decimal        @default(0) @map("total_amount") @db.Decimal(10, 2)
+  currency            String         @default("BRL")
+  status              String         @default("emitido")
+  termsClauses        String?        @map("terms_clauses")
+  internalNotes       String?        @map("internal_notes")
+  createdAt           DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  client              Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  items               ContractItem[]
+
+  @@map("contracts")
+}
+
+model ContractItem {
+  id                   String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contractId           String                     @map("contract_id") @db.Uuid
+  tourId               String?                    @map("tour_id") @db.Uuid
+  supplierId           String?                    @map("supplier_id") @db.Uuid
+  supplierCostOptionId String?                    @map("supplier_cost_option_id") @db.Uuid
+  tourDate             DateTime?                  @map("tour_date") @db.Date
+  tourNameSnapshot     String                     @map("tour_name_snapshot")
+  tourIncludedSnapshot String?                    @map("tour_included_snapshot")
+  tourNotIncludedSnapshot String?                 @map("tour_not_included_snapshot")
+  supplierNameSnapshot String?                    @map("supplier_name_snapshot")
+  tariffCodeSnapshot   String?                    @map("tariff_code_snapshot")
+  pricingModelSnapshot String?                    @default("per_person") @map("pricing_model_snapshot")
+  adultsCount          Int                        @default(1) @map("adults_count")
+  childrenCount        Int                        @default(0) @map("children_count")
+  infantsCount         Int                        @default(0) @map("infants_count")
+  unitsCount           Int                        @default(1) @map("units_count")
+  salePrice            Decimal                    @default(0) @map("sale_price") @db.Decimal(10, 2)
+  costApplied          Decimal                    @default(0) @map("cost_applied") @db.Decimal(10, 2)
+  costCurrency         String                     @default("USD") @map("cost_currency")
+  calculatedTotalCost  Decimal                    @default(0) @map("calculated_total_cost") @db.Decimal(10, 2)
+  costStatus           String                     @default("calculado") @map("cost_status")
+  externalFeesSnapshot String?                    @map("external_fees_snapshot")
+  voucherRef           String?                    @map("voucher_ref")
+  status               String                     @default("agendado")
+  notes                String?
+  createdAt            DateTime                   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  contract             Contract                   @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  supplier             Supplier?                  @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  costOption           SupplierCostOption?        @relation(fields: [supplierCostOptionId], references: [id], onDelete: SetNull)
+  allocations          SupplierPaymentAllocation[]
+
+  @@map("contract_items")
+}
+
+model SupplierPayment {
+  id            String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supplierId    String                      @map("supplier_id") @db.Uuid
+  paymentDate   DateTime                    @map("payment_date") @db.Date
+  amount        Decimal                     @default(0) @db.Decimal(10, 2)
+  currency      String                      @default("USD")
+  paymentMethod String                      @default("transferencia") @map("payment_method")
+  referenceCode String?                     @map("reference_code")
+  notes         String?
+  createdBy     String?                     @map("created_by")
+  createdAt     DateTime                    @default(now()) @map("created_at") @db.Timestamptz
+
+  supplier      Supplier                    @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  allocations   SupplierPaymentAllocation[]
+
+  @@map("supplier_payments")
+}
+
+model SupplierPaymentAllocation {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  paymentId      String          @map("payment_id") @db.Uuid
+  contractItemId String          @map("contract_item_id") @db.Uuid
+  allocatedAmount Decimal        @map("allocated_amount") @db.Decimal(10, 2)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  payment        SupplierPayment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  contractItem   ContractItem    @relation(fields: [contractItemId], references: [id], onDelete: Cascade)
+
+  @@unique([paymentId, contractItemId])
+  @@map("supplier_payment_allocations")
+}
