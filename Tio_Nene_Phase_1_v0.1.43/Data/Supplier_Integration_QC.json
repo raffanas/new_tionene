@@ -1,0 +1,72 @@
+{
+  "source_integrity": {
+    "base_zip_sha256": "d90f6bfcb301defb2939fb1aeb33ae922d3aa25970e4f5b06e1ecdcc40c14782",
+    "supplier_zip_sha256": "42f58a3b6730b46c9bc10044d0775202ddaf4f28e7e4f27af0851c66222ce813"
+  },
+  "counts": {
+    "provider_workbooks": 10,
+    "shared_workbooks": 1,
+    "total_workbooks": 11,
+    "sheets": 21,
+    "tours": 52,
+    "supplier_rates": 80,
+    "zone_rows": 8,
+    "season_windows": 6,
+    "cross_provider_rules": 28
+  },
+  "passed_checks": [
+    "11 workbooks byte-identical to supplier input, hashes match supplied source manifest",
+    "All Tours and Supplier Rates schema fields matched",
+    "52 unique stable Tour IDs / 80 unique Rate IDs / no orphan rates",
+    "All seller-visible products active; 79 auto-eligible rates and 1 manual-only Cozumel rate",
+    "No zero-filling of missing child / fixed-rate amounts",
+    "Correct current provider rate base types and currencies",
+    "All eight-zone Miguel/Playa Mía Rate IDs resolve to imported rate",
+    "All 128 Xcaret tour×hotel-zone×season combinations resolve to one exact imported Rate ID",
+    "2026 seasons cover every date exactly once without gaps or overlaps",
+    "Envatours 3 fixed per boat and Jet Ski 2 fixed per equipment unit validated",
+    "Coco Bongo 11 adult-only weekday rows; Dolphin 17 products, no Columbus",
+    "Source JPEGs retained exactly from v0.1.36"
+  ],
+  "xcaret_checked_automated_combinations": 128,
+  "sample_cases": [
+    {
+      "case": "2 Baktun Classic adults + 1 child",
+      "native_total_usd": 157,
+      "rate_id": "BAK-R001"
+    },
+    {
+      "case": "Envatours 1–10 person private Cozumel boat",
+      "native_total_usd": 140,
+      "rate_id": "ENV-R002"
+    },
+    {
+      "case": "Jet ski 30min 3 passengers, 2 skis",
+      "native_total_usd": 180,
+      "rate_id": "PJS-R002"
+    },
+    {
+      "case": "Jet ski 60min 5 passengers, 3 skis",
+      "native_total_usd": 360,
+      "rate_id": "PJS-R003"
+    },
+    {
+      "case": "Miguel Maya Riviera single one-way 1–7 pax",
+      "native_total_usd": 65,
+      "rate_id": "MIG-R003"
+    },
+    {
+      "case": "Playa Mia Cancun 2 adults,1 child",
+      "native_total_mxn": 5700,
+      "rate_id": "PLY-R002"
+    }
+  ],
+  "limitations": [
+    "Data / specification validated offline only. Application codebase, runtime, upload permissions and database import not available.",
+    "Owner-approved regional Xcaret fallbacks are mapping defaults, not physical pickup eligibility guarantees.",
+    "Xcaret 2027+ season/special Sunday calendars not supplied; do not infer from 2026.",
+    "Some supplier costs are base-only and do not include extras (Dolphin).",
+    "Refund accounting, partial FX settlements, age-band policy, outstanding contract template, provider link-security and edge-case permissions remain owner/developer handoff gaps.",
+    "Supplied workbooks contain data and metadata; dynamic import, auditing, data-edit screens and end-to-end runtime enforcement must be built/tested by developer."
+  ]
+}

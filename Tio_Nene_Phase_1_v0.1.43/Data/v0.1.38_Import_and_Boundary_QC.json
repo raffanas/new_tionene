@@ -1,0 +1,40 @@
+{
+  "version": "0.1.38",
+  "date": "2026-10-21",
+  "status": "working specification - not final handoff",
+  "baseline_zip": "Tio_Nene_Phase_1_v0.1.37_VERIFIED.zip",
+  "supplier_source_workbooks_immutable": 11,
+  "supplier_count": 10,
+  "seller_visible_tours": 52,
+  "source_rate_ids": 80,
+  "hotel_master": {
+    "path": "Data/Hotel_Master/Ultimate_Tio_Nene_Hotels_Two_Columns.xlsx",
+    "rows": 1125,
+    "columns": [
+      "Hotel Name",
+      "Location"
+    ],
+    "zone_count": 8,
+    "supersedes_previous_hotel_records": 1201
+  },
+  "contract": {
+    "path": "Contract_Template/Tio_Nene_Contract_Source_Template_UNSIGNED.docx",
+    "source_language": "Portuguese",
+    "clauses": 18,
+    "fixed_e_signature_removed": true,
+    "private_completed_PDFs_included": false
+  },
+  "pending": [
+    "exact supplier-specific reservation form fields",
+    "future-year Xcaret multiple seasonal rates Admin fallback default",
+    "app repo/auth/hosting/migration scope",
+    "real application integration/security/PDF/financial UAT"
+  ],
+  "deferred": [
+    "legal rewrite",
+    "visual wallet layout",
+    "built-in e-signatures",
+    "automated WhatsApp",
+    "guest portal"
+  ]
+}

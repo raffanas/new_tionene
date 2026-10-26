@@ -30,6 +30,7 @@ import {
   FilePlus,
   Sparkles,
 } from "lucide-react";
+import { useAuthProfile } from "@/lib/auth/AuthContext";
 
 interface ContractItemData {
   id: string;
@@ -80,6 +81,7 @@ interface Client {
 }
 
 function ClientsContent() {
+  const { role, hasPermission } = useAuthProfile();
   const router = useRouter();
   const searchParams = useSearchParams();
   const highlightClientId = searchParams?.get("clientId");
@@ -251,6 +253,10 @@ function ClientsContent() {
   };
 
   const handleDelete = async (id: string, name: string) => {
+    if (!hasPermission("contracts:delete")) {
+      alert("Operação restrita: apenas administradores podem excluir clientes.");
+      return;
+    }
     if (!confirm(`Deseja realmente remover o cliente "${name}"? Os contratos associados serão mantidos.`)) return;
 
     try {
@@ -581,15 +587,17 @@ function ClientsContent() {
                           <Edit2 size={13} />
                         </button>
 
-                        <button
-                          type="button"
-                          className="adm-btn adm-btn-outline adm-btn-sm"
-                          style={{ color: "var(--adm-rose)" }}
-                          onClick={() => handleDelete(client.id, client.name)}
-                          title="Excluir Cliente"
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                        {hasPermission("contracts:delete") && (
+                          <button
+                            type="button"
+                            className="adm-btn adm-btn-outline adm-btn-sm"
+                            style={{ color: "var(--adm-rose)" }}
+                            onClick={() => handleDelete(client.id, client.name)}
+                            title="Excluir Cliente"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

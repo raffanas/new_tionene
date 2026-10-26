@@ -38,14 +38,33 @@ import {
   ShieldCheck,
   Layers,
   Info,
-  Calculator
+  Calculator,
+  Sparkles,
+  RotateCcw,
+  Lock,
+  Ticket,
+  Wallet,
+  ShieldAlert,
+  CheckSquare,
 } from "lucide-react";
 
-interface HotelSchedule {
-  hotel_name: string;
-  checkin: string;
-  checkout: string;
-}
+import { HotelScheduleSection, HotelSchedule, CANONICAL_ZONES } from "@/components/admin/HotelScheduleSection";
+import { useAuthProfile } from "@/lib/auth/AuthContext";
+import {
+  calculateCommercialPricing,
+  getCommercialProductByTourId,
+  getSupplierRateById
+} from "@/lib/commercial-pricing-engine";
+import { CommercialProduct, CanonicalHotelZone } from "@/types/supplier-commercial";
+import { OFFICIAL_COMMERCIAL_PRODUCTS } from "@/data/official-supplier-catalog";
+import { CommercialProductSelectorModal } from "@/components/admin/CommercialProductSelectorModal";
+import {
+  reconcileContractItemsDifferential,
+  buildContractItemDbPayload,
+  validateContractItems,
+  saveContractWithItemsAtomic,
+} from "@/lib/contracts/reconcileItems";
+import { finalizeContractSale } from "@/lib/contracts/finalizeSale";
 
 interface ContractItem {
   id?: string;
@@ -69,6 +88,17 @@ interface ContractItem {
   legs_count?: number;
   calculation_formula?: string;
   external_fees?: string;
+
+  // Evolução v0.1.43 — Snapshots de Tarifas Oficiais e Overrides Manuais
+  rate_id_snapshot?: string;
+  tour_id_code_snapshot?: string;
+  is_manual_quote?: boolean;
+  is_manual_override?: boolean;
+  manual_override_reason?: string;
+  hotel_zone_snapshot?: string;
+  native_currency?: string;
+  native_cost_applied?: number;
+  native_calculated_total_cost?: number;
 }
 
 interface Contract {
@@ -95,7 +125,8 @@ interface Contract {
   balance_observation: string;
   total_amount: number;
   currency: string;
-  status: "rascunho" | "emitido" | "assinado" | "cancelado";
+  status: "rascunho" | "emitido" | "assinado" | "cancelado" | "finalizado";
+  finalized_at?: string;
   terms_clauses?: string;
   internal_notes?: string;
   created_at: string;
@@ -188,7 +219,11 @@ function parseLeadNotes(notesText?: string | null) {
 }
 
 function formatDbContractItem(i: any): ContractItem {
-  const codeMatch = i.tariff_code_snapshot || i.notes?.match(/^\[(TN-\d{3})\]/)?.[1];
+  const bd = i.calculation_breakdown || {};
+  const rateIdSnapshot = i.rate_id_snapshot || bd.rate_id_snapshot || undefined;
+  const tourIdCodeSnapshot = i.tour_id_code_snapshot || bd.tour_id_code_snapshot || undefined;
+  const codeMatch = rateIdSnapshot || i.tariff_code_snapshot || i.notes?.match(/^\[(TN-\d{3}|[A-Z]{3}-R\d{3})\]/)?.[1];
+
   return {
     id: i.id,
     tour_id: i.tour_id,
@@ -197,9 +232,10 @@ function formatDbContractItem(i: any): ContractItem {
     adults_count: i.adults_count || 1,
     children_count: i.children_count || 0,
     units_count: i.units_count || 1,
+    legs_count: i.legs_count || bd.legs_count || 1,
     sale_price: Number(i.sale_price || 0),
     cost_applied: Number(i.cost_applied || 0),
-    cost_currency: i.cost_currency || "USD",
+    cost_currency: i.cost_currency || bd.native_currency || "USD",
     calculated_total_cost: Number(i.calculated_total_cost || i.cost_applied || 0),
     supplier_id: i.supplier_id,
     supplier_name: i.supplier_name_snapshot,
@@ -208,26 +244,43 @@ function formatDbContractItem(i: any): ContractItem {
     not_included: i.tour_not_included_snapshot,
     tariff_code: codeMatch || undefined,
     pricing_model: i.pricing_model_snapshot || i.cost_type,
-    calculation_formula: i.notes || undefined,
+    calculation_formula: bd.formula || i.notes || undefined,
     external_fees: i.external_fees_snapshot || undefined,
+    rate_id_snapshot: rateIdSnapshot,
+    tour_id_code_snapshot: tourIdCodeSnapshot,
+    is_manual_quote: Boolean(i.is_manual_quote ?? bd.is_manual_quote),
+    is_manual_override: Boolean(i.is_manual_override ?? bd.is_manual_override),
+    manual_override_reason: i.manual_override_reason || bd.manual_override_reason || undefined,
+    hotel_zone_snapshot: i.hotel_zone_snapshot || bd.hotel_zone_snapshot || undefined,
+    native_currency: i.native_currency || bd.native_currency || i.cost_currency || "USD",
+    native_cost_applied: i.native_cost_applied !== null && i.native_cost_applied !== undefined
+      ? Number(i.native_cost_applied)
+      : (bd.native_cost_applied !== undefined && bd.native_cost_applied !== null ? Number(bd.native_cost_applied) : undefined),
+    native_calculated_total_cost: i.native_calculated_total_cost !== null && i.native_calculated_total_cost !== undefined
+      ? Number(i.native_calculated_total_cost)
+      : (bd.native_calculated_total_cost !== undefined && bd.native_calculated_total_cost !== null ? Number(bd.native_calculated_total_cost) : undefined),
   };
 }
 
 function ContractsContent() {
+  const { role, hasPermission } = useAuthProfile();
+  const canViewCosts = role === "admin" || hasPermission("supplier_costs:view") || hasPermission("suppliers:manage");
   const searchParams = useSearchParams();
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Suppliers, Tours & Clientes para seleção
+  // Suppliers, Tours, Catálogo Oficial & Clientes para seleção
   const [availableSuppliers, setAvailableSuppliers] = useState<any[]>([]);
   const [availableTours, setAvailableTours] = useState<any[]>([]);
   const [availableClients, setAvailableClients] = useState<any[]>([]);
+  const [commercialProducts, setCommercialProducts] = useState<CommercialProduct[]>(OFFICIAL_COMMERCIAL_PRODUCTS);
 
   // Modais
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [printModalOpen, setPrintModalOpen] = useState(false);
+  const [catalogModalOpen, setCatalogModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -247,7 +300,7 @@ function ContractsContent() {
     adults_count: 2,
     children_count: 0,
     infants_count: 0,
-    hotels_schedule: [{ hotel_name: "Hotel Riu Cancún", checkin: "", checkout: "" }],
+    hotels_schedule: [{ hotel_name: "", checkin: "", checkout: "" }],
     deposit_amount: 0,
     deposit_observation: "Depósito via PIX",
     balance_amount: 0,
@@ -273,6 +326,39 @@ function ContractsContent() {
     clientId: "",
     existingContracts: [],
   });
+
+  // Modal de Confirmação de Finalização de Venda
+  const [finalizeModal, setFinalizeModal] = useState<{
+    open: boolean;
+    contract: Contract | null;
+    processing: boolean;
+  }>({
+    open: false,
+    contract: null,
+    processing: false,
+  });
+
+  const handleOpenFinalize = (contract: Contract) => {
+    if (contract.status === "rascunho") {
+      alert("Contratos em rascunho não podem gerar reservas operacionais. Abra o contrato e emita o documento oficial primeiro.");
+      return;
+    }
+    setFinalizeModal({ open: true, contract, processing: false });
+  };
+
+  const handleConfirmFinalize = async () => {
+    if (!finalizeModal.contract) return;
+    setFinalizeModal((prev) => ({ ...prev, processing: true }));
+    try {
+      const res = await finalizeContractSale(supabase, finalizeModal.contract.id);
+      alert(res.message || "Venda finalizada com sucesso!");
+      setFinalizeModal({ open: false, contract: null, processing: false });
+      await loadData();
+    } catch (err: any) {
+      alert("Erro ao finalizar venda: " + (err.message || "Tente novamente"));
+      setFinalizeModal((prev) => ({ ...prev, processing: false }));
+    }
+  };
 
   // Carregar dados
   const loadData = async () => {
@@ -302,7 +388,7 @@ function ContractsContent() {
       const { data: suppData } = await supabase.from("suppliers").select("id, name, currency_default");
       if (suppData) setAvailableSuppliers(suppData);
 
-      // 3. Passeios
+      // 3. Passeios Legados
       const { data: toursData } = await supabase.from("tours").select("id, name, slug, price, included, not_included");
       if (toursData && toursData.length > 0) {
         setAvailableTours(toursData);
@@ -319,7 +405,19 @@ function ContractsContent() {
         );
       }
 
-      // 4. Clientes para autocompletar
+      // 4. Catálogo Oficial de Produtos Comerciais (v0.1.43)
+      const { data: commProdData, error: commProdErr } = await supabase
+        .from("commercial_products")
+        .select("*")
+        .eq("active", true)
+        .order("display_name");
+      if (!commProdErr && commProdData && commProdData.length > 0) {
+        setCommercialProducts(commProdData);
+      } else {
+        setCommercialProducts(OFFICIAL_COMMERCIAL_PRODUCTS);
+      }
+
+      // 5. Clientes para autocompletar
       const { data: clientsData } = await supabase
         .from("clients")
         .select("id, name, phone, email, cpf, default_hotel, notes")
@@ -605,6 +703,11 @@ function ContractsContent() {
     const autoOpen = searchParams.get("autoOpen") === "true";
     const clientId = searchParams.get("clientId") || undefined;
     const newTrip = searchParams.get("newTrip") === "true";
+    const search = searchParams.get("search");
+
+    if (search) {
+      setSearchTerm(search);
+    }
 
     // 1. Abrir contrato específico diretamente por ID
     if (openContractId) {
@@ -854,6 +957,86 @@ function ContractsContent() {
     recalcTotal(updatedItems);
   };
 
+  // Adicionar Produto do Catálogo Oficial (52 Produtos Comerciais v0.1.43)
+  const addOfficialProductItem = (tourId: string) => {
+    const prod = commercialProducts.find((p) => p.tour_id === tourId) || getCommercialProductByTourId(tourId);
+    if (!prod) return;
+
+    const adults = Number(formData.adults_count || 2);
+    const children = Number(formData.children_count || 0);
+    const infants = Number(formData.infants_count || 0);
+    const itemDate = formData.arrival_date || new Date().toISOString().split("T")[0];
+    const hotelZone = (formData.hotels_schedule?.[0]?.zone as CanonicalHotelZone) || undefined;
+
+    const calc = calculateCommercialPricing({
+      tourId: prod.tour_id,
+      serviceDate: itemDate,
+      hotelZone: hotelZone,
+      adultsCount: adults,
+      childrenCount: children,
+      infantsCount: infants,
+      legsCount: 1,
+    });
+
+    const matchedSupplier = availableSuppliers.find((s) =>
+      s.name?.toLowerCase().includes(calc.provider.toLowerCase()) ||
+      calc.provider.toLowerCase().includes(s.name?.toLowerCase() || "")
+    );
+
+    // Sugestão de venda inicial (o vendedor ou admin pode ajustar livremente)
+    let suggestedSale = 0;
+    if (calc.calculatedTotalCost !== null && calc.calculatedTotalCost > 0) {
+      if (calc.currency === "USD") {
+        suggestedSale = Math.round(calc.calculatedTotalCost * 6.5);
+      } else if (calc.currency === "MXN") {
+        suggestedSale = Math.round(calc.calculatedTotalCost * 0.35);
+      } else {
+        suggestedSale = Math.round(calc.calculatedTotalCost * 1.3);
+      }
+    }
+
+    const unitCost = calc.unitCostAdult || calc.unitCostFixed || (calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : 0);
+
+    const newItem: ContractItem = {
+      tour_id: undefined,
+      tour_name: `[${calc.provider}] ${calc.displayName}`,
+      tour_date: itemDate,
+      adults_count: adults,
+      children_count: children,
+      units_count: calc.unitsCount || 1,
+      legs_count: calc.legsCount || 1,
+      sale_price: suggestedSale,
+      cost_applied: unitCost,
+      cost_currency: calc.currency,
+      calculated_total_cost: calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : 0,
+      supplier_id: matchedSupplier?.id || null,
+      supplier_name: calc.provider,
+      voucher_ref: "",
+      tariff_code: calc.rateId || calc.tourId,
+      pricing_model: calc.pricingBasis || undefined,
+      calculation_formula: calc.formulaApplied,
+      included: prod.ancillary_notes || "",
+      not_included: prod.requires_ancillary_booking ? "Requer transfer separado" : "",
+      external_fees: "",
+
+      // Snapshots Oficiais v0.1.43
+      rate_id_snapshot: calc.rateId || undefined,
+      tour_id_code_snapshot: calc.tourId,
+      is_manual_quote: Boolean(calc.isQuoteRequired),
+      is_manual_override: false,
+      manual_override_reason: undefined,
+      hotel_zone_snapshot: hotelZone || undefined,
+      native_currency: calc.currency,
+      native_cost_applied: calc.calculatedTotalCost !== null ? unitCost : undefined,
+      native_calculated_total_cost: calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : undefined,
+    };
+
+    const updatedItems = [...formItems, newItem];
+    setFormItems(updatedItems);
+    recalcTotal(updatedItems);
+    setCatalogModalOpen(false);
+  };
+
   const removeTourItem = (idx: number) => {
     const list = [...formItems];
     list.splice(idx, 1);
@@ -865,33 +1048,128 @@ function ContractsContent() {
     const list = [...formItems];
     const current = { ...list[idx], [field]: val };
 
-    // Se alterou pax, units, legs, data ou tariff_code e existe código homologado, recalcula automaticamente
-    if (
-      (field === "adults_count" || field === "children_count" || field === "units_count" || field === "legs_count" || field === "tour_date" || field === "tariff_code") &&
-      current.tariff_code
-    ) {
-      const calc = calculateSupplierCost(current.tariff_code, {
-        adultsCount: Number(current.adults_count || 1),
-        childrenCount: Number(current.children_count || 0),
-        unitsCount: Number(current.units_count || 1),
-        legsCount: Number(current.legs_count || 1),
-        serviceDate: current.tour_date,
-        manualCostOverride: current.cost_applied,
-      });
+    // 1. Produto Comercial Oficial v0.1.43 (possui tour_id_code_snapshot)
+    if (current.tour_id_code_snapshot) {
+      if (field === "is_manual_override" && val === false) {
+        // Restaurar para tarifa oficial do catálogo
+        current.is_manual_override = false;
+        current.manual_override_reason = undefined;
+        const calc = calculateCommercialPricing({
+          tourId: current.tour_id_code_snapshot,
+          preferredRateId: current.rate_id_snapshot,
+          serviceDate: current.tour_date,
+          hotelZone: (current.hotel_zone_snapshot || formData.hotels_schedule?.[0]?.zone) as CanonicalHotelZone,
+          adultsCount: Number(current.adults_count || 1),
+          childrenCount: Number(current.children_count || 0),
+          unitsCount: Number(current.units_count || 1),
+          legsCount: Number(current.legs_count || 1),
+        });
+        current.rate_id_snapshot = calc.rateId || current.rate_id_snapshot;
+        current.cost_applied = calc.unitCostAdult || calc.unitCostFixed || (calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : 0);
+        current.calculated_total_cost = calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : 0;
+        current.cost_currency = calc.currency;
+        current.native_currency = calc.currency;
+        current.native_cost_applied = current.cost_applied;
+        current.native_calculated_total_cost = current.calculated_total_cost;
+        current.calculation_formula = calc.formulaApplied;
+        current.pricing_model = calc.pricingBasis || current.pricing_model;
+        current.is_manual_quote = Boolean(calc.isQuoteRequired);
+      } else if (field === "cost_applied") {
+        // Ajuste manual de custo operacional (Admin): ativa manual override
+        current.is_manual_override = true;
+        current.native_cost_applied = Number(val);
+        const adults = Number(current.adults_count || 1);
+        const children = Number(current.children_count || 0);
+        const units = Number(current.units_count || 1);
+        const legs = Number(current.legs_count || 1);
 
-      current.cost_applied = calc.unitCostAdult || calc.calculatedTotalCost;
-      current.calculated_total_cost = calc.calculatedTotalCost;
-      current.cost_currency = calc.currency;
-      current.calculation_formula = calc.formulaApplied;
-      current.pricing_model = calc.pricingModel;
-    } else if (field === "cost_applied") {
-      // Ajuste manual de custo
-      const adults = Number(current.adults_count || 1);
-      const units = Number(current.units_count || 1);
-      if (current.pricing_model === "per_person" || !current.pricing_model) {
-        current.calculated_total_cost = Number(val) * adults;
-      } else {
-        current.calculated_total_cost = Number(val) * units;
+        if (current.pricing_model === "Vehicle") {
+          current.calculated_total_cost = Number(val) * legs;
+        } else if (current.pricing_model === "Person" || !current.pricing_model) {
+          current.calculated_total_cost = Number(val) * (adults + children);
+        } else {
+          current.calculated_total_cost = Number(val) * units;
+        }
+        current.native_calculated_total_cost = current.calculated_total_cost;
+        current.calculation_formula = `Custo ajustado manualmente: ${current.cost_currency || "USD"} ${Number(val).toFixed(2)} (Manual Override)`;
+      } else if (
+        field === "adults_count" ||
+        field === "children_count" ||
+        field === "units_count" ||
+        field === "legs_count" ||
+        field === "tour_date" ||
+        field === "hotel_zone_snapshot"
+      ) {
+        if (current.is_manual_override) {
+          // Mantém valor unitário manual fixado, só ajusta quantidade
+          const adults = Number(current.adults_count || 1);
+          const children = Number(current.children_count || 0);
+          const units = Number(current.units_count || 1);
+          const legs = Number(current.legs_count || 1);
+          const unit = Number(current.cost_applied || 0);
+
+          if (current.pricing_model === "Vehicle") {
+            current.calculated_total_cost = unit * legs;
+          } else if (current.pricing_model === "Person") {
+            current.calculated_total_cost = unit * (adults + children);
+          } else {
+            current.calculated_total_cost = unit * units;
+          }
+          current.native_calculated_total_cost = current.calculated_total_cost;
+        } else {
+          // Recálculo dinâmico usando o motor oficial v0.1.43
+          const calc = calculateCommercialPricing({
+            tourId: current.tour_id_code_snapshot,
+            preferredRateId: current.rate_id_snapshot,
+            serviceDate: current.tour_date,
+            hotelZone: (current.hotel_zone_snapshot || formData.hotels_schedule?.[0]?.zone) as CanonicalHotelZone,
+            adultsCount: Number(current.adults_count || 1),
+            childrenCount: Number(current.children_count || 0),
+            unitsCount: Number(current.units_count || 1),
+            legsCount: Number(current.legs_count || 1),
+          });
+          current.rate_id_snapshot = calc.rateId || current.rate_id_snapshot;
+          current.cost_applied = calc.unitCostAdult || calc.unitCostFixed || (calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : 0);
+          current.calculated_total_cost = calc.calculatedTotalCost !== null ? calc.calculatedTotalCost : 0;
+          current.cost_currency = calc.currency;
+          current.native_currency = calc.currency;
+          current.native_cost_applied = current.cost_applied;
+          current.native_calculated_total_cost = current.calculated_total_cost;
+          current.calculation_formula = calc.formulaApplied;
+          current.pricing_model = calc.pricingBasis || current.pricing_model;
+          current.tariff_code = calc.rateId || current.tariff_code;
+          current.is_manual_quote = Boolean(calc.isQuoteRequired);
+        }
+      }
+    } else {
+      // 2. Itens Legados (TN-001 a TN-042 ou catálogo antigo)
+      if (
+        (field === "adults_count" || field === "children_count" || field === "units_count" || field === "legs_count" || field === "tour_date" || field === "tariff_code") &&
+        current.tariff_code
+      ) {
+        const calc = calculateSupplierCost(current.tariff_code, {
+          adultsCount: Number(current.adults_count || 1),
+          childrenCount: Number(current.children_count || 0),
+          unitsCount: Number(current.units_count || 1),
+          legsCount: Number(current.legs_count || 1),
+          serviceDate: current.tour_date,
+          manualCostOverride: current.cost_applied,
+        });
+
+        current.cost_applied = calc.unitCostAdult || calc.calculatedTotalCost;
+        current.calculated_total_cost = calc.calculatedTotalCost;
+        current.cost_currency = calc.currency;
+        current.calculation_formula = calc.formulaApplied;
+        current.pricing_model = calc.pricingModel;
+      } else if (field === "cost_applied") {
+        // Ajuste manual de custo
+        const adults = Number(current.adults_count || 1);
+        const units = Number(current.units_count || 1);
+        if (current.pricing_model === "per_person" || !current.pricing_model) {
+          current.calculated_total_cost = Number(val) * adults;
+        } else {
+          current.calculated_total_cost = Number(val) * units;
+        }
       }
     }
 
@@ -1009,121 +1287,57 @@ function ContractsContent() {
         }
       }
 
-      if (contractId) {
-        // Atualizar contrato existente
-        const { error: updErr } = await supabase
-          .from("contracts")
-          .update({
-            contract_number: formData.contract_number,
-            client_id: effectiveClientId || null,
-            client_name: formData.client_name,
-            client_cpf: formData.client_cpf || null,
-            client_phone: formData.client_phone || null,
-            client_email: formData.client_email || null,
-            arrival_date: formData.arrival_date || new Date().toISOString().split("T")[0],
-            departure_date: formData.departure_date || null,
-            arrival_flight_number: formData.arrival_flight_number || null,
-            arrival_flight_time: formData.arrival_flight_time || null,
-            depart_flight_number: formData.depart_flight_number || null,
-            depart_flight_time: formData.depart_flight_time || null,
-            adults_count: formData.adults_count || 1,
-            children_count: formData.children_count || 0,
-            infants_count: formData.infants_count || 0,
-            hotels_schedule: formData.hotels_schedule || [],
-            deposit_amount: formData.deposit_amount || 0,
-            deposit_observation: formData.deposit_observation || null,
-            balance_amount: formData.balance_amount || 0,
-            balance_observation: formData.balance_observation || null,
-            total_amount: formData.total_amount || 0,
-            currency: formData.currency || "BRL",
-            status: finalStatus,
-            terms_clauses: formData.terms_clauses || null,
-            internal_notes: formData.internal_notes || null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", contractId);
+      // 1. Validação prévia de integridade de todos os itens antes de tocar no banco de dados.
+      // Impede que cabeçalho de contrato seja alterado se qualquer passeio contiver erro.
+      validateContractItems(formItems, {
+        arrival_date: formData.arrival_date,
+        adults_count: formData.adults_count,
+        children_count: formData.children_count,
+      });
 
-        if (updErr) throw updErr;
+      // 100% ATÔMICO VIA RPC TRANSACIONAL: save_contract_with_items
+      // Salva contrato e itens em transação única no banco de dados.
+      // Se qualquer validação ou persistência falhar, nenhum dado parcial é gravado,
+      // e o formulário permanece aberto com todos os dados digitados intactos.
+      const contractPayload = {
+        id: selectedContract ? selectedContract.id : undefined,
+        contract_number: formData.contract_number,
+        client_id: effectiveClientId || null,
+        client_name: formData.client_name,
+        client_cpf: formData.client_cpf || null,
+        client_phone: formData.client_phone || null,
+        client_email: formData.client_email || null,
+        arrival_date: formData.arrival_date || new Date().toISOString().split("T")[0],
+        departure_date: formData.departure_date || null,
+        arrival_flight_number: formData.arrival_flight_number || null,
+        arrival_flight_time: formData.arrival_flight_time || null,
+        depart_flight_number: formData.depart_flight_number || null,
+        depart_flight_time: formData.depart_flight_time || null,
+        adults_count: formData.adults_count || 1,
+        children_count: formData.children_count || 0,
+        infants_count: formData.infants_count || 0,
+        hotels_schedule: formData.hotels_schedule || [],
+        deposit_amount: formData.deposit_amount || 0,
+        deposit_observation: formData.deposit_observation || null,
+        balance_amount: formData.balance_amount || 0,
+        balance_observation: formData.balance_observation || null,
+        total_amount: formData.total_amount || 0,
+        currency: formData.currency || "BRL",
+        status: finalStatus,
+        terms_clauses: formData.terms_clauses || null,
+        internal_notes: formData.internal_notes || null,
+      };
 
-        // Limpar itens antigos e recriar
-        await supabase.from("contract_items").delete().eq("contract_id", contractId);
-      } else {
-        // Criar novo contrato
-        const { data: newContract, error: insErr } = await supabase
-          .from("contracts")
-          .insert([
-            {
-              contract_number: formData.contract_number,
-              client_id: effectiveClientId || null,
-              client_name: formData.client_name,
-              client_cpf: formData.client_cpf || null,
-              client_phone: formData.client_phone || null,
-              client_email: formData.client_email || null,
-              arrival_date: formData.arrival_date || new Date().toISOString().split("T")[0],
-              departure_date: formData.departure_date || null,
-              arrival_flight_number: formData.arrival_flight_number || null,
-              arrival_flight_time: formData.arrival_flight_time || null,
-              depart_flight_number: formData.depart_flight_number || null,
-              depart_flight_time: formData.depart_flight_time || null,
-              adults_count: formData.adults_count || 1,
-              children_count: formData.children_count || 0,
-              infants_count: formData.infants_count || 0,
-              hotels_schedule: formData.hotels_schedule || [],
-              deposit_amount: formData.deposit_amount || 0,
-              deposit_observation: formData.deposit_observation || null,
-              balance_amount: formData.balance_amount || 0,
-              balance_observation: formData.balance_observation || null,
-              total_amount: formData.total_amount || 0,
-              currency: formData.currency || "BRL",
-              status: finalStatus,
-              terms_clauses: formData.terms_clauses || null,
-              internal_notes: formData.internal_notes || null,
-            },
-          ])
-          .select()
-          .single();
-
-        if (insErr) throw insErr;
-        contractId = newContract.id;
-      }
-
-      // Salvar Itens de Passeios (Snapshots)
-      if (contractId && formItems.length > 0) {
-        const itemsToInsert = formItems.map((item) => ({
-          contract_id: contractId,
-          tour_id: item.tour_id?.length === 36 ? item.tour_id : null,
-          supplier_id: item.supplier_id || null,
-          tour_date: item.tour_date || formData.arrival_date,
-          tour_name_snapshot: item.tour_name,
-          tour_included_snapshot: item.included || null,
-          tour_not_included_snapshot: item.not_included || null,
-          supplier_name_snapshot: item.supplier_name || null,
-          adults_count: item.adults_count || formData.adults_count || 1,
-          children_count: item.children_count || formData.children_count || 0,
-          units_count: item.units_count || 1,
-          sale_price: item.sale_price || 0,
-          cost_applied: item.cost_applied || 0,
-          cost_currency: item.cost_currency || "USD",
-          cost_type: item.pricing_model || "per_person",
-          calculated_total_cost: item.calculated_total_cost || item.cost_applied || 0,
-          cost_status: item.tariff_code ? "calculado" : "pendente",
-          tariff_code_snapshot: item.tariff_code || null,
-          pricing_model_snapshot: item.pricing_model || "per_person",
-          external_fees_snapshot: item.external_fees || null,
-          calculation_breakdown: {
-            formula: item.calculation_formula || "",
-            tariff_code: item.tariff_code || null,
-          },
-          notes: item.tariff_code
-            ? `[${item.tariff_code}] ${item.calculation_formula || ""}${item.external_fees ? ` | Taxas ext: ${item.external_fees}` : ""}`
-            : (item.calculation_formula || null),
-          voucher_ref: item.voucher_ref || null,
-          status: "agendado",
-        }));
-
-        const { error: itemsErr } = await supabase.from("contract_items").insert(itemsToInsert);
-        if (itemsErr) console.error("Erro ao salvar itens:", itemsErr);
-      }
+      await saveContractWithItemsAtomic(
+        supabase,
+        contractPayload,
+        formItems,
+        {
+          arrival_date: formData.arrival_date,
+          adults_count: formData.adults_count,
+          children_count: formData.children_count,
+        }
+      );
 
       setFormModalOpen(false);
       await loadData();
@@ -1140,6 +1354,10 @@ function ContractsContent() {
   };
 
   const handleDelete = async (id: string, code: string) => {
+    if (!hasPermission("contracts:delete")) {
+      alert("Operação restrita: apenas administradores podem excluir contratos.");
+      return;
+    }
     if (!confirm(`Deseja realmente excluir o contrato ${code}?`)) return;
     try {
       const { error } = await supabase.from("contracts").delete().eq("id", id);
@@ -1235,6 +1453,7 @@ function ContractsContent() {
           <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--adm-text-muted)" }}>Status:</span>
           <select className="adm-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option value="all">Todos os Status</option>
+            <option value="finalizado">✓ Venda Finalizada</option>
             <option value="emitido">Emitido</option>
             <option value="assinado">Assinado</option>
             <option value="rascunho">Rascunho</option>
@@ -1336,15 +1555,79 @@ function ContractsContent() {
                   <td>
                     <span
                       className={`adm-badge ${
-                        c.status === "assinado" ? "badge-green" : c.status === "emitido" ? "badge-blue" : "badge-amber"
+                        c.status === "finalizado"
+                          ? "badge-green"
+                          : c.status === "assinado"
+                          ? "badge-green"
+                          : c.status === "emitido"
+                          ? "badge-blue"
+                          : c.status === "rascunho"
+                          ? "badge-amber"
+                          : "badge-gray"
                       }`}
-                      style={{ fontSize: "11px" }}
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: c.status === "finalizado" ? 700 : 500,
+                        backgroundColor: c.status === "finalizado" ? "#dcfce7" : undefined,
+                        color: c.status === "finalizado" ? "#15803d" : undefined,
+                        border: c.status === "finalizado" ? "1px solid #86efac" : undefined
+                      }}
                     >
-                      {c.status.toUpperCase()}
+                      {c.status === "finalizado" ? "✓ VENDA FINALIZADA" : c.status.toUpperCase()}
                     </span>
                   </td>
                   <td style={{ textAlign: "right" }}>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px" }}>
+                      {c.status !== "finalizado" && c.status !== "cancelado" && (
+                        <button
+                          type="button"
+                          className="adm-btn adm-btn-outline adm-btn-sm"
+                          style={{
+                            background: c.status === "rascunho" ? "var(--adm-surface-alt)" : "rgba(16, 185, 129, 0.1)",
+                            color: c.status === "rascunho" ? "var(--adm-text-muted)" : "#059669",
+                            borderColor: c.status === "rascunho" ? "var(--adm-border)" : "#10b981",
+                            fontWeight: 600,
+                          }}
+                          onClick={() => handleOpenFinalize(c)}
+                          title={c.status === "rascunho" ? "Rascunhos não geram reservas (emita primeiro)" : "Finalizar venda e gerar reservas operacionais"}
+                        >
+                          <CheckCircle2 size={13} />
+                          <span>Finalizar Venda</span>
+                        </button>
+                      )}
+
+                      {c.status === "finalizado" && (
+                        <Link
+                          href={`/admin/carteiras?search=${encodeURIComponent(c.contract_number)}`}
+                          className="adm-btn adm-btn-outline adm-btn-sm"
+                          style={{
+                            background: "rgba(165, 94, 64, 0.08)",
+                            color: "var(--adm-clay)",
+                            borderColor: "rgba(165, 94, 64, 0.3)",
+                            fontWeight: 600,
+                          }}
+                          title="Ver ou Preparar Carteira de Viagem do Cliente"
+                        >
+                          <Wallet size={13} />
+                          <span>Carteira</span>
+                        </Link>
+                      )}
+
+                      {/* Contas a Receber / Pagamentos do Cliente */}
+                      <Link
+                        href={`/admin/financeiro/clientes?contract_id=${c.id}`}
+                        className="adm-btn adm-btn-outline adm-btn-sm"
+                        style={{
+                          background: "rgba(2, 132, 199, 0.08)",
+                          color: "#0284c7",
+                          borderColor: "rgba(2, 132, 199, 0.3)",
+                        }}
+                        title="Ver Contas a Receber e Extrato Financeiro do Cliente"
+                      >
+                        <DollarSign size={13} />
+                        <span>Receber</span>
+                      </Link>
+
                       <button
                         type="button"
                         className="adm-btn adm-btn-outline adm-btn-sm"
@@ -1356,6 +1639,21 @@ function ContractsContent() {
                         <span>Contrato</span>
                       </button>
 
+                      {/* Ocorrências do Contrato */}
+                      <Link
+                        href={`/admin/ocorrencias?search=${encodeURIComponent(c.contract_number)}`}
+                        className="adm-btn adm-btn-outline adm-btn-sm"
+                        style={{
+                          background: "rgba(239, 68, 68, 0.06)",
+                          color: "#dc2626",
+                          borderColor: "rgba(239, 68, 68, 0.25)",
+                        }}
+                        title="Ver ou registrar ocorrências deste contrato"
+                      >
+                        <ShieldAlert size={13} />
+                        <span>Ocorrências</span>
+                      </Link>
+
                       <button
                         type="button"
                         className="adm-btn adm-btn-outline adm-btn-sm"
@@ -1365,15 +1663,17 @@ function ContractsContent() {
                         <Edit2 size={13} />
                       </button>
 
-                      <button
-                        type="button"
-                        className="adm-btn adm-btn-outline adm-btn-sm"
-                        style={{ color: "var(--adm-rose)" }}
-                        onClick={() => handleDelete(c.id, c.contract_number)}
-                        title="Excluir"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                      {hasPermission("contracts:delete") && (
+                        <button
+                          type="button"
+                          className="adm-btn adm-btn-outline adm-btn-sm"
+                          style={{ color: "var(--adm-rose)" }}
+                          onClick={() => handleDelete(c.id, c.contract_number)}
+                          title="Excluir"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -1413,6 +1713,7 @@ function ContractsContent() {
                     <option value="rascunho">📝 Rascunho (Pré-contrato)</option>
                     <option value="emitido">📄 Emitido (Aguardando Assinatura)</option>
                     <option value="assinado">✅ Assinado</option>
+                    <option value="finalizado">✓ Venda Finalizada</option>
                     <option value="cancelado">❌ Cancelado</option>
                   </select>
                 </div>
@@ -1599,84 +1900,65 @@ function ContractsContent() {
                   </div>
                 </div>
 
-                {/* 3. RESUMO DE HOTÉIS */}
-                <div style={{ borderTop: "1px solid var(--adm-border)", paddingTop: "18px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <h4 style={{ fontSize: "15px", color: "var(--adm-wine)", display: "flex", alignItems: "center", gap: "6px" }}>
-                      <Building size={16} color="var(--adm-clay)" />
-                      <span>3. Resumo de Hotéis Durante a Estadia</span>
-                    </h4>
-                    <button type="button" className="adm-btn adm-btn-outline adm-btn-sm" onClick={addHotelRow}>
-                      <Plus size={13} />
-                      <span>Adicionar Hotel</span>
-                    </button>
-                  </div>
+                {/* 3. RESUMO DE HOTÉIS E HOSPEDAGEM */}
+                <HotelScheduleSection
+                  schedules={formData.hotels_schedule || []}
+                  onChange={(updated) => setFormData({ ...formData, hotels_schedule: updated })}
+                />
 
-                  {(formData.hotels_schedule || []).map((h, hIdx) => (
-                    <div key={hIdx} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: "8px", alignItems: "center", marginBottom: "8px" }}>
-                      <input
-                        type="text"
-                        className="adm-input"
-                        placeholder="Nome do Hotel / Resort"
-                        value={h.hotel_name}
-                        onChange={(e) => {
-                          const list = [...(formData.hotels_schedule || [])];
-                          list[hIdx].hotel_name = e.target.value;
-                          setFormData({ ...formData, hotels_schedule: list });
-                        }}
-                      />
-                      <input
-                        type="date"
-                        className="adm-input"
-                        title="Check-in"
-                        value={h.checkin}
-                        onChange={(e) => {
-                          const list = [...(formData.hotels_schedule || [])];
-                          list[hIdx].checkin = e.target.value;
-                          setFormData({ ...formData, hotels_schedule: list });
-                        }}
-                      />
-                      <input
-                        type="date"
-                        className="adm-input"
-                        title="Check-out"
-                        value={h.checkout}
-                        onChange={(e) => {
-                          const list = [...(formData.hotels_schedule || [])];
-                          list[hIdx].checkout = e.target.value;
-                          setFormData({ ...formData, hotels_schedule: list });
-                        }}
-                      />
-                      <button
-                        type="button"
-                        className="adm-btn adm-btn-icon adm-btn-outline adm-btn-sm"
-                        style={{ color: "var(--adm-rose)" }}
-                        onClick={() => removeHotelRow(hIdx)}
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
 
                 {/* 4. PASSEIOS CONTRATADOS */}
                 <div style={{ borderTop: "1px solid var(--adm-border)", paddingTop: "18px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
                     <div>
                       <h4 style={{ fontSize: "15px", color: "var(--adm-wine)", display: "flex", alignItems: "center", gap: "6px" }}>
                         <CheckCircle2 size={16} color="var(--adm-clay)" />
                         <span>4. Passeios e Serviços Contratados</span>
                       </h4>
                       <p style={{ fontSize: "12px", color: "var(--adm-text-muted)", marginTop: "2px" }}>
-                        Selecione passeios gerais do site ou serviços homologados (TN-001 a TN-042). Os custos e moedas (USD/MXN/BRL) são calculados automaticamente sem sobrescrever o original.
+                        Catálogo oficial homologado (52 produtos / 80 tarifas v0.1.43) com compatibilidade legada (TN-001 a TN-042). Os custos e moedas são calculados automaticamente conforme data e zona de hotel.
                       </p>
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                      {/* Seletor de Opções Homologadas TN-001 a TN-042 */}
+                      {/* Botão de Abertura do Modal do Catálogo Oficial */}
+                      <button
+                        type="button"
+                        className="adm-btn adm-btn-primary"
+                        style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700 }}
+                        onClick={() => setCatalogModalOpen(true)}
+                      >
+                        <Sparkles size={15} />
+                        <span>Catálogo Oficial (52 Produtos)</span>
+                      </button>
+
+                      {/* Dropdown de Seleção Rápida de Produtos Comerciais Oficiais */}
                       <select
                         className="adm-select"
                         style={{ width: "auto", fontWeight: 600, borderColor: "var(--adm-wine)", color: "var(--adm-wine)", background: "#fff" }}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            addOfficialProductItem(e.target.value);
+                            e.target.value = "";
+                          }
+                        }}
+                      >
+                        <option value="">+ Seleção Rápida Oficial...</option>
+                        {Array.from(new Set(commercialProducts.map((p) => p.provider))).sort().map((prov) => (
+                          <optgroup key={prov} label={`Fornecedor: ${prov}`}>
+                            {commercialProducts.filter((p) => p.provider === prov).map((p) => (
+                              <option key={p.tour_id} value={p.tour_id}>
+                                [{p.tour_id}] {p.display_name} ({p.product_type})
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
+
+                      {/* Seletor de Opções Homologadas Legadas TN-001 a TN-042 */}
+                      <select
+                        className="adm-select"
+                        style={{ width: "auto", borderColor: "var(--adm-border)", color: "var(--adm-text)" }}
                         onChange={(e) => {
                           if (e.target.value) {
                             addSupplierOptionItem(e.target.value);
@@ -1684,19 +1966,19 @@ function ContractsContent() {
                           }
                         }}
                       >
-                        <option value="">+ Adicionar Serviço de Fornecedor (TN-001 a TN-042)...</option>
+                        <option value="">+ Tabela Legada (TN-001 a TN-042)...</option>
                         {Array.from(new Set(SUPPLIER_COST_OPTIONS.map((o) => o.supplierName))).map((supName) => (
-                          <optgroup key={supName} label={`Fornecedor: ${supName}`}>
+                          <optgroup key={supName} label={`Legado: ${supName}`}>
                             {SUPPLIER_COST_OPTIONS.filter((o) => o.supplierName === supName).map((o) => (
                               <option key={o.code} value={o.code}>
-                                [{o.code}] {o.serviceName} {o.variant ? `(${o.variant})` : ""} — {o.currency} {o.costAdult || o.costFixed || "Sob cotação"}
+                                [{o.code}] {o.serviceName} {o.variant ? `(${o.variant})` : ""} {canViewCosts ? `— ${o.currency} ${o.costAdult || o.costFixed || "Sob cotação"}` : ""}
                               </option>
                             ))}
                           </optgroup>
                         ))}
                       </select>
 
-                      {/* Seletor de Passeio Geral */}
+                      {/* Seletor de Passeio Geral Legado */}
                       <select
                         className="adm-select"
                         style={{ width: "auto" }}
@@ -1707,7 +1989,7 @@ function ContractsContent() {
                           }
                         }}
                       >
-                        <option value="">+ Selecionar Passeio do Catálogo Geral...</option>
+                        <option value="">+ Passeio Geral Legado...</option>
                         {availableTours.map((t) => (
                           <option key={t.id} value={t.slug || t.id}>
                             {t.name} (R$ {t.price})
@@ -1718,9 +2000,9 @@ function ContractsContent() {
                   </div>
 
                   {formItems.length === 0 ? (
-                    <div style={{ padding: "24px", background: "var(--adm-surface-alt)", borderRadius: "10px", textAlign: "center", border: "1px dashed var(--adm-border)" }}>
+                    <div style={{ padding: "28px", background: "var(--adm-surface-alt)", borderRadius: "10px", textAlign: "center", border: "1px dashed var(--adm-border)" }}>
                       <span style={{ fontSize: "13px", color: "var(--adm-text-muted)" }}>
-                        Nenhum passeio ou serviço adicionado ao contrato. Utilize os seletores acima para incluir passeios ou transfers.
+                        Nenhum passeio ou serviço adicionado ao contrato. Clique em <strong>Catálogo Oficial (52 Produtos)</strong> ou utilize os seletores acima.
                       </span>
                     </div>
                   ) : (
@@ -1730,6 +2012,12 @@ function ContractsContent() {
                           ? validateCocoBongoDay(item.tariff_code, item.tour_date)
                           : { valid: true };
 
+                        const isOfficial = Boolean(item.tour_id_code_snapshot);
+                        const isVehicleOrTransfer = item.pricing_model === "Vehicle" ||
+                          item.tour_id_code_snapshot?.startsWith("MIG") ||
+                          item.tour_name.toLowerCase().includes("transfer") ||
+                          item.tour_name.toLowerCase().includes("shuttle");
+
                         return (
                           <div
                             key={itIdx}
@@ -1737,7 +2025,7 @@ function ContractsContent() {
                               padding: "14px 16px",
                               background: "#ffffff",
                               borderRadius: "10px",
-                              border: "1px solid var(--adm-border)",
+                              border: item.is_manual_override ? "1px solid #f59e0b" : "1px solid var(--adm-border)",
                               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                               display: "flex",
                               flexDirection: "column",
@@ -1766,13 +2054,20 @@ function ContractsContent() {
                                 />
                               </div>
 
-                              {/* 2. Nome do Serviço & Código Canônico */}
+                              {/* 2. Nome do Serviço & Badges Oficiais */}
                               <div>
                                 <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
                                   Serviço & Fornecedor
                                 </label>
                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                                  {item.tariff_code ? (
+                                  {item.tour_id_code_snapshot ? (
+                                    <span
+                                      className="adm-badge"
+                                      style={{ background: "var(--adm-wine)", color: "#ffffff", fontSize: "10px", fontWeight: 700, padding: "2px 6px" }}
+                                    >
+                                      {item.tour_id_code_snapshot}
+                                    </span>
+                                  ) : item.tariff_code ? (
                                     <span
                                       className="adm-badge adm-badge-success"
                                       style={{ fontSize: "10px", fontWeight: 700, padding: "2px 6px" }}
@@ -1787,6 +2082,35 @@ function ContractsContent() {
                                       Personalizado
                                     </span>
                                   )}
+
+                                  {canViewCosts && item.rate_id_snapshot && (
+                                    <span
+                                      className="adm-badge adm-badge-neutral"
+                                      style={{ fontSize: "10px", padding: "2px 5px" }}
+                                      title="Tarifa oficial de fornecedor snapshot v0.1.43"
+                                    >
+                                      Tarifa: {item.rate_id_snapshot}
+                                    </span>
+                                  )}
+
+                                  {item.is_manual_quote && (
+                                    <span
+                                      className="adm-badge adm-badge-warning"
+                                      style={{ fontSize: "10px", fontWeight: 700, padding: "2px 6px" }}
+                                    >
+                                      ⚠️ Sob Cotação
+                                    </span>
+                                  )}
+
+                                  {item.is_manual_override && (
+                                    <span
+                                      className="adm-badge"
+                                      style={{ background: "#fef3c7", color: "#b45309", border: "1px solid #fde68a", fontSize: "10px", fontWeight: 700, padding: "2px 6px" }}
+                                    >
+                                      🛠️ Override Manual
+                                    </span>
+                                  )}
+
                                   <span style={{ fontWeight: 600, fontSize: "13px", color: "var(--adm-wine)" }}>
                                     {item.tour_name}
                                   </span>
@@ -1847,7 +2171,7 @@ function ContractsContent() {
                                 </select>
                               </div>
 
-                              {/* 5. Preço Venda Total R$ */}
+                              {/* 5. Preço Venda Total R$ (Definido pelo Vendedor/Admin) */}
                               <div>
                                 <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
                                   Venda (Total R$)
@@ -1861,26 +2185,66 @@ function ContractsContent() {
                                 />
                               </div>
 
-                              {/* 6. Custo Fornecedor com Moeda */}
-                              <div>
-                                <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
-                                  Custo ({item.cost_currency || "USD"})
-                                </label>
-                                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                                  <input
-                                    type="number"
-                                    step="0.01"
-                                    className="adm-input"
-                                    style={{ fontWeight: 600, color: "var(--adm-wine)" }}
-                                    title="Custo Unitário ou Aplicado"
-                                    value={item.cost_applied}
-                                    onChange={(e) => updateTourItem(itIdx, "cost_applied", Number(e.target.value))}
-                                  />
-                                  <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
-                                    Total: <strong>{item.cost_currency || "USD"} {Number(item.calculated_total_cost || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong>
-                                  </span>
+                              {/* 6. Custo Operacional (RBAC: Estritamente Confidencial para Seller) */}
+                              {canViewCosts ? (
+                                <div>
+                                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                      Custo ({item.native_currency || item.cost_currency || "USD"})
+                                    </label>
+                                    {item.is_manual_override && (
+                                      <button
+                                        type="button"
+                                        style={{ border: "none", background: "none", color: "var(--adm-wine)", fontSize: "10px", textDecoration: "underline", cursor: "pointer", padding: 0 }}
+                                        onClick={() => updateTourItem(itIdx, "is_manual_override", false)}
+                                        title="Restaurar tarifa oficial da tabela"
+                                      >
+                                        Restaurar
+                                      </button>
+                                    )}
+                                  </div>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                    <input
+                                      type="number"
+                                      step="0.01"
+                                      className="adm-input"
+                                      style={{
+                                        fontWeight: 600,
+                                        color: item.is_manual_override ? "#b45309" : "var(--adm-wine)",
+                                        borderColor: item.is_manual_override ? "#f59e0b" : undefined
+                                      }}
+                                      title="Custo Unitário ou Aplicado"
+                                      value={item.cost_applied}
+                                      onChange={(e) => updateTourItem(itIdx, "cost_applied", Number(e.target.value))}
+                                    />
+                                    <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                      Total: <strong>{item.native_currency || item.cost_currency || "USD"} {Number(item.calculated_total_cost || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong>
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
+                              ) : (
+                                <div>
+                                  <label style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--adm-text-muted)", fontWeight: 700 }}>
+                                    Custo Operacional
+                                  </label>
+                                  <div style={{ height: "34px", display: "flex", alignItems: "center" }}>
+                                    <span
+                                      className="adm-badge"
+                                      style={{
+                                        background: "#fef2f2",
+                                        color: "#991b1b",
+                                        border: "1px solid #fecaca",
+                                        fontSize: "11px",
+                                        padding: "4px 8px",
+                                        fontWeight: 600,
+                                      }}
+                                      title="Custos internos e margens são estritamente confidenciais"
+                                    >
+                                      🔒 Confidencial
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
 
                               {/* 7. Excluir */}
                               <button
@@ -1894,22 +2258,74 @@ function ContractsContent() {
                               </button>
                             </div>
 
-                            {/* Linha de Auditoria, Inclusões e Alertas */}
+                            {/* Linha de Logística, Auditoria, Inclusões e Controles Avançados */}
                             <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingTop: "8px", borderTop: "1px dashed var(--adm-border)" }}>
                               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", fontSize: "11px" }}>
-                                  {item.calculation_formula && (
+                                  {/* Seletor de Zona Canônica de Hotel do Passeio */}
+                                  <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                    <span style={{ fontSize: "10px", color: "var(--adm-text-muted)", fontWeight: 600 }}>Zona Hotel:</span>
+                                    <select
+                                      className="adm-select"
+                                      style={{ fontSize: "10px", height: "24px", padding: "0 6px", width: "auto" }}
+                                      value={item.hotel_zone_snapshot || formData.hotels_schedule?.[0]?.zone || ""}
+                                      onChange={(e) => updateTourItem(itIdx, "hotel_zone_snapshot", e.target.value)}
+                                    >
+                                      <option value="">(Zona do Contrato: {formData.hotels_schedule?.[0]?.zone || "Geral"})</option>
+                                      {CANONICAL_ZONES.map((z) => (
+                                        <option key={z} value={z}>
+                                          {z}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+
+                                  {/* Seletor de Trechos / Legs para Transfers Privativos */}
+                                  {isVehicleOrTransfer && (
+                                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                      <span style={{ fontSize: "10px", color: "var(--adm-text-muted)", fontWeight: 600 }}>Trechos:</span>
+                                      <select
+                                        className="adm-select"
+                                        style={{ fontSize: "10px", height: "24px", padding: "0 6px", width: "auto" }}
+                                        value={item.legs_count || 1}
+                                        onChange={(e) => updateTourItem(itIdx, "legs_count", Number(e.target.value))}
+                                      >
+                                        <option value={1}>1 Trecho (Só Ida ou Só Volta)</option>
+                                        <option value={2}>2 Trechos (Ida e Volta / Round-Trip)</option>
+                                      </select>
+                                    </div>
+                                  )}
+
+                                  {/* Fórmula Operacional Interna (apenas visível a quem tem acesso a custos) */}
+                                  {canViewCosts && item.calculation_formula && (
                                     <span style={{ color: "var(--adm-text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
                                       <Calculator size={13} color="var(--adm-clay)" />
                                       <strong>Fórmula:</strong> {item.calculation_formula}
                                     </span>
                                   )}
+
+                                  {/* Motivo de Override Manual (se aplicável, para Admin) */}
+                                  {canViewCosts && item.is_manual_override && (
+                                    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                                      <span style={{ color: "#b45309", fontWeight: 600, fontSize: "10px" }}>Motivo Override:</span>
+                                      <input
+                                        type="text"
+                                        className="adm-input"
+                                        style={{ fontSize: "10px", height: "22px", padding: "0 6px", width: "160px" }}
+                                        placeholder="Ex: Tarifa acordada comercialmente"
+                                        value={item.manual_override_reason || ""}
+                                        onChange={(e) => updateTourItem(itIdx, "manual_override_reason", e.target.value)}
+                                      />
+                                    </div>
+                                  )}
+
                                   {item.external_fees && (
                                     <span style={{ color: "#d97706", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}>
                                       <AlertCircle size={13} />
                                       <strong>Taxa adicional:</strong> {item.external_fees}
                                     </span>
                                   )}
+
                                   {!cocoCheck.valid && (
                                     <span style={{ color: "#b91c1c", display: "flex", alignItems: "center", gap: "4px", fontWeight: 700 }}>
                                       <AlertCircle size={13} />
@@ -1918,23 +2334,25 @@ function ContractsContent() {
                                   )}
                                 </div>
 
-                                {/* Reatribuir Código TN-xxx se desejado */}
-                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <span style={{ fontSize: "10px", color: "var(--adm-text-muted)" }}>Tabela:</span>
-                                  <select
-                                    className="adm-select"
-                                    style={{ fontSize: "10px", height: "24px", padding: "0 6px", width: "auto" }}
-                                    value={item.tariff_code || ""}
-                                    onChange={(e) => updateTourItem(itIdx, "tariff_code", e.target.value || undefined)}
-                                  >
-                                    <option value="">(Sem tabela vinculada)</option>
-                                    {SUPPLIER_COST_OPTIONS.map((o) => (
-                                      <option key={o.code} value={o.code}>
-                                        {o.code} — {o.supplierName} ({o.serviceName})
-                                      </option>
-                                    ))}
-                                  </select>
-                                </div>
+                                {/* Reatribuir Código Legado TN-xxx se desejado */}
+                                {!isOfficial && (
+                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                    <span style={{ fontSize: "10px", color: "var(--adm-text-muted)" }}>Tabela Legada:</span>
+                                    <select
+                                      className="adm-select"
+                                      style={{ fontSize: "10px", height: "24px", padding: "0 6px", width: "auto" }}
+                                      value={item.tariff_code || ""}
+                                      onChange={(e) => updateTourItem(itIdx, "tariff_code", e.target.value || undefined)}
+                                    >
+                                      <option value="">(Sem tabela vinculada)</option>
+                                      {SUPPLIER_COST_OPTIONS.map((o) => (
+                                        <option key={o.code} value={o.code}>
+                                          {o.code} — {o.supplierName} ({o.serviceName})
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                )}
                               </div>
 
                               <input
@@ -2059,9 +2477,33 @@ function ContractsContent() {
               </div>
 
               <div className="adm-modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-                <button type="button" className="adm-btn adm-btn-outline" onClick={() => setFormModalOpen(false)}>
-                  Cancelar
-                </button>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <button type="button" className="adm-btn adm-btn-outline" onClick={() => setFormModalOpen(false)}>
+                    Cancelar
+                  </button>
+
+                  {selectedContract && selectedContract.status !== "finalizado" && selectedContract.status !== "cancelado" && selectedContract.status !== "rascunho" && (
+                    <button
+                      type="button"
+                      className="adm-btn adm-btn-outline"
+                      style={{
+                        background: "rgba(16, 185, 129, 0.1)",
+                        color: "#059669",
+                        borderColor: "#10b981",
+                        fontWeight: 600,
+                      }}
+                      onClick={() => {
+                        setFormModalOpen(false);
+                        handleOpenFinalize(selectedContract);
+                      }}
+                      title="Finalizar venda e gerar chegadas e reservas operacionais"
+                    >
+                      <CheckCircle2 size={15} />
+                      <span>Finalizar Venda</span>
+                    </button>
+                  )}
+                </div>
+
                 <div style={{ display: "flex", gap: "10px" }}>
                   <button
                     type="button"
@@ -2090,6 +2532,21 @@ function ContractsContent() {
           </div>
         </div>
       )}
+
+      {/* =========================================================================
+          MODAL DE SELEÇÃO DO CATÁLOGO OFICIAL (52 PRODUTOS COMERCIAIS v0.1.43)
+         ========================================================================= */}
+      <CommercialProductSelectorModal
+        open={catalogModalOpen}
+        onClose={() => setCatalogModalOpen(false)}
+        onSelectProduct={addOfficialProductItem}
+        commercialProducts={commercialProducts}
+        arrivalDate={formData.arrival_date}
+        adultsCount={formData.adults_count}
+        childrenCount={formData.children_count}
+        hotelZone={formData.hotels_schedule?.[0]?.zone || null}
+        canViewCosts={canViewCosts}
+      />
 
       {/* =========================================================================
           MODAL DE ESCOLHA QUANDO O CLIENTE JÁ TEM CONTRATO(S) EXISTENTE(S)
@@ -2264,6 +2721,46 @@ function ContractsContent() {
                   <Edit2 size={14} />
                   <span>Editar Contrato / Cláusulas</span>
                 </button>
+                <Link
+                  href={`/admin/financeiro/clientes?contract_id=${selectedContract.id}`}
+                  className="adm-btn adm-btn-sm"
+                  style={{ background: "rgba(2, 132, 199, 0.4)", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}
+                  title="Ver Contas a Receber e Extrato Financeiro do Cliente"
+                  onClick={() => setPrintModalOpen(false)}
+                >
+                  <DollarSign size={14} />
+                  <span>Recebimentos</span>
+                </Link>
+                <Link
+                  href={`/admin/vouchers?search=${selectedContract.contract_number}`}
+                  className="adm-btn adm-btn-sm"
+                  style={{ background: "rgba(217, 119, 6, 0.4)", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}
+                  title="Ver e Gerenciar Vouchers dos Passeios do Contrato"
+                  onClick={() => setPrintModalOpen(false)}
+                >
+                  <Ticket size={14} />
+                  <span>Vouchers</span>
+                </Link>
+                <Link
+                  href={`/admin/ocorrencias?new=true&contractId=${selectedContract.id}&contractNumber=${selectedContract.contract_number}&clientName=${encodeURIComponent(selectedContract.client_name)}`}
+                  className="adm-btn adm-btn-sm"
+                  style={{ background: "rgba(220, 38, 38, 0.4)", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}
+                  title="Abrir Ocorrência Operacional para este Contrato"
+                  onClick={() => setPrintModalOpen(false)}
+                >
+                  <ShieldAlert size={14} />
+                  <span>Ocorrência</span>
+                </Link>
+                <Link
+                  href={`/admin/tarefas?new=true&contractId=${selectedContract.id}&contractNumber=${selectedContract.contract_number}&clientName=${encodeURIComponent(selectedContract.client_name)}`}
+                  className="adm-btn adm-btn-sm"
+                  style={{ background: "rgba(37, 99, 235, 0.4)", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}
+                  title="Criar Tarefa Interna para este Contrato"
+                  onClick={() => setPrintModalOpen(false)}
+                >
+                  <CheckSquare size={14} />
+                  <span>Tarefa</span>
+                </Link>
                 <button
                   type="button"
                   className="adm-btn adm-btn-sm"
@@ -2374,7 +2871,19 @@ function ContractsContent() {
                     <tbody>
                       {(selectedContract.hotels_schedule || []).map((h, hIdx) => (
                         <tr key={hIdx}>
-                          <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>{h.hotel_name || "—"}</td>
+                          <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>
+                            <strong>{h.hotel_name || "—"}</strong>
+                            {h.zone ? (
+                              <span style={{ fontSize: "11px", color: "var(--adm-clay, #a55e40)", marginLeft: "6px" }}>
+                                ({h.zone})
+                              </span>
+                            ) : null}
+                            {h.is_manual ? (
+                              <span style={{ fontSize: "10px", color: "var(--adm-amber, #b45309)", marginLeft: "6px", fontStyle: "italic" }}>
+                                [Hospedagem Manual]
+                              </span>
+                            ) : null}
+                          </td>
                           <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>{h.checkin ? new Date(h.checkin + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</td>
                           <td style={{ padding: "7px 10px", border: "1px solid #cbd5e1" }}>{h.checkout ? new Date(h.checkout + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</td>
                         </tr>
@@ -2547,6 +3056,150 @@ function ContractsContent() {
                   <div style={{ fontSize: "10px", color: "var(--adm-clay)" }}>https://valida.as/tionene-{selectedContract.contract_number.toLowerCase()}</div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL DE CONFIRMAÇÃO DE FINALIZAÇÃO DE VENDA (GERAÇÃO DE RESERVAS)
+         ========================================================================= */}
+      {finalizeModal.open && finalizeModal.contract && (
+        <div className="adm-modal-backdrop adm-no-print" onClick={() => !finalizeModal.processing && setFinalizeModal((prev) => ({ ...prev, open: false }))}>
+          <div
+            className="adm-modal-card"
+            style={{ maxWidth: "620px", maxHeight: "90vh", overflowY: "auto" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="adm-modal-header">
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "50%",
+                    background: "#dcfce7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#15803d",
+                  }}
+                >
+                  <CheckCircle2 size={22} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "18px", color: "var(--adm-wine)" }}>
+                    Finalizar Venda — {finalizeModal.contract.contract_number}
+                  </h3>
+                  <p style={{ fontSize: "12px", color: "var(--adm-text-muted)" }}>
+                    Cliente: <strong>{finalizeModal.contract.client_name}</strong>
+                  </p>
+                </div>
+              </div>
+              {!finalizeModal.processing && (
+                <button
+                  type="button"
+                  className="adm-btn adm-btn-icon adm-btn-outline"
+                  onClick={() => setFinalizeModal((prev) => ({ ...prev, open: false }))}
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+
+            <div className="adm-modal-body" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "10px", padding: "14px 16px" }}>
+                <div style={{ fontWeight: 600, color: "#166534", fontSize: "14px", marginBottom: "4px" }}>
+                  Ações que serão executadas automaticamente:
+                </div>
+                <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "13px", color: "#15803d", lineHeight: 1.6 }}>
+                  <li>O status do contrato passa para <strong>VENDA FINALIZADA</strong>.</li>
+                  <li>Criação de <strong>1 registro de chegada/atendimento</strong> em Cancún (logística de aeroporto e hotel).</li>
+                  <li>
+                    Geração de <strong>{(finalizeModal.contract.items || []).length} reserva(s) operacional(is)</strong> para emissão de vouchers e controle de execução com fornecedores.
+                  </li>
+                  <li>
+                    Lançamento de <strong>{(finalizeModal.contract.items || []).length} obrigação(ões) financeira(s) a pagar</strong> para fornecedores em moedas originais (USD / MXN).
+                  </li>
+                </ul>
+              </div>
+
+              {/* Resumo dos Itens do Contrato */}
+              <div>
+                <label className="adm-label" style={{ marginBottom: "6px" }}>
+                  Serviços e Passeios Contratados ({(finalizeModal.contract.items || []).length}):
+                </label>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "200px", overflowY: "auto", border: "1px solid var(--adm-border)", borderRadius: "8px", padding: "8px" }}>
+                  {(finalizeModal.contract.items || []).length === 0 ? (
+                    <div style={{ padding: "12px", textAlign: "center", color: "var(--adm-text-muted)", fontSize: "12px" }}>
+                      Nenhum item contratado.
+                    </div>
+                  ) : (
+                    finalizeModal.contract.items?.map((it, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "8px 10px",
+                          background: "var(--adm-surface-alt)",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                        }}
+                      >
+                        <div>
+                          <strong>{it.tour_name}</strong>
+                          <div style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                            Data: {it.tour_date ? new Date(it.tour_date + "T12:00:00").toLocaleDateString("pt-BR") : "A definir"} | {it.adults_count} ad{it.children_count > 0 ? `, ${it.children_count} ch` : ""}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <span className="adm-badge badge-blue" style={{ fontSize: "10px" }}>
+                            {it.supplier_name || "Operadora"}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div style={{ fontSize: "12px", color: "var(--adm-text-muted)", background: "var(--adm-surface-alt)", padding: "10px 12px", borderRadius: "8px" }}>
+                <Info size={14} style={{ display: "inline", verticalAlign: "-2px", marginRight: "4px" }} />
+                <strong>Operação atômica e idempotente:</strong> Se a venda for finalizada novamente, os registros existentes serão sincronizados sem duplicação de reservas ou contas a pagar.
+              </div>
+            </div>
+
+            <div className="adm-modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <button
+                type="button"
+                className="adm-btn adm-btn-outline"
+                disabled={finalizeModal.processing}
+                onClick={() => setFinalizeModal((prev) => ({ ...prev, open: false }))}
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                className="adm-btn adm-btn-clay"
+                style={{ background: "#059669", borderColor: "#059669", color: "#fff", fontWeight: 600 }}
+                disabled={finalizeModal.processing}
+                onClick={handleConfirmFinalize}
+              >
+                {finalizeModal.processing ? (
+                  <>
+                    <Clock size={15} className="animate-spin" />
+                    <span>Finalizando Venda...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 size={16} />
+                    <span>Confirmar e Finalizar Venda</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>

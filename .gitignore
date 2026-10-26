@@ -33,3 +33,13 @@ tsconfig.tsbuildinfo
 # Dados brutos de handoff / informações internas de fornecedores
 03_DEVELOPER_HANDOFF/
 *.pdf
+
+# Backups locais
+git_zip/
+*.zip
+backups/
+*.dump
+supabase/.temp/
+
+
+

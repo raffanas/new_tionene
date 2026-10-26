@@ -1,0 +1,6 @@
+# Dolphin transport USD seed — owner-approved v0.1.39
+
+- `Dolphin_Transport_Source_Owner_2026-10-21.png`: owner's original three-tier MXN transportation chart (SOURCE). Quotes MXN 150 / 200 / 250 **per person**, owner confirmed **round-trip**. No stated supplier guarantee of all southern hotel pickup locations.
+- `Dolphin_Transport_Zone_Seed_USD.xlsx`: exactly 8 canonical agency hotel zones, independent USD costs for adult, child and infant, fixed source planning divisor 16.65. Full owner-mapped southern fallback uses highest 250 MXN / USD15.02 tier. USD9.01/12.01/15.02 values are **rounded two-decimal planning cost per person**, not arbitrary new supplier rate IDs.
+- **Import as separate transport cost configuration** (do not modify the 11 original supplier XLSXs or add to original 52/80 count). Transport ON by default for Dolphin, OFF for rare Admin override. Separate cost snapshot by booking and per-age passenger count; charge once for the whole round trip. Admin can change category prices and zone policy without developer involvement.
+- No source claim that every further-south location has actual provider pickup service. Local Admin override where needed. For full business implementation rules see `../../09_v0.1.39_Owner_Approved_Decisions.md`.

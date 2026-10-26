@@ -1,0 +1,4518 @@
+{
+  "version": "v0.1.43",
+  "source_file": "Ultimate_Tio_Nene_Hotels_Two_Columns.xlsx",
+  "sheet_name": "Final Hotel Database",
+  "total_hotels": 1125,
+  "zone_distribution": {
+    "Puerto Juarez": 2,
+    "Isla Blanca": 21,
+    "Cancun Center": 6,
+    "Cancun Hotel Zone": 72,
+    "Maya Riviera": 265,
+    "Playa del Carmen": 405,
+    "Tulum Center": 224,
+    "Tulum Hotel Zone": 130
+  },
+  "hotels": [
+    {
+      "name": "27/27 Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "3B| Wellness Hotel & Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "770 Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "A Una Calle Del Ado 5ta Avenida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aalada Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Abba Suites Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Adhara Cancún",
+      "zone": "Cancun Center"
+    },
+    {
+      "name": "Aflora Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Agua Dulce by NAS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ah Xok suites 5a Avenida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "AHAU Apartments",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ahau Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Ahava Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Akadia Hostal Cultural",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "AKBAL Playa - Beach Zone",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Akumal Bay Beach & Spa Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Akumal Natura",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Alaya Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Aldea Maya-Ha Cabañas con cenotes",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Aldea Thai by Oceanfront",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aldea Thai Luxury Condohotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aldea Thai Oceanview Penthouses",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Alea Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Alicat Villas",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Alila Mayakoba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Alito Tulum Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "All Ritmo Cancún Resort & Waterpark",
+      "zone": "Puerto Juarez"
+    },
+    {
+      "name": "All Riviera",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Allegro Playacar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Alma Libre Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Almarea Vacation Condo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aloft by Marriott Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aloft Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Aloha Luxury Apartment",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Alquimia Hotel Boutique",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Aluna Resort Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Amaka Calma Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "AMANÁA Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Amansala",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "AMARI Uptown Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Amarte Maroma Hotel Eco Boutique Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Amazing 2BR PH steps distance from 5th Av by Happy Address",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ambre & Epices Jungle Hotel & Spa",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ambre Epices luxury villa 8BR - Private Chef",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ame Hotel Boutique & Spa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Amira District",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ammaris Suite",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Amor Rooms",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Ana y Jose Tulum Hotel & Spa",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Anah La Quinta",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Anah Luxury Condos by Baitna",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Anah Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Anah Suites PH by Ocean Front",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Anah Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "ANAND - Private Jungle Villa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Anat Tantric Boutique Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Angelina 28 Beachfront and Family Apartments - Modern and Relaxing Long Stays (20 min from Cancun Airport)",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Angelina 28 Beachfront By Nah Hotels",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Antera Hotel & Residences",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Apart hotel Casaejido",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Appartamenti Melissa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Appartamenti Melissa 2",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aqua Viva Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Aquamarina Beach Hotel Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Areia Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "ARENABLUE TULUM",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Arenika Beach House Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "ARKA TULUM",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Arkana 9 by Grupo Amber",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Armonia Concept Hotel Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Aroma Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Art Village Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Aruma Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "ATELIER Playa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Attha Cenote Luxury Condo",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "AVA Resort Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Aventura Mexicana",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Aventuras Club",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Axkan Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Azalea by Zamá Homes",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Azucar Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Azul Tulum by GuruHotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Azul Villa Casa Del Mar By Karisma",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Azulik - Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "B and B SiPlaya",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "B10 Distinctive Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Bahia Principe Escape Sian Ka'an",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bahia Principe Escape Tequila - Adults Only All Inclusive - Brand New Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bahia Principe Explore Akumal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bahia Principe Explore Coba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bahia Principe Explore Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bahia Principe Vacation Rentals-Green 3-Two-Bedroom Villas",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bahia Principe Vacation Rentals - Quetzal - 1-Bedroom Apts",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bakal Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Bakal Tulum By Lockey",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "BALAM Playa - 15 Th. Ave",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Balkón Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Balxiba Playa del Carmen Downtown Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Banyan Tree Mayakoba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barceló Maya Beach - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barceló Maya Caribe",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barceló Maya Colonial",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barcelo Maya Grand",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barceló Maya Palace",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barceló Maya Riviera - Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Barceló Maya Tropical - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bardo Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "BAU Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "BE Destination Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Be Playa Hotel Boutique & Rooftop Bar - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Beach House Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Beachscape Kin Ha Villas & Suites",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Bel Air Collection Resort & Spa Riviera Maya - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Beloved Playa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "BH HOTEL & CENOTE TULUM - Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Biwa Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "BLOOM Exclusive Boutique B&B - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Blue Diamond Wellness Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Blue Palms Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Blue Parrot 5th Avenue",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Blue Parrot Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Blue Veleta Luxury Bedrooms",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "BlueBay Grand Esmeralda",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Boheme Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Boho Lofts & Studios",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Boutique Hotel Posada 06 Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Breathless Riviera Cancun Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bric Hotel & Spa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "BT Rooms Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Buena Vida by NAS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Buenos Dias B&B",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Bufo Alvarius",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Caballito CM-103 by NAS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Cabañas Maalix",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Cabañas Playa Condesa Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Cache Hotel Boutique - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Cachito de Cielo Luxury Jungle Lodge",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Caimán Hábitat Boutique Hotel & Wellness, Tulum Beach",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Calalily Aldea Zama by Homing Bird",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Calea Tulum Boutique Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Caleta Tankah",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "CALIXTA Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Calma Chicha Rooms",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Cancun Bay Hotel",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Cancún Plaza",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Canopy by Hilton Cancun La Isla",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Capital O Hotel Brisas del Mar Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Caribbean Paradise Hotel & Spa - 5th Avenue",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Caribe Corazon",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Agape Boutique Hotel Rooftop Pool & Beach club access",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Almendro",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Altamar",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa Ambar Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Amor Del Sol",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa Bakal",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Calendario Azteca",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Caribe Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Cenote Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa Colonial Vintage Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Coyote Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa De Giorgina",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa de Luz Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa de Playa Xpu Ha Beach",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa del Artista B&B",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa del Mar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa del Mar Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa del Puerto",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa Don Diego",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Frida",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Ganesh Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Gem B&B",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Gitano",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Isza",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Kaoba Hotel & Suites",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa La Galeria",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa-laha",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Maca",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Macarena",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Malca",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Melissa - Near Yucatek Divers",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Moksha",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Nah-Ku Hostel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa Noa",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Nohoch Tunich",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Nova by Homing Bird",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Casa Sol Playa del Carmen Cerca de la Playa/ Piscina",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Teka",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Ticul Hotel Boutique 5Th Av",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Uman",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Violeta",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casa Volt",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casa Xanath",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Casa ZaBa 5BR Oceanfront Villa with private cenote",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Casabella Rentals",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casita De La Musica",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Casitas Kinsol",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Castillo de Arena by NAS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Castillo de Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Catalonia Grand Costa Mujeres All Suites & Spa",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Catalonia Playa Maroma",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Catalonia Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Catalonia Royal Tulum – Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Catalonia Yucatán Beach",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Central Park 103 H",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Central Park Tulum by Los Amigos",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ceremonial Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Cervecería Tulum Boutique Hotel & Beer Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Chablé Maroma",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Che Playa Hostel & Bar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Che Tulum Hostel & Bar",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Chez Waffle Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Chiibal Uh",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Chingon Anarchy Hotel & Roof",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Chiringuito Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Cielo Maya Beach Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "City Express by Marriott Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "City Express Plus by Marriott Cancún Aeropuerto Riviera",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Club Cenotes Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Club Med Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Club Regina Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Coco Azul Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Coco Live Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Coco Río",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Coco Unlimited",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Cocos Cabañas Playa del Carmen Adults only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Cohiba",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Collection O EcoVergel Hotel Boutique Spa in Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Collection O Faisano Boutique Hotel, Spa, Transportation, Rentals & Tours, Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Collection O Kaab Downtown Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Collection O Latino Boutique Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Colorbox Beds and Rooms",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Condo Hotel Sak-Naj Akumal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Conrad Tulum Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Container Project",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "ContainME Eco Chic Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Copal Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Coral Blue Beach Condo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Coral Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Corales Suites",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Corazon by NAS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Corazon de Jade Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Cormoran Boutique Hotel & Cenote Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Corto Maltes 303 by Royal Properties",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Costa Fina Oceanview Penthouse",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Courtyard by Marriott Cancun Airport",
+      "zone": "Cancun Center"
+    },
+    {
+      "name": "Courtyard By Marriott Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Cozy Rooms to let",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Crown Paradise Club Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Cuca Macuca Hostal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Cyan Cancún Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "D´Margo Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Days Inn By Wyndham Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Daytripper Hostel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Déjá Vu Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Del Sol Beachfront Hotel and Condos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Delek Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Desire Pearl Riviera Maya Resort – All Inclusive, Exclusively for Couples",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Desire Riviera Maya Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Devossion by Live Aqua Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Diamante K - Inside Tulum National Park",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Dolce Caribe B&B",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dolce Vita Caribe B&B",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Dolce Vita Caribe Golf",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Dos Ceibas Tulum Feel Good Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Dos Playas Faranda Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Dreams Aventuras Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dreams Jade Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dreams Natura Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dreams Playa Mujeres Golf & Spa Resort",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Dreams Puerto Morelos Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dreams Riviera Cancun Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dreams Sands Cancun Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Dreams Sapphire Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Dreams Tulum Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Drop By Playa Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Dune Boutique Hotel located at the party zone",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Eco.Bañitas",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Ekumal Retreat Eco Sanctuary",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Dorado Casitas Royale, All & More Inclusive - Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Dorado Maroma",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Dorado Royale",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Dorado Seaside Palms, All & More Inclusive - Adults Only - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Dorado Seaside Suites Oceanfront, All & More Inclusive - Adults Only - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Mexicano",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "El Paraiso Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "El Pez Colibri Boutique Hotels",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "El Punto Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "El Secreto Hotel by Bunik",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "El Sueño Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "El Taj Oceanfront & Beachside Condo Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Elements 326",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Elements Tulum Boutique Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Embarcadero Maya B&B",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Emiliano 42 Condos Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Emotion Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Emporio Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Encantada Condo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Encantada Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Encanto Palm on the 8th",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Encanto Riviera",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Etéreo, Auberge Collection",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Eterna Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ether Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Eurostars Hacienda Vista Real Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Excel Sense Playacar Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Excellence Coral Playa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Excellence Playa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Excellence Riviera Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Exclusive Apartment Resort by Olahola",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Exclusive Luxury All-Inclusive Villa with Private Pool and 3 Bedrooms",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Fairmont Heritage Place Mayakoba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Fairmont Mayakoba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Family Selection At Grand Palladium Kantenah",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Faro Reef 401 by NAS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Fiesta Americana Cancún Villas",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Fiesta Americana Condesa Cancún All Inclusive",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Fiesta Inn Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Finest Playa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Finest Riviera Cancun by The Excellence Collection - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Flamingo Cancun All Inclusive",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Four Points by Sheraton Cancun Centro",
+      "zone": "Cancun Center"
+    },
+    {
+      "name": "Gaia Hotel Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Garza Blanca Resort & Spa Cancún",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Generations Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Getaway to Dreams Puerto Morelos Resort and Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Glamp Ikal Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Glamping Mama Loo MM",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Glamping Mayan Glam",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Golden Parnassus All Inclusive Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Gota de sal Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "GR Solaris Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Gramercy Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "GRAN SAHARA",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Grand Bahia Principe Riviera Maya All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Fiesta Americana Coral Beach Cancún All Inclusive Spa Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Grand Fiesta Americana Riviera Cancún",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Luxxe at Vidanta Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Maya by Dicasi RM",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Oasis Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Grand Oasis Riviera",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Palladium Colonial Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Palladium Kantenah Resort & Spa All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Palladium Select Costa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Grand Palladium Select White Sand",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Park Royal Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Grand Residences Riviera Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Riviera Princess",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Sirenis Riviera Maya Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Sunset Princess",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Grand Velas Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Great Villas Studios & Residences - The Kahlo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Green Oasis Home Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Green Tulum Cabañas & Gardens",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hacienda Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hacienda Real",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hacienda Real del Caribe",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hacienda Tres Ríos Resort, Spa & Nature Park",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hacienda Valentina",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hammock Heaven",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hard Rock Hotel Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Haven Riviera Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hidden Beach Resort Au Naturel Adults Only, All & More Inclusive - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hidden Beach Resort Au Naturel by Karisma - Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hilton Cancun, an All-Inclusive Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hilton Cancun Mar Caribe All-Inclusive Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hilton Tulum Riviera Maya All-Inclusive Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "HM Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hokhmah Heart Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Holiday Inn Club Vacations Grand Residences by IHG - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Holiday Inn Express & Suites Playa Del Carmen by IHG",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Holiday Inn Tulum by IHG",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "HOM Hostel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hostal Boutique",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hostal CASA MX quinta avenida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hostal Del Jaguar  - Hostel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "HOSTAL DEL MAR",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hostal Inn - Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hostal Malakai Cabanas & Dorms",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hostal MX 5th Avenue - Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hostal Vive la Vida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hostel Oryx Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel 56 Zuna",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Addy",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Agua Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Akumal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Alux Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Ambra",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Angelo's",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Arco Iris Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Aria Quinta Avenida & Rooftop Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Arrecifes Suites",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel B&B - 5th Avenue",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Balxiba",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Banana Boutique & Spa by Paradise Hotels - 5th Av Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Bardo Adults Only",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Barrio Latino",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel & Beach Club Ojo de Agua",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Blvd, Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Boutique La Josefina - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Boutique Murana Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Boutique TerraNova",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Brisas 5a Av. Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Cabañas Tulum Beach Hotel & Spa",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Caracol Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Carlitos Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel CARPE DIEM Tulum by Nah Hotels",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Casa Colibri",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Casa De Las Flores",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Casa Santiago Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Casa Sofia Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Casa Tortuga Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Casa Tortuga Tulum Cenotes Park Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "HoteL cAsaiA",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "HOTEL CASTILLO DEL MAR",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Centrico Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Chilam Balam",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Cielo Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Coco Rio by Hospitality Wellbeing",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Colorado Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel D'Atyi",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Delfin",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel el acuario",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel El Campanario",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel El Capitan Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel El Faisan y El Venado",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel el Moro",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Era Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Esencia",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Flor",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Golf Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Hacienda Del Caribe",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Hacienda Maria Bonita",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Hacienda Paradise",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Holistika",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel & Hostel El Punto",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Howlita Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Hulku",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Imperial Las Perlas",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Indigo Playa Del Carmen by IHG",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel International House",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Kavia 5th Avenida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Kay Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "HOTEL KO OX WENNE",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel La Semilla",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel La Semilla, Playa del Carmen, a Member of Design Hotels - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Labnah",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Las Arenas",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Las Golondrinas",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Las Palmas Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Locura Tulum-Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Los Arrecifes",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Los Itzaes by 5th av",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Luna Llena",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Lunasol",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Lunata - Near Playa del Carmen Main Beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Ma'xanab",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Macondo Quinta Avenida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel manzana blanca",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Manzana Verde",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Maria Candelaria",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Mariachi by Kavia 5th Av",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Marina El Cid Spa & Beach Resort All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Marites Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Maya del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Maya del Centro",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Maya Turquesa - Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Melina",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Milam, Michelin Key winner",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Mimi Del Mar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Morgana by Iter Sensibus",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Muarè Tulum Wellness & Spa",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Mundo Maya Tulum - Jaguar Park & Beach",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Muyu Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel MX portal maya",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Myko Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Nadet Suites",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Nautilus",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Noah & Bistro Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Ojo de Agua",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Panamera",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Papagayo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Paso del Mar Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Piedra del Caribe Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Playa Encantada",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel PLAYA ZAMA'",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Plaza Playa - Near Playa del Carmen Main Beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "HOTEL POCNA",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Posada Malix Pek",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "HOTEL POSADA PAPAGAYO",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Punta Esmeralda",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Qamar Lux",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Quiam",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Quinta Santa Anita",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Riu Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Riu Caribe",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Riu Dunamar",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Hotel Riu Latino",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Hotel Riu Lupita",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Riu Palace Costa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Hotel Riu Palace Kukulkan",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Riu Palace Las Americas",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Riu Palace Mexico",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Riu Palace Peninsula",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Riu Palace Riviera Maya",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Riu Playacar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Riu Tequila",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Riu Ventura",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hotel Riu Yucatan",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Roc Luxe Tulum - Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Ruta del Sol Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel San Ignacio",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel San Miguel Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel San Vicente",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Santa Croce",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Sayab 5ta Avenida",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Scarlette",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Select Inn Quinta Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Shibari Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Sol Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Sonno Caliza Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Stella Maris Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Tequila Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Tiki Tiki Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel tropical casa blanca",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Tuki Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Tulum Centro, Party Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Tulum City",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Tulum Iguanas",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hotel Turquesa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Tzalam Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotel Villa del Mar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Villas Segovia Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel VSI",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel White Sand",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Xcaret Arte - All Parks / All Fun Inclusive, Adults Only - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Xcaret México",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Xcaret Tierra - Family Premier - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hotel Yukon",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Yum K'iin",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hotel Zulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotelito Azul - A Michelin Key Winner",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Hotelito del Mar Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hunab Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Hyatt Centric Playa del Carmen - Downtown House & Beach House",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hyatt Place Cancun Airport",
+      "zone": "Cancun Center"
+    },
+    {
+      "name": "Hyatt Vivid Cancun",
+      "zone": "Puerto Juarez"
+    },
+    {
+      "name": "Hyatt Vivid Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Hyatt Zilara Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Hyatt Zilara Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Hyatt Ziva Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "I Scream House",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Iberostar Selection Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Iberostar Selection Paraíso Lindo",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Iberostar Selection Paraíso Maya Suites",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Iberostar Selection Riviera Cancún",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Iberostar Waves Paraíso Beach",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Iberostar Waves Paraíso del Mar",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Iberostar Waves Quetzal - All Inclusive",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Iberostar Waves Tucán - All Inclusive",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Icástico Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ikal Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Illusion Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "ILLUSION XPRESS Downtown Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Impression Moxché by Secrets – Adults Only – All Inclusive",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "In the Heart of Tulum Town",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Infinito by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Infinity Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Inna Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "InterContinental Presidente Cancun Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Intima Resort Tulum - Clothing Optional - Adults Only",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ipana Dream Downtown Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "ISABELLA BOUTIQUE HOTEL",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "It beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "IT Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Itza Hotel Akumal - Hotel - Hostel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Izsla Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Izsla Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Jaakbal Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Jashita Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "JOIA Paraíso by Iberostar - Adults Only - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Jungala Hotel at VidantaWorld Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Jungle paradise of luxury",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "JW Marriott Cancun Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "K'uyen Boutique Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Ka'ax Cenote Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Kaab South Beach by The Spot Rentals",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Kaaba Luum Jungle Villas",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Kaban 44 Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Kabañas & Beach Club Ojo de Agua",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "KAHATSA' boutique hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kai Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "KAN Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kanak Unique Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kanan Tulum Hotel & Spa Adults Only Playground",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Kanté Hotel - Downtown Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "KASA Hotel Parota",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "KASSIA TULUM",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kataleya",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kempinski Hotel Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Keniza Beach Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Kiin Luxury Condos Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Kika Studios",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Kimpton Tres Rios All Inclusive by IHG",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Kin Ha Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kin Sol Soleil Maroma Bay",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Kin Tulum Jungle Deluxe",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kinbe Deluxe Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Kinbe Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Koos Hotel Boutique Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Koox City Garden Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Kore Tulum Retreat and Spa Resort - Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Krystal Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Krystal Grand Cancún All Inclusive",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Krystal Urban Cancún & Beach Club",
+      "zone": "Cancun Center"
+    },
+    {
+      "name": "Ku Kuk Glamping",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Kukulcan by Emotion",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kuun Taak Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Kúunáa Tulum All Beer Inclusive",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "L´hotelito",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "La Aldea",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Alegria Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Armonia Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Ballena Nómada",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "La Casa de la Playa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "La Casa de Mia Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "La conchita Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "La Cultura Suites - Avenida Quinta",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Divina by Aldea Thai",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Hacienda Hotel, at Xcaret",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "La Leyenda Boutique by Bunik",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Pasion Hotel Boutique by Bunik",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Playa Condo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Posada del Sol Boutique Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "La Rana Cansada",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "La Reserva Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "La Valise Tulum, Member of Small Luxury Hotels",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "La Zebra Tulum - a Small Luxury Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "LABNA' Suites Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Laguna Suites",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Las Palapas",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Las Perlas Condo",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Las Tres Palmas Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Las Villas Akumal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Latino Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Layla Tulum Adults Only",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Le Blanc Spa Resort Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Le Reve by MIJ Beachfront Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "LF Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Libelula Tulum Beachfront Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Linda Vecindad Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Little Gem Hotel Tulum La Veleta",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Live Aqua Beach Resort Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Livetulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Living Bloom, Concept Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Lo Nuestro Petit Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Loba Tulum Male Only",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Loch Collection Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Loft Oasis",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Los Amigos Beach Hotel Boutique",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Los Momentos - Bahía Soliman",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Luhme Hostel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Lula Tulum, a Small Luxury Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Lumilek Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Luna Encantada",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Lunah Ekumal Sanctuary",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Lunah Tulum Pueblo",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "LUV Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Luxurious Large PH with ProGym&Beach Club Shuttle",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Luxury Boutique Hotel Villas Jardin Caracol Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Luxury Studios",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "LYJ HOTEL",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "LYJ HOTEL  38",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Magia by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Magic Blue Spa Boutique Hotel-Adult Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Magic Express",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Magic Xcacel Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mahekal Beach Front Resort & Spa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maison Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Majaro Apartments",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Majestic Elegance Costa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Majestic Mirage Costa Mujeres – All-Suite Resort",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Mak Nuk Village Tulum I' Clothing Optional",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mak Nuk Village Tulum II - Clothing Optional",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Maka Hotel Boutique",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Makuuch Cabañas",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mala Vecindad Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Malish Hotel & Spa Luxury Edition",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mangrove Inn Akumal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Manor Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mantaray Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mar Azul Suites 5ta Av",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mare Condo Vacacional",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Marea Azul Beach Resort",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mareazul",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Marelle Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Margaritaville Island Reserve Riviera Cancún",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Margaritaville Island Reserve Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Margot",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maria Del Mar Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Maroma, A Belmond Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "MARQUEE Playa Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Marriott Cancun, An All-Inclusive Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Marvellouse Town House, Terrace, Pool and Golf",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Marvic Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Marvic Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Matuk 1",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Matuk 3",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maui Hostel - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maui Hostels Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Maui Suites By Guruhotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maya Azul",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maya Bric Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maya Cabanas & Cenote Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Maya del Carmen Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maya Del Mar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maya Eco Village",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Maya Suites By LHMG",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Maya Tulum by G Hotels",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "MAYAB Playa - 5Th. Ave",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "MAYAN ART Hotel Boutique - 10Th. Ave",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mayan Monkey Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mayan Palace at Vidanta Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mayan Water Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mediterraneo Hotel Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Meliá Casa Maya Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Meliora By Bunik",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Menesse Midtown",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mereva Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mestizo Gallery",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Meteora Stay & Co-Working Space",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mezzanine by La Zebra, an SLH Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Mi Amor by La Zebra, an SLH Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Mia Tulum Beachfront Resort - Ocean View Suites and Beach Club",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Mia Tulum Resort",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Mía Tulum Tribe",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Mimosa Penthouse 1",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mimosa Tree Residence",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mimosa Tulum Hotel & Hostel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mini Rooms By Illusion",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Miramar by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "MK Hotel Beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mondrian Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Moon Palace Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Moon Palace Nizuc - Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Moon Palace The Grand – Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Moongate",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Moonshine Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Moonshine Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Morada Maya",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mosquito Beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Mosquito Blue",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Motto by Hilton Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Moxy Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mr Pakal Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Mr Zamna Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Muchin Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Mvngata Beach Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Naay Bej",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Naay Zama",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "NABOA Hotel Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Nahouse Jungle Lodges",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Nativ Tulum Hotel Boutique",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Nativa Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Natura Hoteis & Residences",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Nerea Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Nest Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Newport House Playa Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "NICK PRICE by Stella Rentals",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Nickelodeon Hotels & Resorts Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Nidara Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Niik Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "NIKEN BEACHFRONT HOTEL",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "NIZUC Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Nolita by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Nômade Temple Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Nube tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Nuée Hotel & Beach Club",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Nueva Vida de Ramiro",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Numa Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "O Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "O Tulum Riviera Maya Condo Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Oasis Palm",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Occidental at Xcaret Destination",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Occidental at Xcaret: Luxury Resort, Oceanfront, Comfortable, and Family-Friendly",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Occidental Costa Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Occidental Tucancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Ocean Allure Costa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Ocean Coral Riviera Cancun All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Ocean Coral & Turquesa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Ocean Maya Royale",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Ocean plaza by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ocean Plaza Condos by KVR",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ocean Riviera Paradise",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Ocean Spa Hotel",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Ocean View Cancún Arenas",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Ocean Zen Suites on 5th Avenue - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ojo de Agua",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Olas Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Óleo Cancún Playa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Olivia Oceanfront Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "oOstel Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Orchid House Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Original Maya Bric",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Our Habitas Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "OYO Hotel Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "PA Beach Club & Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Paamul Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Pacha Tulum Boutique Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Palafitos Overwater Bungalows, All & More Inclusive - Adults Only - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Palmaïa-The House of AïA: All Inclusive Wellness Resort",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Palmar del Sol",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Palms Tulum Luxury Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Pancho villa Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Panther Bay Villa & Golf",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Papagayo Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Papaya Playa Project, Tulum, a Member of Design Hotels",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Paradisus Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Paradisus La Perla – Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Paradisus Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Paraiso de la Bonita, a Luxury Collection Resort, Riviera Maya, Adult All-Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Park Hyatt Riviera Maya - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Park Royal Beach Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Paseo del Sol 102 Cenote",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "PavoReal Beach Resort Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Pelicano Inn Playa del Carmen - Beachfront Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Pepem Holistic Experience and Chaman Cuisine Restaurant - Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Pepem Holistic Experience - Peaceful Retreat Near Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Perfect Place",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Petit Lafitte Beachfront Hotel & Bungalows",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Phoenix by Kan",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Piedra Escondida",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Planet Hollywood Cancun by Royalton",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Platinum Yucatán Princess",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Playa Canek Beachfront Eco Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Playa Canek Hotel Boutique Spa",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Playa Del Karma",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Playa Esperanza Hotel Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Playa Las Palmas Glamping Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Playa Maya By Mij",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Playa Natural",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Playacar Palace",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Playalingua Del Caribe",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Plaza del Sol Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Plaza Nardos Hotel & Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Polo 15",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "POP DIEZ HOTEL BOUTIQUE PLAYA DEL CARMEN",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Portea Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Posada Amor Hotel Boutique",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Posada Gota de Sal Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Posada Kasa Tumben Ka",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Posada Lamar Tulum Beach Front and Pool",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Posada Sian Kaan Playa del Carmen - Wellness Oriented Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Praia Apartments by Casago",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Prana Boutique Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Princess Family Club Riviera - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Privé Turquoise",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Pueblito Escondido By Playa Moments",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Puerto Aventuras Hotel & Beach Club",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Puerto Corcho Hotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "PUNTA ESMERALDA Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Punta Piedra Beach Posada",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Pure All Suites Riviera Maya",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Quinta Margarita, Boho Chic Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Quinta Nina Playa del Carmen - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Radhoo Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Radio Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Raíces del Cielo Oasis Holístico",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Rancho Xoex Hotel & Spa Holístico",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Renaissance Cancun Resort & Marina",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Residence Inn by Marriott Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Riviera del Sol",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Riviera Maya Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Roc Jungle Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Rodina Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Rosewood Mayakoba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Royal Hideaway Playacar - Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Royal Solaris Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Royalton CHIC Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Royalton Hideaway Riviera Cancun, An Autograph Collection All-Inclusive Resort- Adults Only - Newly Renovated",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Royalton Riviera Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Royalton Splash Riviera Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Rubra Hotel & Spa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Rustik-inn",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sáamal 207",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sabbia by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Saela hotel boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sahara Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sana Tulum Beachfront Boutique Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Sandos Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Sandos Caracol Eco Resort - Select Club - All Incl",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sandos Caracol Nature Resort & Water Park",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Sandos Playacar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Santuario Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sayab Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Seadust Cancun Family Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Secrets Akumal Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Secrets Maroma Beach Riviera Cancun",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Secrets Mirabel Cancun Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Secrets Moxché Playa del Carmen",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Secrets Playa Blanca Costa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Secrets Playa Mujeres Golf & Spa Resort",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Secrets Riviera Cancún All Preferred - Adults Only - All inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Secrets The Vine Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Secrets Tulum Resort & Beach Club",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Select Club at Sandos Caracol All Inclusive - Adults Only Area",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Select Club at Sandos Playacar All Inclusive - Adults Only Area",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Selina Playa del Carmen - Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Selina Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Selvakoba 63",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "SelvaLuz Tulum Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Selvatica Eco Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Senator Riviera Cancun Spa Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Senderos De Ciudad Mayakoba",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Sensaciones Motel Boutique - Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Senses Quinta Avenida By Artisan Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Senses Riviera Maya Oceanfront  Boutique hotel - Adults only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Sensira Resort & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Sercotel The Gallery By KLR",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Seremonia Origen | Tú estudio con piscina privada",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Serena Tulum - Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Serenity Hotel Boutique by Alsol",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Shambala Petit Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Siente Tulum Hotel & Cenote Club",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Siesta Fiesta Hotel – 5th Avenue",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Siete Deseos By Lhmg",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Singular Dream Vacation Rentals",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Singular Joy Downtown Residences",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Singular Joy Vacation Rentals",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sivana Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Siwa Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Skyline by Zamá Homes",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "SLS Playa Mujeres",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Sofía by Bunik",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Soho Playa Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Solaya Boutique Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Sole Suites Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Solemn Peaceful Condos by The Spot Rentals",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Solera Tulum with Pool",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Soles Mayas",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Solymar Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "SOTA Human Space Retreat Centre & Wellness Adults Only",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Straw Hat Hostel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Straw Hat Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Strela-Penthouse w jacuzzi & ocean view",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Sueños Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Suite 24 ApartHotel By Xperience Hotels",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Suite 24 Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Suite Amor Tulum -Onsite Cenote, Temazcal & Spa",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Suite King | Terasu Riviera Maya | Private Balcony & Kitchenette",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Suites Brisas Cancún",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Suites Cielo y Mar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Suites Fenicia",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Suites Panamera",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Suites Riviera Maya",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Suites SanRey",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Suites Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Suites Valentina",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "SUN CARIBBEAN PLAYA DEL CARMEN",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sun Palace",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Sunday Hotel 52, Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sunday Hotel Naala Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Sunscape Cancun Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Sunset Fishermen Beach Resort Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Sunset Marina Resort & Yacht Club",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Sunset Royal Beach Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Sunset Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "SUUT Hostal Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Tago Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Taio Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "TAO Modern Retreat",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Tata Tulum - Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Teetotum Hotel Restaurant Lounge",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Temptation Cancun Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Terasu Riviera Maya Hotel and Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Terasu Riviera Maya Hotel & Spa Luxury Edition, en Xcaret",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Terrasse Hotel Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Terrazas Luxury Condos by Kiin",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Beach Tulum Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "The Beachfront by The Fives Hotels - A la Carte All Inclusive Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Carmen Hotel - Ocean Front",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Eden by Desire Riviera Maya – All Inclusive, Exclusively for Couples",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Elements Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Fives Beach Hotel - Á la Carte All Inclusive",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Fives Beach Hotel & Residences",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Fives Downtown Hotel - Curio Collection by Hilton",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Fives Oceanfront Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Fives Oceanfront Riviera Maya - All Inclusive Optional",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Gallery Apartments",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Grand Bliss at Vidanta Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Grand Mayan at Vidanta Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Green Village Boutique Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Highline Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "The Hostal Inn",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Magic Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Palm at Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Panoramic By Xperience Hotels",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "The Reef 28",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Reef Coco Beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Reef Playacar",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Riviera Maya EDITION At Kanai",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Royal Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "The Royal Haciendas",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Royal Sands",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "The Safe House",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "The Sens Riviera By Oasis",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Shore At 46th Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The Sian Kaan at Grand Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "THE SOUL HOSTAL",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "The St. Regis Kanai Resort, Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Strabon Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "The Westin Cancun Resort & Spa",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "The Westin Lagunamar Ocean Resort Villas & Spa, Cancun",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "The Yellow Nest",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "The Yucatan Playa del Carmen, Tapestry Collection by Hilton",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Thompson Playa Del Carmen Beach House",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "TJ Boutique Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Torre Diez by Grupo Amber",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Tortuga",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "TREBOL HOTEL",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Treehouse Loft in Prime Location",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Treehouse Tulum H2Ojos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Tribe on the Beach",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Trobbu",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Trobbu Boutique Collection Riviera Maya - All Inclusive",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Tropical Casablanca Party Zone",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Tropical Elegance Studio CondoHotel",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Tropical Location Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Tropicalito Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "TRS Coral Hotel",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "TRS Yucatan Hotel - Adults Only - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Tú Paraiso privado - Lahun suites Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Tubo Tulum Hostel - Unique Stay",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Tukan Hotel Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Tulum Cacao paradise",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Tulum Nueve",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Tumben Kuxtal Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Tunich Jungle Cabañas",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Turquoise Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Tuup Oceanfront",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Tuup Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "TWT CONDOS",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Uman Glamping & Cenote Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "UMi Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "UMusic Hotel & Beach Club Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Una Vida",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Unic Design Hotel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "UNICO 20°87° Hotel Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Uolis Nah Hotel Villas",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Vainilla B&B Mexico",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Valentin Imperial Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "VANESSA 42 Suites - 5Th. Ave",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Varuna",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Varuna Home",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Vedra Apartments",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Ventus at Marina El Cid Spa & Beach Resort - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Ventus Ha at Marina El Cid Spa & Beach Resort - All Inclusive",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Vértice Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Viceroy Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Vida Maya by Dicasi RM",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Vida Silvestre Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Villa Camila",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Villa Casa del Mar - Gourmet All Inclusive by Karisma",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Villa del Palmar Cancun Luxury Beach Resort & Spa",
+      "zone": "Isla Blanca"
+    },
+    {
+      "name": "Villa Las Estrellas Tulum - located at the party zone",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Villa Madre by La Cultura Suites",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Villa Pescadores Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Villa Sanah",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Villa Tortugas",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Villas Ahal",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Villas Akalan",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Villas De Rosa Beach Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Villas H2O",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Villas Kaàn",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Villas Picalu Studios & Suites",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Villas Sirenas Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Villas Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Vista Caribe",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Viva Azteca by Wyndham",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Viva Maya by Wyndham",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "VR CLUB Tulum Riviera",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Wabi Hostel",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Wakax Hacienda - Cenote & Boutique Hotel - Small Luxury Hotels of the World",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Waldorf Astoria Riviera Maya",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Watal Tulum Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "We Express Hotel Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "We Hotel Puerto Morelos",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "We Playa Hotel – Adults Only",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "When Dream Come true",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "White Sand Playa",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Winday Hotel Playa Del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "WIVC Coral Mar Resort",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Wyndham Alltra Playa del Carmen Adults Only All Inclusive",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Wyndham Garden Cancun Downtown",
+      "zone": "Cancun Center"
+    },
+    {
+      "name": "Wyndham Garden Playa del Carmen",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Wyndham Grand Cancun All Inclusive Resort & Villas",
+      "zone": "Cancun Hotel Zone"
+    },
+    {
+      "name": "Wyndham Residences Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Xaha Villas Suites & Golf Resort",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Xakluum Eco Glampings",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Xaman Ha Condominiums",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Xambe Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Xcacel Dreams Jungle Suites & Spa",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Xela Tulum, a Member of Design Hotels",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Xhule Tulum",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Xibalba Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Xíinbal Tulum",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Xkeban Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Xperience Hotels Aqualuna Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Xpu Ha Bonanza",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "XPU HA Residencial Beach",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Xscape Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Xunaan Hotel",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Yax Kiin Casa Boutique",
+      "zone": "Maya Riviera"
+    },
+    {
+      "name": "Yaxchen Tulum Cabañas & Cenote",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Yoga Shala - Adults Only",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "Zamas Hotel",
+      "zone": "Tulum Hotel Zone"
+    },
+    {
+      "name": "ZENDA TULUM LUXURY VILLAS",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Zendero Tulum",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Zenses Wellness and Yoga Resort - Adults Only",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Zenyt Hotel Boutique",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "Zereno Tulum Beach Club Access",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Zihil Ha by OÜRS",
+      "zone": "Playa del Carmen"
+    },
+    {
+      "name": "ZOREN",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "ZOREN HOTEL BOUTIQUE TULUM",
+      "zone": "Tulum Center"
+    },
+    {
+      "name": "Zulim By The Spot Rentals",
+      "zone": "Playa del Carmen"
+    }
+  ]
+}

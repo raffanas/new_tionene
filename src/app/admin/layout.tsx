@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import "./admin.css";
 import {
   LayoutDashboard,
@@ -22,8 +21,19 @@ import {
   CalendarDays,
   DollarSign,
   UserCheck,
-  Sparkles
+  Sparkles,
+  User as UserIcon,
+  BarChart3,
+  Ticket,
+  RotateCcw,
+  Wallet,
+  CalendarClock,
+  ShieldAlert,
+  CheckSquare,
 } from "lucide-react";
+import { AuthProvider, useAuthProfile } from "@/lib/auth/AuthContext";
+import { getRoleBadgeConfig, getRoleDisplayName } from "@/lib/auth/permissions";
+import AccessDenied from "@/components/admin/AccessDenied";
 
 interface NavItem {
   href: string;
@@ -34,6 +44,16 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/operacoes", label: "Operações Diárias", icon: CalendarClock },
+  { href: "/admin/ocorrencias", label: "Ocorrências", icon: ShieldAlert },
+  { href: "/admin/tarefas", label: "Tarefas", icon: CheckSquare },
+  { href: "/admin/reservas", label: "Central de Reservas", icon: CalendarCheck },
+  { href: "/admin/vouchers", label: "Central de Vouchers", icon: Ticket },
+  { href: "/admin/carteiras", label: "Carteiras de Viagem", icon: Wallet },
+  { href: "/admin/financeiro", label: "Painel Financeiro Consolidado", icon: BarChart3 },
+  { href: "/admin/financeiro/clientes", label: "Contas a Receber Clientes", icon: DollarSign },
+  { href: "/admin/financeiro/fornecedores", label: "Contas a Pagar Fornecedores", icon: DollarSign },
+  { href: "/admin/financeiro/cancelamentos", label: "Cancelamentos & Reembolsos", icon: RotateCcw },
   { href: "/admin/leads", label: "Leads do Site", icon: Sparkles },
   { href: "/admin/clientes", label: "Clientes", icon: UserCheck },
   { href: "/admin/contratos", label: "Contratos da Agência", icon: FileText },
@@ -46,79 +66,31 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/parceiros", label: "Parceiros B2B", icon: Users },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const { session, profile, role, loading: checkingAuth, canAccess, logout } = useAuthProfile();
 
-  // Se estiver na tela de login, renderiza apenas o conteúdo do login
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
-    if (isLoginPage) {
-      setCheckingAuth(false);
-      return;
-    }
-
-    let isMounted = true;
-
-    // Verificar se há sessão ativa
-    const checkSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          if (isMounted && typeof window !== "undefined") {
-            window.location.href = "/admin/login";
-          }
-        } else {
-          if (isMounted) {
-            setCheckingAuth(false);
-          }
-        }
-      } catch (err) {
-        console.error("Erro ao validar sessão:", err);
-        if (isMounted && typeof window !== "undefined") {
-          window.location.href = "/admin/login";
-        }
-      }
-    };
-
-    checkSession();
-
-    // Ouvinte para encerramento de sessão ou troca de conta
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if ((event === "SIGNED_OUT" || !session) && !isLoginPage) {
-        if (typeof window !== "undefined") {
-          window.location.href = "/admin/login";
-        }
-      }
-    });
-
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
-  }, [pathname, isLoginPage]);
-
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (err) {
-      console.error("Erro ao sair:", err);
-    } finally {
+    if (!checkingAuth && !session && !isLoginPage) {
       if (typeof window !== "undefined") {
-        try {
-          localStorage.clear();
-          sessionStorage.clear();
-        } catch (_) {}
         window.location.href = "/admin/login";
       }
     }
-  };
+  }, [checkingAuth, session, isLoginPage]);
 
   if (isLoginPage) {
-    return <div className="admin-scope admin-scope-login" style={{ width: "100vw", minHeight: "100vh", display: "flex", flexDirection: "column" }}>{children}</div>;
+    return (
+      <div
+        className="admin-scope admin-scope-login"
+        style={{ width: "100vw", minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      >
+        {children}
+      </div>
+    );
   }
 
   if (checkingAuth) {
@@ -133,16 +105,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           justifyContent: "center",
           gap: "16px",
           background: "var(--adm-bg)",
-          fontFamily: "'Alegreya Sans', sans-serif"
+          fontFamily: "'Alegreya Sans', sans-serif",
         }}
       >
         <span className="status-dot-pulse" style={{ width: "16px", height: "16px" }} />
         <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--adm-wine)", letterSpacing: "0.05em" }}>
-          Verificando autenticação...
+          Verificando autenticação e permissões...
         </span>
       </div>
     );
   }
+
+  if (!session) {
+    return null; // O useEffect redirecionará para /admin/login
+  }
+
+  // Verificação de Autorização de Rota (RBAC)
+  const isRouteAllowed = canAccess(pathname);
+
+  // Filtragem dinâmica de navegação pelo papel do usuário
+  const visibleNavItems = NAV_ITEMS.filter((item) => canAccess(item.href));
+
+  // Configuração visual do papel (Admin vs Seller)
+  const badgeConfig = getRoleBadgeConfig(role);
 
   return (
     <div className="admin-scope">
@@ -172,7 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   width: "auto",
                   maxWidth: "185px",
                   objectFit: "contain",
-                  filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35))"
+                  filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35))",
                 }}
               />
             </Link>
@@ -193,11 +178,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className="admin-nav">
-          <div style={{ padding: "0 10px 8px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(255,255,255,0.4)" }}>
-            Módulos Ativos
+          <div
+            style={{
+              padding: "0 10px 8px",
+              fontSize: "11px",
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              color: "rgba(255,255,255,0.4)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span>Módulos Ativos</span>
+            <span
+              style={{
+                fontSize: "10px",
+                background: badgeConfig.badgeBg,
+                color: badgeConfig.color,
+                padding: "2px 6px",
+                borderRadius: "4px",
+                fontWeight: 700,
+              }}
+            >
+              {badgeConfig.label}
+            </span>
           </div>
 
-          {NAV_ITEMS.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon;
             const isActive =
               item.href === "/admin"
@@ -232,10 +240,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={logout}
               className="admin-site-link"
               style={{ background: "rgba(190, 18, 60, 0.2)", border: "1px solid rgba(190, 18, 60, 0.3)", color: "#fecdd3" }}
-              title="Encerrar sessão administrativa"
+              title="Encerrar sessão"
             >
               <span>Sair</span>
               <LogOut size={13} />
@@ -268,15 +276,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="admin-topbar-actions">
+            {/* Identificação do Usuário e Papel */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
-                background: "linear-gradient(135deg, var(--adm-wine) 0%, var(--adm-wine-dark) 100%)",
+                background: badgeConfig.bg,
+                border: badgeConfig.border,
                 padding: "6px 14px 6px 12px",
                 borderRadius: "99px",
-                boxShadow: "0 2px 8px rgba(61, 24, 31, 0.15)"
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
               }}
             >
               <img
@@ -286,22 +296,36 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               />
               <span
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "var(--adm-gold)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  maxWidth: "140px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+                title={profile?.fullName || session?.user.email || ""}
+              >
+                {profile?.fullName || session?.user.email?.split("@")[0]}
+              </span>
+              <span
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 800,
+                  color: badgeConfig.color,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   borderLeft: "1px solid rgba(255,255,255,0.2)",
-                  paddingLeft: "8px"
+                  paddingLeft: "8px",
                 }}
               >
-                Admin
+                {badgeConfig.label}
               </span>
             </div>
 
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={logout}
               className="adm-btn adm-btn-outline adm-btn-sm"
               title="Encerrar sessão"
             >
@@ -311,7 +335,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        <main className="admin-content-area">{children}</main>
+        {/* Content Area com Proteção de Rota */}
+        <main className="admin-content-area">
+          {isRouteAllowed ? (
+            children
+          ) : (
+            <AccessDenied currentRole={role} pathname={pathname} />
+          )}
+        </main>
       </div>
 
       <style jsx global>{`
@@ -322,5 +353,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }
       `}</style>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <AdminLayoutInner>{children}</AdminLayoutInner>
+    </AuthProvider>
   );
 }

@@ -1,0 +1,38 @@
+{
+  "release": "0.1.39",
+  "status": "VERIFIED WIP SOURCE/DOCS, NOT EXECUTABLE APP",
+  "build_date": "2026-10-21",
+  "input_v38_zip_sha256": "2e276951650f1f1f52b9e37866e2e53c62a6f98ad105b5edb511242af94fa048",
+  "immutable_original_source_assets": 13,
+  "immutable_supplier_workbooks": 11,
+  "supplier_count": 10,
+  "supplier_visible_product_ids": 52,
+  "original_supplier_rate_ids": 80,
+  "xcaret_2026_unique_product_zone_season_joins": 128,
+  "hotel_rows": 1125,
+  "hotel_zone_count": 8,
+  "dolphin_transport_seed_zones": 8,
+  "dolphin_transport_age_zone_values": 24,
+  "dolphin_transport_standalone_usd_rates_per_person": [
+    9.01,
+    12.01,
+    15.02
+  ],
+  "dolphin_round_trip": true,
+  "dolphin_default_transport": true,
+  "manual_opt_out": true,
+  "requirement_ids": 178,
+  "acceptance_scenarios": 167,
+  "financial_spec_test_examples": [
+    "Dolphin Cancun 2A1C1I=36.04",
+    "New infant-free Cancun=27.03",
+    "Southern four adults=60.08",
+    "Net receipts 250+150-50=350",
+    "MXN payable 5700 at 19=USD300 estimated vs USD320 paid"
+  ],
+  "unchanged_prior_v38_historical_audits": true,
+  "app_verified": false,
+  "security_verified": false,
+  "payments_imported": false,
+  "independent_realtime_supplier_pickup_verified": false
+}

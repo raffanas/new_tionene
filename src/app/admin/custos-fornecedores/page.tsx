@@ -21,6 +21,8 @@ import {
   FileText
 } from "lucide-react";
 
+import { useAuthProfile } from "@/lib/auth/AuthContext";
+
 interface SupplierCostItem {
   id: string;
   contract_id: string;
@@ -142,9 +144,15 @@ export default function AdminSupplierCostsPage() {
     }
   };
 
+  const { role } = useAuthProfile();
+
   useEffect(() => {
-    fetchData();
-  }, [selectedYear, selectedMonth]);
+    if (role === "admin") {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+  }, [selectedYear, selectedMonth, role]);
 
   // Navegação de Mês
   const handlePrevMonth = () => {
@@ -227,6 +235,16 @@ export default function AdminSupplierCostsPage() {
           >
             <ChevronRight size={16} />
           </button>
+
+          <Link
+            href="/admin/financeiro/fornecedores"
+            className="adm-btn adm-btn-clay adm-btn-sm"
+            style={{ marginLeft: "8px" }}
+            title="Acessar Módulo Financeiro de Contas a Pagar"
+          >
+            <DollarSign size={14} />
+            <span>Contas a Pagar</span>
+          </Link>
         </div>
       </div>
 

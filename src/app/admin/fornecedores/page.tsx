@@ -9,6 +9,18 @@ import {
   ValidationStatus
 } from "@/data/supplier-catalog";
 import {
+  OFFICIAL_SUPPLIERS,
+  OFFICIAL_COMMERCIAL_PRODUCTS,
+  OFFICIAL_SUPPLIER_RATES,
+  OFFICIAL_HOTEL_ZONE_MAPPINGS,
+  OFFICIAL_XCARET_SEASONS_2026
+} from "@/data/official-supplier-catalog";
+import {
+  CommercialProduct,
+  SupplierRate,
+  HotelZoneMapping
+} from "@/types/supplier-commercial";
+import {
   Truck,
   Search,
   Plus,
@@ -33,8 +45,12 @@ import {
   ChevronRight,
   ExternalLink,
   ShieldCheck,
-  Filter
+  Filter,
+  Lock,
+  Compass,
+  MapPin
 } from "lucide-react";
+import { useAuthProfile } from "@/lib/auth/AuthContext";
 
 interface Supplier {
   id: string;
@@ -55,26 +71,40 @@ interface Supplier {
 }
 
 const DEFAULT_APPROVED_SUPPLIERS: Partial<Supplier>[] = [
-  { name: "Baktun", trade_name: "Baktun Operadora", category: "Arqueologia & Cultura", currency_default: "USD", notes: "Fornecedor de Chichén Itzá e tours culturais.", active: true },
-  { name: "Coco Bongo", trade_name: "Coco Bongo Show & Disco", category: "Vida Noturna & Shows", currency_default: "USD", notes: "Ingressos de shows noturnos, packs e open bar em Cancún.", active: true },
-  { name: "Envatours", trade_name: "Envatours Cancún", category: "Operadora Náutica & Passeios", currency_default: "USD", notes: "Barcos de vidro coletivos e privados em Cancún, Isla Mujeres e Cozumel.", active: true },
-  { name: "MTZ Tours", trade_name: "MTZ Operações", category: "Receptivo Cancún", currency_default: "USD", notes: "Tours arqueológicos Tulum, Casa Tortuga, cenotes e Cirque du Soleil JOYÀ.", active: true },
-  { name: "MUSA", trade_name: "MUSA Museu Subaquático", category: "Mergulho & Náutica", currency_default: "USD", notes: "Mergulho com cilindro e museu subaquático em Cancún.", active: true },
-  { name: "Parasailing & Jet Ski", trade_name: "Parasailing & Jet Ski Cancún", category: "Aventura & Náutica", currency_default: "USD", notes: "Atividades náuticas de voo panorâmico e jet ski.", active: true },
-  { name: "Playamia", trade_name: "Playamia Tours", category: "Operadora Náutica & Passeios", currency_default: "MXN", notes: "Passeios de catamarã para El Cielo Cozumel com saídas em Playa, Cancún e Cozumel.", active: true },
-  { name: "Puerto Maya", trade_name: "Puerto Maya Receptivo", category: "Aventura & Selva", currency_default: "USD", notes: "Jungle Tour em Cancún (transporte incluso).", active: true },
-  { name: "Miguel Shuttle", trade_name: "Miguel Shuttle Transfers", category: "Transporte & Privativo", currency_default: "USD", notes: "Transfers privativos de aeroporto em van de até 7 passageiros e transfers hotel-hotel.", active: true }
+  { name: "Baktun", trade_name: "Baktun Operadora", category: "Arqueologia & Cultura", currency_default: "USD", notes: "Fornecedor oficial de Chichén Itzá e tours culturais.", active: true, status: "ativo" },
+  { name: "Coco Bongo", trade_name: "Coco Bongo Show & Disco", category: "Vida Noturna & Shows", currency_default: "USD", notes: "Ingressos oficiais de shows noturnos, packs e open bar em Cancún.", active: true, status: "ativo" },
+  { name: "Envatours", trade_name: "Envatours Cancún", category: "Operadora Náutica & Passeios", currency_default: "USD", notes: "Barcos de vidro coletivos e privativos (1–10 pax) em Cancún, Isla Mujeres e Cozumel.", active: true, status: "ativo" },
+  { name: "Miguel Shuttle", trade_name: "Miguel Shuttle Transfers", category: "Transporte & Privativo", currency_default: "USD", notes: "Transfers privativos aeroporto ↔ hotel em van (1–7 passageiros). Tarifas por trecho e zona.", active: true, status: "ativo" },
+  { name: "MTZ Tours", trade_name: "MTZ Operações", category: "Receptivo Cancún", currency_default: "USD", notes: "Tours arqueológicos Tulum, Casa Tortuga, cenotes e Cirque du Soleil JOYÀ.", active: true, status: "ativo" },
+  { name: "MUSA", trade_name: "MUSA Museu Subaquático", category: "Mergulho & Náutica", currency_default: "USD", notes: "Mergulho com cilindro e museu subaquático em Cancún.", active: true, status: "ativo" },
+  { name: "Parasailing & Jet Ski", trade_name: "Parasailing & Jet Ski Cancún", category: "Aventura & Náutica", currency_default: "USD", notes: "Atividades náuticas de voo panorâmico e jet ski (máx 2 pax/ski).", active: true, status: "ativo" },
+  { name: "Playa Mía", trade_name: "Playa Mía Grand Beach Park", category: "Operadora Náutica & Passeios", currency_default: "MXN", notes: "Passeio Cozumel el Cielo com saídas Cancún, Playa del Carmen e Cozumel (manual). Moeda MXN.", active: true, status: "ativo" },
+  { name: "The Dolphin Company", trade_name: "The Dolphin Company", category: "Vida Marinha & Parques", currency_default: "USD", notes: "17 produtos oficiais com nado de golfinhos e habitats marinhos.", active: true, status: "ativo" },
+  { name: "Xcaret", trade_name: "Grupo Xcaret", category: "Parques & Ecoturismo", currency_default: "USD", notes: "10 produtos oficiais de parques e ecoturismo, 27 tarifas regionais com transporte incluso.", active: true, status: "ativo" }
 ];
 
 export default function AdminSuppliersPage() {
-  const [activeTab, setActiveTab] = useState<"suppliers" | "catalog">("suppliers");
+  const { role, hasPermission } = useAuthProfile();
+  const canViewCosts = role === "admin" || (hasPermission && hasPermission("supplier_costs:view"));
+
+  const [activeTab, setActiveTab] = useState<"suppliers" | "commercial" | "rates" | "zones" | "catalog">("suppliers");
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("Todos");
   const [showInactive, setShowInactive] = useState(false);
 
-  // Filtros do Catálogo de 42 Opções
+  // Filtros do Catálogo Comercial (52 Produtos)
+  const [commercialSearch, setCommercialSearch] = useState("");
+  const [commercialProviderFilter, setCommercialProviderFilter] = useState("all");
+  const [commercialTypeFilter, setCommercialTypeFilter] = useState("all");
+
+  // Filtros das Tarifas Oficiais de Fornecedores (80 Tarifas)
+  const [ratesSearch, setRatesSearch] = useState("");
+  const [ratesProviderFilter, setRatesProviderFilter] = useState("all");
+  const [ratesCurrencyFilter, setRatesCurrencyFilter] = useState("all");
+
+  // Filtros do Catálogo Legado de 42 Opções (TN-xxx)
   const [catalogOptions, setCatalogOptions] = useState<SupplierCostOption[]>(SUPPLIER_COST_OPTIONS);
   const [catalogSearch, setCatalogSearch] = useState("");
   const [selectedSupplierFilter, setSelectedSupplierFilter] = useState<string>("all");
@@ -158,8 +188,12 @@ export default function AdminSuppliersPage() {
   };
 
   useEffect(() => {
-    fetchSuppliers();
-  }, []);
+    if (role === "admin") {
+      fetchSuppliers();
+    } else {
+      setLoading(false);
+    }
+  }, [role]);
 
   const openCreateModal = () => {
     setEditingSupplier(null);
@@ -342,6 +376,43 @@ export default function AdminSuppliersPage() {
     return matchesSearch && matchesSupplier && matchesModel && matchesStatus;
   });
 
+  // Filtragem dos 52 produtos comerciais oficiais
+  const filteredCommercialProducts = OFFICIAL_COMMERCIAL_PRODUCTS.filter((prod) => {
+    const term = commercialSearch.toLowerCase();
+    const matchesSearch =
+      !term ||
+      prod.tour_id.toLowerCase().includes(term) ||
+      prod.display_name.toLowerCase().includes(term) ||
+      prod.supplier_product_name.toLowerCase().includes(term) ||
+      prod.provider.toLowerCase().includes(term);
+
+    const matchesProvider =
+      commercialProviderFilter === "all" || prod.provider === commercialProviderFilter;
+
+    const matchesType =
+      commercialTypeFilter === "all" || prod.product_type === commercialTypeFilter;
+
+    return matchesSearch && matchesProvider && matchesType;
+  });
+
+  // Filtragem das 80 tarifas oficiais dos fornecedores
+  const filteredOfficialRates = OFFICIAL_SUPPLIER_RATES.filter((rate) => {
+    const term = ratesSearch.toLowerCase();
+    const matchesSearch =
+      !term ||
+      rate.rate_id.toLowerCase().includes(term) ||
+      rate.tour_id.toLowerCase().includes(term) ||
+      rate.supplier_rate_name.toLowerCase().includes(term);
+
+    const matchesProvider =
+      ratesProviderFilter === "all" || rate.tour_id.startsWith(ratesProviderFilter);
+
+    const matchesCurrency =
+      ratesCurrencyFilter === "all" || rate.currency === ratesCurrencyFilter;
+
+    return matchesSearch && matchesProvider && matchesCurrency;
+  });
+
   const uniqueSuppliersInCatalog = Array.from(new Set(catalogOptions.map((o) => o.supplierName)));
 
   return (
@@ -349,10 +420,10 @@ export default function AdminSuppliersPage() {
       {/* Cabeçalho da Página */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <span className="admin-brand-tag">CUSTOS & OPERADORES</span>
-          <h2 style={{ fontSize: "28px", color: "var(--adm-wine)" }}>Fornecedores & Catálogo de Custos</h2>
+          <span className="admin-brand-tag">BASE OFICIAL v0.1.43</span>
+          <h2 style={{ fontSize: "28px", color: "var(--adm-wine)" }}>Fornecedores, Produtos & Tarifas</h2>
           <p style={{ color: "var(--adm-text-muted)", fontSize: "14px", marginTop: "2px" }}>
-            Gestão dos 9 fornecedores homologados e das 42 opções tarifárias oficiais (TN-001 a TN-042).
+            Estrutura comercial dos 10 fornecedores oficiais, catálogo de produtos para vendedores e tarifas operacionais.
           </p>
         </div>
 
@@ -380,65 +451,89 @@ export default function AdminSuppliersPage() {
 
       {/* KPI Cards de Resumo */}
       <div className="adm-kpi-grid">
-        <div className="adm-kpi-card" onClick={() => setActiveTab("suppliers")} style={{ cursor: "pointer" }}>
+        <div className="adm-kpi-card" onClick={() => setActiveTab("suppliers")} style={{ cursor: "pointer", borderTop: activeTab === "suppliers" ? "3px solid var(--adm-wine)" : undefined }}>
           <div className="adm-kpi-header">
-            <span>Fornecedores Ativos</span>
+            <span>Fornecedores Oficiais</span>
             <Building2 size={18} color="var(--adm-wine)" />
           </div>
           <div className="adm-kpi-value">{suppliers.filter((s) => s.active).length}</div>
-          <div className="adm-kpi-desc">Operadoras homologadas no escopo</div>
+          <div className="adm-kpi-desc">10 operadoras homologadas</div>
         </div>
 
-        <div className="adm-kpi-card" onClick={() => setActiveTab("catalog")} style={{ cursor: "pointer" }}>
+        <div className="adm-kpi-card" onClick={() => setActiveTab("commercial")} style={{ cursor: "pointer", borderTop: activeTab === "commercial" ? "3px solid var(--adm-wine)" : undefined }}>
           <div className="adm-kpi-header">
-            <span>Opções Tarifárias</span>
-            <Layers size={18} color="var(--adm-emerald)" />
+            <span>Catálogo Comercial</span>
+            <Compass size={18} color="var(--adm-emerald)" />
           </div>
-          <div className="adm-kpi-value">42</div>
-          <div className="adm-kpi-desc">Serviços catalogados (TN-001 a TN-042)</div>
+          <div className="adm-kpi-value">52</div>
+          <div className="adm-kpi-desc">Produtos para busca de vendedores</div>
         </div>
 
-        <div className="adm-kpi-card">
+        <div className="adm-kpi-card" onClick={() => setActiveTab("rates")} style={{ cursor: "pointer", borderTop: activeTab === "rates" ? "3px solid var(--adm-wine)" : undefined }}>
           <div className="adm-kpi-header">
-            <span>Moedas Operadas</span>
-            <DollarSign size={18} color="var(--adm-gold)" />
+            <span>Tarifas Oficiais</span>
+            <Layers size={18} color="var(--adm-gold)" />
           </div>
-          <div className="adm-kpi-value" style={{ fontSize: "20px" }}>USD / MXN</div>
-          <div className="adm-kpi-desc">39 opções em USD · 3 em MXN (Playamia)</div>
+          <div className="adm-kpi-value">80</div>
+          <div className="adm-kpi-desc">{canViewCosts ? "Tarifas ativas (USD / MXN)" : "Protegidas por RBAC (Admin)"}</div>
         </div>
 
-        <div className="adm-kpi-card">
+        <div className="adm-kpi-card" onClick={() => setActiveTab("zones")} style={{ cursor: "pointer", borderTop: activeTab === "zones" ? "3px solid var(--adm-wine)" : undefined }}>
           <div className="adm-kpi-header">
-            <span>Itens com Ressalvas</span>
-            <AlertCircle size={18} color="var(--adm-rose)" />
+            <span>Zonas & Temporadas</span>
+            <MapPin size={18} color="var(--adm-clay)" />
           </div>
-          <div className="adm-kpi-value" style={{ color: "var(--adm-rose)" }}>
-            {catalogOptions.filter((o) => o.validationStatus !== "revisado").length}
-          </div>
-          <div className="adm-kpi-desc">Pendências documentadas da fonte</div>
+          <div className="adm-kpi-value" style={{ fontSize: "20px" }}>8 Zonas · 6 Janelas</div>
+          <div className="adm-kpi-desc">Mapeamento Miguel, Playa Mía & Xcaret</div>
         </div>
       </div>
 
-      {/* Abas Superiores: Fornecedores vs. Catálogo de Tarifas */}
-      <div style={{ display: "flex", gap: "8px", borderBottom: "2px solid var(--adm-border)", paddingBottom: "12px" }}>
+      {/* Abas Superiores: Fornecedores vs. Comercial vs. Tarifas vs. Zonas */}
+      <div style={{ display: "flex", gap: "8px", borderBottom: "2px solid var(--adm-border)", paddingBottom: "12px", overflowX: "auto" }}>
         <button
           type="button"
           className={`adm-btn ${activeTab === "suppliers" ? "adm-btn-clay" : "adm-btn-outline"}`}
           onClick={() => setActiveTab("suppliers")}
-          style={{ minWidth: "200px" }}
         >
           <Truck size={16} />
-          <span>Fornecedores Homologados ({suppliers.filter((s) => s.active).length})</span>
+          <span>Fornecedores Oficiais ({suppliers.filter((s) => s.active).length})</span>
+        </button>
+
+        <button
+          type="button"
+          className={`adm-btn ${activeTab === "commercial" ? "adm-btn-clay" : "adm-btn-outline"}`}
+          onClick={() => setActiveTab("commercial")}
+        >
+          <Compass size={16} />
+          <span>Catálogo Comercial (52 Produtos)</span>
+        </button>
+
+        <button
+          type="button"
+          className={`adm-btn ${activeTab === "rates" ? "adm-btn-clay" : "adm-btn-outline"}`}
+          onClick={() => setActiveTab("rates")}
+        >
+          <Layers size={16} />
+          <span>Tarifas Operacionais (80)</span>
+          {!canViewCosts && <Lock size={12} style={{ marginLeft: "4px" }} />}
+        </button>
+
+        <button
+          type="button"
+          className={`adm-btn ${activeTab === "zones" ? "adm-btn-clay" : "adm-btn-outline"}`}
+          onClick={() => setActiveTab("zones")}
+        >
+          <MapPin size={16} />
+          <span>Zonas & Temporadas 2026</span>
         </button>
 
         <button
           type="button"
           className={`adm-btn ${activeTab === "catalog" ? "adm-btn-clay" : "adm-btn-outline"}`}
           onClick={() => setActiveTab("catalog")}
-          style={{ minWidth: "220px" }}
         >
-          <Layers size={16} />
-          <span>Catálogo de Custos (TN-001 a TN-042)</span>
+          <FileText size={16} />
+          <span>Opções Legadas TN (42)</span>
         </button>
       </div>
 
@@ -814,6 +909,429 @@ export default function AdminSuppliersPage() {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* ABA 2: CATÁLOGO COMERCIAL DE PRODUTOS PARA VENDEDORES (52 PRODUTOS)       */}
+      {/* ========================================================================= */}
+      {activeTab === "commercial" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {/* Informações da Arquitetura Comercial */}
+          <div className="adm-card" style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderLeft: "4px solid var(--adm-emerald)" }}>
+            <div>
+              <h3 style={{ fontSize: "16px", color: "var(--adm-wine)", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Compass size={18} color="var(--adm-emerald)" />
+                <span>Catálogo Comercial de Produtos (52 Itens Oficiais)</span>
+              </h3>
+              <p style={{ color: "var(--adm-text-muted)", fontSize: "13px", marginTop: "2px" }}>
+                Vendedores buscam e cotam exclusivamente pelo <strong>Display Name</strong>. Nomes operacionais internos e custos dos fornecedores são desacoplados para integridade comercial.
+              </p>
+            </div>
+            <span className="adm-badge badge-green" style={{ fontSize: "12px" }}>
+              {filteredCommercialProducts.length} de 52 Produtos
+            </span>
+          </div>
+
+          {/* Filtros */}
+          <div className="adm-card" style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1, minWidth: "260px" }}>
+              <Search size={18} color="var(--adm-clay)" />
+              <input
+                type="text"
+                className="adm-input"
+                style={{ width: "100%", maxWidth: "380px" }}
+                placeholder="Buscar por Tour ID, Display Name ou Provedor..."
+                value={commercialSearch}
+                onChange={(e) => setCommercialSearch(e.target.value)}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <select
+                className="adm-select"
+                value={commercialProviderFilter}
+                onChange={(e) => setCommercialProviderFilter(e.target.value)}
+                style={{ minWidth: "160px" }}
+              >
+                <option value="all">Todos os Fornecedores</option>
+                {Array.from(new Set(OFFICIAL_COMMERCIAL_PRODUCTS.map((p) => p.provider))).map((prov) => (
+                  <option key={prov} value={prov}>{prov}</option>
+                ))}
+              </select>
+
+              <select
+                className="adm-select"
+                value={commercialTypeFilter}
+                onChange={(e) => setCommercialTypeFilter(e.target.value)}
+                style={{ minWidth: "140px" }}
+              >
+                <option value="all">Todos os Tipos</option>
+                <option value="Tour">Tour</option>
+                <option value="Activity">Activity</option>
+                <option value="Transfer">Transfer</option>
+                <option value="Package">Package</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tabela de Produtos Comerciais */}
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th style={{ width: "100px" }}>Tour ID</th>
+                  <th>Nome Comercial (Display Name)</th>
+                  <th>Nome Operacional do Fornecedor</th>
+                  <th>Fornecedor</th>
+                  <th>Tipo / Subtipo</th>
+                  <th style={{ textAlign: "center", width: "130px" }}>Visível Vendedor</th>
+                  <th style={{ textAlign: "center", width: "100px" }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCommercialProducts.map((prod) => (
+                  <tr key={prod.tour_id}>
+                    <td>
+                      <span className="adm-badge badge-wine" style={{ fontSize: "12px", fontFamily: "monospace" }}>
+                        {prod.tour_id}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 600, color: "var(--adm-wine)" }}>
+                        {prod.display_name}
+                      </div>
+                      {prod.product_subtype && (
+                        <div style={{ fontSize: "11px", color: "var(--adm-clay)" }}>
+                          Subtipo: {prod.product_subtype}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <span style={{ fontSize: "13px", color: "var(--adm-text-muted)" }}>
+                        {prod.supplier_product_name}
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ fontSize: "13px", color: "var(--adm-text-main)" }}>
+                        {prod.provider}
+                      </strong>
+                    </td>
+                    <td>
+                      <span className="adm-badge badge-blue" style={{ fontSize: "11px" }}>
+                        {prod.product_type}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <span className={`adm-badge ${prod.seller_visible ? "badge-green" : "badge-gray"}`} style={{ fontSize: "11px" }}>
+                        {prod.seller_visible ? "Sim (Ativo)" : "Oculto"}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <span className="adm-badge badge-green" style={{ fontSize: "11px" }}>
+                        {prod.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* ABA 3: TARIFAS OPERACIONAIS DOS FORNECEDORES (80 TARIFAS COM RBAC)        */}
+      {/* ========================================================================= */}
+      {activeTab === "rates" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {/* Banner de Controle de Acesso RBAC */}
+          {canViewCosts ? (
+            <div className="adm-card" style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderLeft: "4px solid var(--adm-gold)" }}>
+              <div>
+                <h3 style={{ fontSize: "16px", color: "var(--adm-wine)", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <ShieldCheck size={18} color="var(--adm-emerald)" />
+                  <span>Tarifas Oficiais dos Fornecedores (80 Tarifas Homologadas)</span>
+                </h3>
+                <p style={{ color: "var(--adm-text-muted)", fontSize: "13px", marginTop: "2px" }}>
+                  Painel de Custos Administrativos: Moedas nativas (77 USD, 3 MXN), bases de cálculo, sazonalidade e dias da semana.
+                </p>
+              </div>
+              <span className="adm-badge badge-amber" style={{ fontSize: "12px" }}>
+                Acesso Total Admin
+              </span>
+            </div>
+          ) : (
+            <div className="adm-card" style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: "12px", borderLeft: "4px solid var(--adm-rose)" }}>
+              <Lock size={20} color="var(--adm-rose)" />
+              <div>
+                <strong style={{ color: "var(--adm-wine)", fontSize: "14px" }}>
+                  Acesso Restrito a Administradores (RBAC v0.1.43)
+                </strong>
+                <p style={{ color: "var(--adm-text-muted)", fontSize: "13px", marginTop: "2px" }}>
+                  Você está autenticado como Vendedor (Seller). Os custos internos, margens e tarifas financeiras dos fornecedores estão protegidos contra visualização.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Filtros */}
+          <div className="adm-card" style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1, minWidth: "260px" }}>
+              <Search size={18} color="var(--adm-clay)" />
+              <input
+                type="text"
+                className="adm-input"
+                style={{ width: "100%", maxWidth: "380px" }}
+                placeholder="Buscar por Rate ID, Tour ID ou Nome da Tarifa..."
+                value={ratesSearch}
+                onChange={(e) => setRatesSearch(e.target.value)}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <select
+                className="adm-select"
+                value={ratesProviderFilter}
+                onChange={(e) => setRatesProviderFilter(e.target.value)}
+                style={{ minWidth: "160px" }}
+              >
+                <option value="all">Todos os Provedores</option>
+                <option value="BAK">Baktun (BAK)</option>
+                <option value="COC">Coco Bongo (COC)</option>
+                <option value="ENV">Envatours (ENV)</option>
+                <option value="MIG">Miguel Shuttle (MIG)</option>
+                <option value="MTZ">MTZ Tours (MTZ)</option>
+                <option value="MUS">MUSA (MUS)</option>
+                <option value="PJS">Parasailing & Jet Ski (PJS)</option>
+                <option value="PLY">Playa Mía (PLY)</option>
+                <option value="DOL">The Dolphin Company (DOL)</option>
+                <option value="XCA">Xcaret (XCA)</option>
+              </select>
+
+              <select
+                className="adm-select"
+                value={ratesCurrencyFilter}
+                onChange={(e) => setRatesCurrencyFilter(e.target.value)}
+                style={{ minWidth: "120px" }}
+              >
+                <option value="all">Todas Moedas</option>
+                <option value="USD">USD</option>
+                <option value="MXN">MXN</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tabela de Tarifas */}
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th style={{ width: "110px" }}>Rate ID</th>
+                  <th style={{ width: "100px" }}>Tour ID</th>
+                  <th>Tarifa Operacional do Fornecedor</th>
+                  <th>Base</th>
+                  <th style={{ width: "80px" }}>Moeda</th>
+                  <th style={{ textAlign: "right" }}>Custo Adulto / Fixo</th>
+                  <th style={{ textAlign: "right" }}>Custo Criança</th>
+                  <th>Região / Temporada / Dias</th>
+                  <th style={{ textAlign: "center", width: "120px" }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOfficialRates.map((r) => (
+                  <tr key={r.rate_id}>
+                    <td>
+                      <span className="adm-badge badge-wine" style={{ fontSize: "12px", fontFamily: "monospace" }}>
+                        {r.rate_id}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="adm-badge badge-blue" style={{ fontSize: "11px", fontFamily: "monospace" }}>
+                        {r.tour_id}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 600, color: "var(--adm-text-main)" }}>
+                        {r.supplier_rate_name}
+                      </div>
+                      {r.notes && (
+                        <div style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                          {r.notes}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <span className="adm-badge badge-gray" style={{ fontSize: "11px" }}>
+                        {r.pricing_basis}
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ color: r.currency === "MXN" ? "var(--adm-clay)" : "var(--adm-emerald)" }}>
+                        {r.currency}
+                      </strong>
+                    </td>
+                    <td style={{ textAlign: "right", fontWeight: 600 }}>
+                      {canViewCosts ? (
+                        r.fixed_cost !== null ? (
+                          <span>{r.currency} {r.fixed_cost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                        ) : r.adult_cost !== null ? (
+                          <span>{r.currency} {r.adult_cost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                        ) : (
+                          <span style={{ color: "var(--adm-text-muted)", fontStyle: "italic" }}>Sob cotação</span>
+                        )
+                      ) : (
+                        <span style={{ color: "var(--adm-text-muted)", fontSize: "12px" }}>🔒 Confidencial</span>
+                      )}
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      {canViewCosts ? (
+                        r.child_cost !== null ? (
+                          <span>{r.currency} {r.child_cost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                        ) : (
+                          <span style={{ color: "var(--adm-text-muted)" }}>—</span>
+                        )
+                      ) : (
+                        <span style={{ color: "var(--adm-text-muted)", fontSize: "12px" }}>🔒</span>
+                      )}
+                    </td>
+                    <td>
+                      <div style={{ fontSize: "12px" }}>
+                        {r.tariff_region && <span style={{ marginRight: "6px" }}>📍 {r.tariff_region}</span>}
+                        {r.season && <span style={{ marginRight: "6px" }}>☀️ {r.season}</span>}
+                        {r.days_of_week && <span style={{ color: "var(--adm-clay)" }}>📅 {r.days_of_week}</span>}
+                        {!r.tariff_region && !r.season && !r.days_of_week && (
+                          <span style={{ color: "var(--adm-text-muted)" }}>Padrão</span>
+                        )}
+                      </div>
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <span className={`adm-badge ${r.rate_status === "Active" ? "badge-green" : "badge-amber"}`} style={{ fontSize: "11px" }}>
+                        {r.rate_status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* ABA 4: MAPEAMENTO DAS 8 ZONAS HOTELEIRAS & TEMPORADAS XCARET 2026         */}
+      {/* ========================================================================= */}
+      {activeTab === "zones" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          {/* Card 1: 8 Zonas Canônicas */}
+          <div className="adm-card" style={{ padding: "20px" }}>
+            <div style={{ marginBottom: "16px" }}>
+              <span className="admin-brand-tag">SHARED REFERENCE A</span>
+              <h3 style={{ fontSize: "18px", color: "var(--adm-wine)", marginTop: "2px" }}>
+                Mapeamento das 8 Zonas Hoteleiras → Tarifas dos Fornecedores
+              </h3>
+              <p style={{ color: "var(--adm-text-muted)", fontSize: "13px", marginTop: "2px" }}>
+                Regras oficiais de resolução de tarifas a partir da zona canônica do hotel do hóspede na data do serviço.
+              </p>
+            </div>
+
+            <div className="adm-table-wrap">
+              <table className="adm-table">
+                <thead>
+                  <tr>
+                    <th>Zona Hoteleira Tío Nenê</th>
+                    <th>Miguel Shuttle (MIG-001)</th>
+                    <th style={{ textAlign: "right" }}>USD / Van (1–7 pax)</th>
+                    <th>Playa Mía (PLY-001)</th>
+                    <th>Xcaret Core</th>
+                    <th>Xcaret de Noche</th>
+                    <th>Xoximilco</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {OFFICIAL_HOTEL_ZONE_MAPPINGS.map((z) => (
+                    <tr key={z.hotel_zone}>
+                      <td>
+                        <strong style={{ color: "var(--adm-wine)" }}>📍 {z.hotel_zone}</strong>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "13px" }}>{z.miguel_tariff_name}</span>
+                        <span className="adm-badge badge-blue" style={{ marginLeft: "6px", fontSize: "10px" }}>{z.miguel_rate_id}</span>
+                      </td>
+                      <td style={{ textAlign: "right", fontWeight: 700, color: "var(--adm-emerald)" }}>
+                        USD {z.miguel_usd_vehicle}
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "13px" }}>Saída {z.playa_mia_departure}</span>
+                        <span className="adm-badge badge-wine" style={{ marginLeft: "6px", fontSize: "10px" }}>{z.playa_mia_rate_id}</span>
+                      </td>
+                      <td>
+                        <span className="adm-badge badge-gray" style={{ fontSize: "11px" }}>{z.xcaret_core_region}</span>
+                      </td>
+                      <td>
+                        <span className="adm-badge badge-gray" style={{ fontSize: "11px" }}>{z.xcaret_de_noche_region}</span>
+                      </td>
+                      <td>
+                        <span className="adm-badge badge-gray" style={{ fontSize: "11px" }}>{z.xoximilco_region}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ marginTop: "12px", padding: "10px 14px", background: "var(--adm-bg-soft)", borderRadius: "6px", fontSize: "12px", color: "var(--adm-text-muted)" }}>
+              ℹ️ <strong>Nota de Integridade §H2 / REF-007:</strong> A saída de Cozumel (tarifa PLY-R003: MXN 1.350 / 1.170) <strong>nunca</strong> é selecionada automaticamente pelas 8 zonas. Seu uso exige seleção manual auditada por operador autorizado.
+            </div>
+          </div>
+
+          {/* Card 2: Temporadas Xcaret 2026 */}
+          <div className="adm-card" style={{ padding: "20px" }}>
+            <div style={{ marginBottom: "16px" }}>
+              <span className="admin-brand-tag">SHARED REFERENCE B</span>
+              <h3 style={{ fontSize: "18px", color: "var(--adm-wine)", marginTop: "2px" }}>
+                Calendário de Temporadas Xcaret 2026 (6 Janelas Oficiais)
+              </h3>
+              <p style={{ color: "var(--adm-text-muted)", fontSize: "13px", marginTop: "2px" }}>
+                Aplica-se aos produtos sazonais: Xcaret Básico (XCA-001), Xcaret Plus (XCA-002), Xcaret de Noche (XCA-003), Xel-Há (XCA-004), Tulum+Xel-Há (XCA-005) e Xplor (XCA-006).
+              </p>
+            </div>
+
+            <div className="adm-table-wrap">
+              <table className="adm-table">
+                <thead>
+                  <tr>
+                    <th>Data Inicial (Inclusive)</th>
+                    <th>Data Final (Inclusive)</th>
+                    <th>Temporada Oficial</th>
+                    <th>Produtos Aplicáveis</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {OFFICIAL_XCARET_SEASONS_2026.map((s, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <strong>📅 {s.from_date}</strong>
+                      </td>
+                      <td>
+                        <strong>📅 {s.to_date}</strong>
+                      </td>
+                      <td>
+                        <span className={`adm-badge ${s.season === "High" ? "badge-rose" : "badge-green"}`} style={{ fontSize: "12px" }}>
+                          {s.season === "High" ? "Temporada Alta" : "Temporada Regular"}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "12px", color: "var(--adm-text-muted)" }}>
+                          {s.applicable_tour_ids.join(", ")}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

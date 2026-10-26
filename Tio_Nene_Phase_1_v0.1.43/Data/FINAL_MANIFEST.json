@@ -1,0 +1,108 @@
+{
+  "version": "FINAL_REVIEWED_2026-10-19",
+  "provider_workbooks": [
+    {
+      "id_prefix": "BAK",
+      "provider_file": "Tio_Nene_Baktun_Standardized.xlsx",
+      "tour_rows": 3,
+      "rate_rows": 3
+    },
+    {
+      "id_prefix": "COC",
+      "provider_file": "Tio_Nene_Coco_Bongo_Standardized.xlsx",
+      "tour_rows": 6,
+      "rate_rows": 11
+    },
+    {
+      "id_prefix": "ENV",
+      "provider_file": "Tio_Nene_Envatours_Standardized.xlsx",
+      "tour_rows": 6,
+      "rate_rows": 6
+    },
+    {
+      "id_prefix": "MIG",
+      "provider_file": "Tio_Nene_Miguel_Shuttle_Standardized.xlsx",
+      "tour_rows": 1,
+      "rate_rows": 5
+    },
+    {
+      "id_prefix": "MTZ",
+      "provider_file": "Tio_Nene_MTZ_Tours_Standardized.xlsx",
+      "tour_rows": 4,
+      "rate_rows": 4
+    },
+    {
+      "id_prefix": "MUS",
+      "provider_file": "Tio_Nene_MUSA_Standardized.xlsx",
+      "tour_rows": 1,
+      "rate_rows": 1
+    },
+    {
+      "id_prefix": "PJS",
+      "provider_file": "Tio_Nene_Parasailing_Jet_Ski_Standardized.xlsx",
+      "tour_rows": 3,
+      "rate_rows": 3
+    },
+    {
+      "id_prefix": "PLY",
+      "provider_file": "Tio_Nene_Playa_Mia_Standardized.xlsx",
+      "tour_rows": 1,
+      "rate_rows": 3
+    },
+    {
+      "id_prefix": "DOL",
+      "provider_file": "Tio_Nene_The_Dolphin_Company_Standardized.xlsx",
+      "tour_rows": 17,
+      "rate_rows": 17
+    },
+    {
+      "id_prefix": "XCA",
+      "provider_file": "Tio_Nene_Xcaret_Standardized.xlsx",
+      "tour_rows": 10,
+      "rate_rows": 27
+    }
+  ],
+  "shared_reference_file": "Tio_Nene_Shared_Reference_Standardized.xlsx",
+  "excel_workbooks": 11,
+  "worksheets": 21,
+  "seller_products": 52,
+  "supplier_rates": 80,
+  "reference_table_counts": {
+    "zones": 8,
+    "xcaret_2026_season_windows": 6,
+    "shared_rules": 28
+  },
+  "approved_updates": [
+    "Jet Ski: maximum 2 passengers per ski, equipment qty = ceiling(passengers/2)",
+    "Jet Ski: $90 30min and $120 60min per equipment unit",
+    "Dolphin: 17 priced experiences, no Columbus",
+    "Tour Product Type normalized and separate Product Subtype added across 10 workbooks",
+    "Xcaret annex referenced as authoritative existing handoff material"
+  ],
+  "original_source_sha256": {
+    "Baktun_Cost(1).xlsx": "e6f5d5c396095e45a09eb3a0cf7e6955ce9b7cce7f9056f64834ccbbfff943b0",
+    "Coco_Bongo_Cost(1).xlsx": "3deed27ad8443deb82daa8fa1b0328a878975ebbd14fb83c7a980dd49673d9ab",
+    "Envatours_Cost_Prices(1).xlsx": "987215aaf184e2b46dba43e0381ad5b91fc48965ad2c79c68ca240417b28fa90",
+    "Miguel_Shuttle_Cost_Prices(1).xlsx": "7c942745bedde13fce17168b8f4ad4fc47ae719b96597f3d5319bac20b347da5",
+    "MTZ_Tours_Cost_Prices(3).xlsx": "3592490f54558f9a548c4a031e2d6dab17d7346ea62ee725dd27f90346095c54",
+    "MUSA_Cost_Prices(1).xlsx": "200cd97ef06bd99179948dee8038c6b8545f721f7c3f73a4da2f4659a217b173",
+    "Parasailing_Jet_Ski_Cost_Prices(1).xlsx": "9496018b73cdc0b81d8cd7c8c2f2a3abdc6587c151b2063ede538c4cb1e75bbe",
+    "Playa_Mia_Cost_Prices(1).xlsx": "56caa796eba64209647e8777dac191825d9342602630a30c00f407f8c3fa9155",
+    "The_Dolphin_Company_Cost_Prices(1).xlsx": "95672aae564f8d16541d6afd86078a1af203401e8f4428ac0e8be09c21ff7677",
+    "Xcaret_Tours_Cost_Prices(2).xlsx": "14c03cfe76b7a3b4e528029e63554034fec8365e0f20867e7361de136ddccfa1"
+  },
+  "exported_xlsx_sha256": {
+    "Tio_Nene_Baktun_Standardized.xlsx": "b7405be95a26cffa6a74107e112deb7dea7dda11216fe00930f1d801c7ad40a8",
+    "Tio_Nene_Coco_Bongo_Standardized.xlsx": "ffbe1b2ce5901f29c7a0afb528db79521937252b1688e8c64044d15aa387f359",
+    "Tio_Nene_Envatours_Standardized.xlsx": "8ee06c3e1a8516f6a75e0fba8c05b346c130e70dde765d5d897ab3fd14159bdc",
+    "Tio_Nene_MTZ_Tours_Standardized.xlsx": "c4c2f36c91c48131f8230deb35d4a017a1c0895a60519920f3ad172414db1d18",
+    "Tio_Nene_MUSA_Standardized.xlsx": "a11fefdd033d01a37654b3a399f25ecf6101e998ba3d3a564e7241b75a37353b",
+    "Tio_Nene_Miguel_Shuttle_Standardized.xlsx": "adaa8b1f2731d33a7f45685d88e192cce461416bae1f7007294a5559938b1644",
+    "Tio_Nene_Parasailing_Jet_Ski_Standardized.xlsx": "35087f9197d65f5ca47bd78ece00ee6b21ba32e82673c3dbb0ff24c8f2bcf82d",
+    "Tio_Nene_Playa_Mia_Standardized.xlsx": "4f7b28e18210963016cafa5cf0c43105d25cc892592c0c6ca6bed1186adf73c0",
+    "Tio_Nene_Shared_Reference_Standardized.xlsx": "8e85d38bd024376fa943a2cb3085f10fd7cc4aa1fccda5120b0951b17003da93",
+    "Tio_Nene_The_Dolphin_Company_Standardized.xlsx": "b500b91a7cb8a3e0439c94ac47b376baf15384eb9b55ad85d39b71e42d7e7a71",
+    "Tio_Nene_Xcaret_Standardized.xlsx": "66ca2e98712e4eaaab542cd489b0dd36c8f4ce2bd90dcd3b18cc1ca8cabb7947"
+  },
+  "authoritative_xcaret_annex_embedded": false
+}

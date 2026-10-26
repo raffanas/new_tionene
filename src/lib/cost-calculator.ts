@@ -10,13 +10,20 @@ import {
   SUPPLIER_COST_OPTIONS
 } from "@/data/supplier-catalog";
 
+import {
+  calculateCommercialPricing
+} from "@/lib/commercial-pricing-engine";
+
 export interface CostCalculationParams {
   adultsCount?: number;
   childrenCount?: number;
+  infantsCount?: number;
   unitsCount?: number; // Embarcações, jet skis ou veículos
   legsCount?: number; // Trechos de transfer (ex: 1 para ida, 2 para ida e volta)
   serviceDate?: string; // YYYY-MM-DD para validação de dia da semana (ex: Coco Bongo)
   manualCostOverride?: number; // Custo manual confirmado para itens sob cotação (ex: TN-042)
+  hotelZone?: string | null;
+  isManualOverride?: boolean;
 }
 
 export interface CostCalculationResult {
@@ -124,6 +131,52 @@ export function calculateSupplierCost(
   optionOrCode: SupplierCostOption | string,
   params: CostCalculationParams
 ): CostCalculationResult {
+  if (typeof optionOrCode === "string") {
+    const legacy = getCostOptionByCode(optionOrCode);
+    if (!legacy) {
+      // Bridge para o motor oficial v0.1.43 de precificação comercial
+      const comm = calculateCommercialPricing({
+        tourId: optionOrCode,
+        serviceDate: params.serviceDate,
+        hotelZone: params.hotelZone,
+        adultsCount: params.adultsCount,
+        childrenCount: params.childrenCount,
+        infantsCount: params.infantsCount,
+        unitsCount: params.unitsCount,
+        legsCount: params.legsCount,
+        manualCostOverride: params.manualCostOverride,
+        isManualOverride: params.isManualOverride
+      });
+
+      let model: PricingModel = "per_person";
+      if (comm.pricingBasis === "Boat") model = "fixed_vessel";
+      else if (comm.pricingBasis === "Equipment") model = "fixed_jetski";
+      else if (comm.pricingBasis === "Vehicle") model = "per_vehicle_leg";
+      else if (comm.isQuoteRequired) model = "quote_required";
+
+      return {
+        optionCode: comm.rateId || comm.tourId,
+        supplierName: comm.provider,
+        serviceName: comm.displayName,
+        variant: comm.supplierRateName || undefined,
+        pricingModel: model,
+        currency: comm.currency,
+        unitCostAdult: comm.unitCostAdult ?? 0,
+        unitCostChild: comm.unitCostChild ?? 0,
+        unitCostFixed: comm.unitCostFixed ?? 0,
+        adultsCount: comm.adultsCount,
+        childrenCount: comm.childrenCount,
+        unitsCount: comm.unitsCount,
+        legsCount: comm.legsCount,
+        calculatedTotalCost: comm.calculatedTotalCost ?? 0,
+        formulaApplied: comm.formulaApplied,
+        isQuoteRequired: comm.isQuoteRequired,
+        warnings: comm.warnings,
+        isValidForDate: comm.isValidForDate
+      };
+    }
+  }
+
   const option = typeof optionOrCode === "string" ? getCostOptionByCode(optionOrCode) : optionOrCode;
   if (!option) {
     throw new Error(`Opção de custo não encontrada: ${optionOrCode}`);
