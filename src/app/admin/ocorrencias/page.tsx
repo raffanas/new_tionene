@@ -1618,7 +1618,11 @@ export default function AdminOcorrenciasPage() {
       {/* MODAL 1: CRIAR NOVA OCORRÊNCIA */}
       {/* ===================================================================== */}
       {isCreateModalOpen && (
-        <div className="adm-modal-overlay" style={{ zIndex: 9999 }}>
+        <div
+          className="adm-modal-backdrop"
+          style={{ zIndex: 9999 }}
+          onClick={() => !submittingCreate && setIsCreateModalOpen(false)}
+        >
           <div
             className="adm-modal-card"
             style={{
@@ -1628,6 +1632,7 @@ export default function AdminOcorrenciasPage() {
               overflowY: "auto",
               padding: "24px",
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1927,7 +1932,11 @@ export default function AdminOcorrenciasPage() {
       {/* MODAL 2: DETALHES, ANDAMENTO E HISTÓRICO COMPLETO */}
       {/* ===================================================================== */}
       {detailIncident && (
-        <div className="adm-modal-overlay" style={{ zIndex: 9999 }}>
+        <div
+          className="adm-modal-backdrop"
+          style={{ zIndex: 9999 }}
+          onClick={() => setDetailIncident(null)}
+        >
           <div
             className="adm-modal-card"
             style={{
@@ -1937,6 +1946,7 @@ export default function AdminOcorrenciasPage() {
               overflowY: "auto",
               padding: "24px",
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Cabeçalho */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
@@ -2290,7 +2300,11 @@ export default function AdminOcorrenciasPage() {
       {/* MODAL 3: RESOLUÇÃO OBRIGATÓRIA DA OCORRÊNCIA */}
       {/* ===================================================================== */}
       {resolveIncidentModal && (
-        <div className="adm-modal-overlay" style={{ zIndex: 10000 }}>
+        <div
+          className="adm-modal-backdrop"
+          style={{ zIndex: 10000 }}
+          onClick={() => !submittingResolve && setResolveIncidentModal(null)}
+        >
           <div
             className="adm-modal-card"
             style={{
@@ -2298,6 +2312,7 @@ export default function AdminOcorrenciasPage() {
               width: "100%",
               padding: "24px",
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>

@@ -1322,8 +1322,16 @@ export default function AdminTarefasPage() {
       {/* MODAL 1: CRIAR NOVA TAREFA */}
       {/* ===================================================================== */}
       {isCreateModalOpen && (
-        <div className="adm-modal-overlay" style={{ zIndex: 9999 }}>
-          <div className="adm-modal-card" style={{ maxWidth: "680px", width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "24px" }}>
+        <div
+          className="adm-modal-backdrop"
+          style={{ zIndex: 9999 }}
+          onClick={() => !submittingCreate && setIsCreateModalOpen(false)}
+        >
+          <div
+            className="adm-modal-card"
+            style={{ maxWidth: "680px", width: "100%", maxHeight: "90vh", overflowY: "auto", padding: "24px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <CheckSquare size={20} style={{ color: "var(--adm-wine)" }} />
@@ -1545,8 +1553,16 @@ export default function AdminTarefasPage() {
       {/* MODAL 2: DETALHES, HISTÓRICO E ANDAMENTOS */}
       {/* ===================================================================== */}
       {detailTask && (
-        <div className="adm-modal-overlay" style={{ zIndex: 9999 }}>
-          <div className="adm-modal-card" style={{ maxWidth: "760px", width: "100%", maxHeight: "92vh", overflowY: "auto", padding: "24px" }}>
+        <div
+          className="adm-modal-backdrop"
+          style={{ zIndex: 9999 }}
+          onClick={() => setDetailTask(null)}
+        >
+          <div
+            className="adm-modal-card"
+            style={{ maxWidth: "760px", width: "100%", maxHeight: "92vh", overflowY: "auto", padding: "24px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Cabeçalho */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
               <div>

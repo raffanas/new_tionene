@@ -528,7 +528,8 @@
 }
 
 /* Modais / Overlays */
-.adm-modal-backdrop {
+.adm-modal-backdrop,
+.adm-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(36, 22, 25, 0.6);
@@ -661,7 +662,8 @@
 /* ========================================================
    MODAIS ADMINISTRATIVOS (BACKDROP, CARD, HEADER, BODY, FOOTER)
    ======================================================== */
-.adm-modal-backdrop {
+.adm-modal-backdrop,
+.adm-modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 999;
